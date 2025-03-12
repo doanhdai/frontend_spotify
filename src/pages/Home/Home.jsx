@@ -1,4 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PlayList from '@/components/PlayList';
 import Artist from '@/components/Artist';
 import Item from '@/components/Item';
@@ -7,14 +8,14 @@ import { assets } from '@/assets/assets';
 import Footer from '@/layouts/components/Footer';
 
 function Home() {
-    const { artistsData, playlistsData, albumsData, scrollHomeRef, bgHomeHeader, user } = useContext(PlayerContext);
-
+    // const { artistsData, playlistsData, albumsData, scrollHomeRef, bgHomeHeader, user } = useContext(PlayerContext);
+    const { albumsData, scrollHomeRef, bgHomeHeader } = useContext(PlayerContext);
     const topRef = useRef();
-
+    const navigate = useNavigate();
     const [all, setAll] = useState(true);
     const [music, setMusic] = useState(false);
     const [podcasts, setPodcasts] = useState(false);
-
+    const [user, setUser] = useState(true);
     const handlerScroll = () => {
         if (scrollHomeRef.current.scrollTop > 0) {
             bgHomeHeader.current.style.background = '#21115f';
@@ -27,6 +28,106 @@ function Home() {
         document.title = 'Spotify - Web Player: Music for everyone';
         console.log(topRef);
     }, []);
+    const playlistsData = [
+        {
+            _id: '1',
+            image: 'https://source.unsplash.com/200x200/?music,playlist',
+            name: 'Chill Vibes',
+            desc: 'Thư giãn với những giai điệu nhẹ nhàng.',
+        },
+        {
+            _id: '2',
+            image: 'https://source.unsplash.com/200x200/?pop,music',
+            name: 'Top Hits',
+            desc: 'Những bài hát hot nhất hiện nay.',
+        },
+        {
+            _id: '3',
+            image: 'https://source.unsplash.com/200x200/?rock,concert',
+            name: 'Rock Legends',
+            desc: 'Những bản rock bất hủ theo năm tháng.',
+        },
+        {
+            _id: '4',
+            image: 'https://source.unsplash.com/200x200/?jazz,music',
+            name: 'Jazz & Blues',
+            desc: 'Hòa mình vào giai điệu Jazz và Blues.',
+        },
+        {
+            _id: '5',
+            image: 'https://source.unsplash.com/200x200/?edm,dj',
+            name: 'EDM Party',
+            desc: 'Nhạc EDM sôi động cho bữa tiệc của bạn.',
+        },
+        {
+            _id: '6',
+            image: 'https://source.unsplash.com/200x200/?relax,music',
+            name: 'Lo-Fi Chill',
+            desc: 'Nhạc Lo-Fi giúp bạn tập trung và thư giãn.',
+        },
+        {
+            _id: '7',
+            image: 'https://source.unsplash.com/200x200/?hiphop,rap',
+            name: 'Hip-Hop Bangers',
+            desc: 'Những bản rap đình đám nhất hiện nay.',
+        },
+        {
+            _id: '8',
+            image: 'https://source.unsplash.com/200x200/?acoustic,guitar',
+            name: 'Acoustic Love',
+            desc: 'Giai điệu nhẹ nhàng từ guitar acoustic.',
+        },
+    ];
+    const artistsData = [
+        {
+            _id: '1',
+            image: 'https://source.unsplash.com/200x200/?singer',
+            name: 'Taylor Swift',
+            desc: 'Nữ ca sĩ, nhạc sĩ nổi tiếng với những bản hit pop.',
+        },
+        {
+            _id: '2',
+            image: 'https://source.unsplash.com/200x200/?rapper',
+            name: 'Drake',
+            desc: 'Rapper hàng đầu với nhiều bản hit trên bảng xếp hạng.',
+        },
+        {
+            _id: '3',
+            image: 'https://source.unsplash.com/200x200/?dj',
+            name: 'Marshmello',
+            desc: 'DJ nổi tiếng với phong cách EDM sôi động.',
+        },
+        {
+            _id: '4',
+            image: 'https://source.unsplash.com/200x200/?guitarist',
+            name: 'John Mayer',
+            desc: 'Nghệ sĩ guitar tài năng với chất nhạc trữ tình.',
+        },
+        {
+            _id: '5',
+            image: 'https://source.unsplash.com/200x200/?rockstar',
+            name: 'Freddie Mercury',
+            desc: 'Huyền thoại nhạc rock của ban nhạc Queen.',
+        },
+        {
+            _id: '6',
+            image: 'https://source.unsplash.com/200x200/?hiphop',
+            name: 'Kendrick Lamar',
+            desc: 'Một trong những rapper xuất sắc nhất hiện nay.',
+        },
+        {
+            _id: '7',
+            image: 'https://source.unsplash.com/200x200/?jazzsinger',
+            name: 'Norah Jones',
+            desc: 'Giọng ca jazz mượt mà và đầy cảm xúc.',
+        },
+        {
+            _id: '8',
+            image: 'https://source.unsplash.com/200x200/?popstar',
+            name: 'Ariana Grande',
+            desc: 'Ngôi sao nhạc pop với chất giọng ấn tượng.',
+        },
+    ];
 
     return (
         <>
@@ -90,20 +191,20 @@ function Home() {
                 ) : null}
 
                 {user ? (
-                    <div className="flex px-6 py-4 mb-12">
-                        <div className="flex items-center w-96  cursor-pointer">
-                            <img className="w-16 rounded-tl-[4px] rounded-bl-[4px]" src={assets.liked_songs} alt="" />
-                            <div className="bg-[#33295c] px-4 py-5 w-full rounded-tr-[4px] rounded-br-[4px] -hover:bg-[#fff3] transition-colors duration-300">
+                    <div className="flex px-6 py-4">
+                        <div className="flex items-center w-96  cursor-pointer" onClick={() => navigate('/likedSongs')}>
+                            <img className="w-14 rounded-tl-[4px] rounded-bl-[4px]" src={assets.liked_songs} alt="" />
+                            <div className="bg-[#33295c] px-4 py-4 w-full rounded-tr-[4px] rounded-br-[4px] -hover:bg-[#fff3] transition-colors duration-300">
                                 <h4 className="text-white font-semibold">Bài hát đã thích</h4>
                             </div>
                         </div>
                         <div className="flex items-center w-96 ml-6  cursor-pointer">
                             <img
-                                className="w-16 rounded-tl-[4px] rounded-bl-[4px]"
+                                className="w-14 rounded-tl-[4px] rounded-bl-[4px]"
                                 src={assets.NgayEmDepNhatRadio}
                                 alt=""
                             />
-                            <div className="bg-[#33295c] px-4 py-5 w-full rounded-tr-[4px] rounded-br-[4px] -hover:bg-[#fff3] transition-colors duration-300">
+                            <div className="bg-[#33295c] px-4 py-4 w-full rounded-tr-[4px] rounded-br-[4px] -hover:bg-[#fff3] transition-colors duration-300">
                                 <h4 className="text-white font-semibold">Ngày Em Đẹp Nhất Radio</h4>
                             </div>
                         </div>
@@ -123,7 +224,7 @@ function Home() {
                                 <PlayList
                                     key={index}
                                     id={item._id}
-                                    image={item.image}
+                                    image={assets.img5}
                                     name={item.name}
                                     desc={item.desc}
                                 />
@@ -141,11 +242,11 @@ function Home() {
                             <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {playlistsData.slice(14, 21).map((item, index) => (
+                            {playlistsData.slice(0, 5).map((item, index) => (
                                 <PlayList
                                     key={index}
                                     id={item._id}
-                                    image={item.image}
+                                    image={assets.img6}
                                     name={item.name}
                                     desc={item.desc}
                                 />
@@ -169,7 +270,7 @@ function Home() {
                                       <Artist
                                           key={index}
                                           id={item._id}
-                                          image={item.image}
+                                          image={assets.img6}
                                           name={item.name}
                                           desc={item.desc}
                                       />
@@ -195,11 +296,11 @@ function Home() {
                             <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {playlistsData.slice(7, 14).map((item, index) => (
+                            {playlistsData.slice(0, 6).map((item, index) => (
                                 <PlayList
                                     key={index}
                                     id={item._id}
-                                    image={item.image}
+                                    image={assets.img6}
                                     name={item.name}
                                     desc={item.desc}
                                 />

@@ -11,6 +11,7 @@ const routes = {
     signup: '/signup',
     login: '/login',
     user: '/user',
+    likedSongs: '/likedSongs',
 };
 
 export default routes;

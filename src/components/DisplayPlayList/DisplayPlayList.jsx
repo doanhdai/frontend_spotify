@@ -22,7 +22,67 @@ import { assets } from '@/assets/assets';
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 
 function DisplayPlayList() {
-    const { playWithId, songsData, playlistsData } = useContext(PlayerContext);
+    // const { playWithId, songsData, playlistsData } = useContext(PlayerContext);
+    const songsData = [
+        {
+            id: '1',
+            title: 'Blinding Lights',
+            artist: 'The Weeknd',
+            album: 'After Hours',
+            duration: '3:22',
+            cover: 'https://i.scdn.co/image/ab67616d00001e02c6c7bdbf89b1d6dd60f06c6d',
+        },
+        {
+            id: '2',
+            title: 'Save Your Tears',
+            artist: 'The Weeknd',
+            album: 'After Hours',
+            duration: '3:35',
+            cover: 'https://i.scdn.co/image/ab67616d00001e02c6c7bdbf89b1d6dd60f06c6d',
+        },
+        {
+            id: '3',
+            title: 'Peaches',
+            artist: 'Justin Bieber ft. Daniel Caesar, Giveon',
+            album: 'Justice',
+            duration: '3:18',
+            cover: 'https://i.scdn.co/image/ab67616d00001e02b1a7dc5311b62a3953802933',
+        },
+        {
+            id: '4',
+            title: 'Levitating',
+            artist: 'Dua Lipa ft. DaBaby',
+            album: 'Future Nostalgia',
+            duration: '3:24',
+            cover: 'https://i.scdn.co/image/ab67616d00001e02e08c49f0b49583663a3cf3a3',
+        },
+        {
+            id: '5',
+            title: 'Shape of You',
+            artist: 'Ed Sheeran',
+            album: 'Divide',
+            duration: '3:53',
+            cover: 'https://i.scdn.co/image/ab67616d00001e026d3e6c7a2b21e766f49b6b19',
+        },
+    ];
+    const playlistsData = [
+        {
+            _id: '1',
+            name: 'Top Hits 2025',
+            desc: 'Những bài hát hot nhất năm 2025!',
+            bgColor: '#ff5733',
+            image: 'https://i.scdn.co/image/ab67616d00001e02ff12abf02387665490c5d1d5',
+            songs: ['1', '2', '3'],
+        },
+        {
+            _id: '2',
+            name: 'Chill Vibes',
+            desc: 'Những giai điệu nhẹ nhàng thư giãn.',
+            bgColor: '#3498db',
+            image: 'https://i.scdn.co/image/ab67616d00001e02d2921b24fd21c46a12a74d5f',
+            songs: ['4', '5'],
+        },
+    ];
 
     const { id } = useParams();
 
@@ -67,7 +127,7 @@ function DisplayPlayList() {
             }`}
         >
             <div className="px-6 mt-4 mb-9 flex flex-col md:flex-row md:items-end gap-8">
-                <img className="w-48 rounded" src={playlistData.image} alt="" />
+                <img className="w-48 rounded" src={assets.img13} alt="" />
                 <div>
                     <p className="text-white mb-2">Playlist</p>
                     <h2 className="text-white text-5xl font-extrabold mb-4 md:text-6xl tracking-tight">
@@ -243,7 +303,11 @@ function DisplayPlayList() {
             )}
             <hr className="mt-[-8px] mb-4 mx-6" />
             {songsData
-                .filter((item) => item.playlists.some((playlist) => playlist.includes(playlistData.name)))
+                .filter(
+                    (item) =>
+                        Array.isArray(item.playlists) &&
+                        item.playlists.some((playlist) => playlist.includes(playlistData?.name)),
+                )
                 .map((item, index) =>
                     shortType ? (
                         <div

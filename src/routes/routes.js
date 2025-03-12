@@ -13,6 +13,7 @@ import Signup from '@/pages/Signup';
 import Login from '@/pages/Login';
 import Profile from '@/pages/Profile';
 import DisplayConcert from '@/components/DisplayConcert';
+import DisplayLikeSong from '@/components/DisplayLikeSong';
 
 const publicRoutes = [
     { path: config.routes.home, component: Home },
@@ -20,6 +21,7 @@ const publicRoutes = [
     { path: config.routes.concerts, component: Concerts },
     { path: config.routes.signup, component: Signup, layout: NoLayout },
     { path: config.routes.login, component: Login, layout: NoLayout },
+    { path: config.routes.likedSongs, component: DisplayLikeSong},
     { path: config.routes.playlist + '/:id', component: PlayList },
     { path: config.routes.album + '/:id', component: Album },
     { path: config.routes.artist + '/:id', component: Artist },
