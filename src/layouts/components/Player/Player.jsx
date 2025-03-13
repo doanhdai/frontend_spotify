@@ -1,14 +1,16 @@
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { PlayerContext } from '@/context/PlayerContext';
 import { assets } from '@/assets/assets';
 import { Link } from 'react-router-dom';
 import config from '@/configs';
 
 function Player() {
-    const { track, time, seekBg, seekBar, playStatus, play, pause, previous, next, seekSong, user } =
+    const { track, time, seekBg, seekBar, playStatus, play, pause, previous, next, seekSong } =
         useContext(PlayerContext);
+
+    const [user, setUser] = useState(true);
 
     return user ? (
         <div className="h-[10%] bg-black flex justify-between items-center text-white px-4">

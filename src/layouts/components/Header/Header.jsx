@@ -3,17 +3,18 @@ import 'tippy.js/dist/tippy.css';
 import TippyHeadless from '@tippyjs/react/headless';
 import { useState, useEffect, useRef, useContext } from 'react';
 import { PlayerContext } from '@/context/PlayerContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCircleDown } from '@fortawesome/free-regular-svg-icons';
-import { faArrowUpRightFromSquare, faFolderOpen, faHouse, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpRightFromSquare, faFolderOpen, faHouse, faMagnifyingGlass, fas } from '@fortawesome/free-solid-svg-icons';
 import { assets } from '@/assets/assets';
 import config from '@/configs';
 
 function Header() {
     const inputRef = useRef(null);
-    const { user } = useContext(PlayerContext);
-
+    const navgate = useNavigate();
+    // const { user } = useContext(PlayerContext);
+    const [user, setUser] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const [username, setUsername] = useState('');
     const [targetUser, setTargetUser] = useState(false);
@@ -24,7 +25,7 @@ function Header() {
         if (storedUsername) {
             setUsername(storedUsername);
         } else {
-            setUsername('Guest');
+            setUsername('Dai');
         }
     }, []);
 
@@ -97,7 +98,10 @@ function Header() {
                 <div className={`flex items-center gap-5 ${user ? '' : 'w-[446px] justify-end'}`}>
                     {user ? (
                         <>
-                            <button className="bg-white text-black font-bold text-[14px] px-4 py-1.5 rounded-2xl hidden md:block hover:scale-105 hover:bg-[#f0f0f0]">
+                            <button
+                                className="bg-white text-black font-bold text-[14px] px-4 py-1.5 rounded-2xl hidden md:block hover:scale-105 hover:bg-[#f0f0f0]"
+                                onClick={() => navgate(config.routes.premium)}
+                            >
                                 Khám phá Premium
                             </button>
                             <button className="flex items-center bg-black text-white font-bold px-3 py-1.5 rounded-2xl text-[14px] cursor-pointer gap-2 hover:scale-105">
@@ -121,12 +125,17 @@ function Header() {
                                     >
                                         {targetUser ? (
                                             <div className="min-w-[196px] h-56">
-                                                <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
+                                                <button
+                                                    className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]"
+                                                    onClick={() => navgate(config.routes.user + `/1`)}
+                                                >
                                                     <span>Tài khoản</span>
                                                     <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
                                                 </button>
-                                                <Link to={config.routes.user + `/${localStorage.getItem('userId')}`}>
-                                                    <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
+                                                <Link to={config.routes.user + `/1`}>
+                                                    <button
+                                                        className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]"
+                                                    >
                                                         <span>Hồ sơ</span>
                                                     </button>
                                                 </Link>

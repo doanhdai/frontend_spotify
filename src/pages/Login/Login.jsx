@@ -144,7 +144,7 @@ function Login() {
                                 <span className="text-[white] font-bold">Tiếp tục bằng Facebook</span>
                             </button>
                         </div>
-                        <div className="flex items-center h-12 mt-2 border-[1px] border-[#7c7c7c] rounded-full hover:border-white cursor-pointer">
+                        {/* <div className="flex items-center h-12 mt-2 border-[1px] border-[#7c7c7c] rounded-full hover:border-white cursor-pointer">
                             <button className="flex items-center gap-16 px-4">
                                 <svg
                                     width="24"
@@ -160,7 +160,7 @@ function Login() {
                                 </svg>
                                 <span className="text-white font-bold">Tiếp tục bằng Apple</span>
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                     <hr className=" border-t border-[#292929] my-8 mx-[100px]" />
                     <div className="w-[324px] my-0 mx-auto">

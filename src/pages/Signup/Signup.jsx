@@ -179,9 +179,9 @@ function Signup() {
                                         <svg
                                             width="25"
                                             height="24"
-                                            viewBox="0 0 25 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
+                                            // viewBox="0 0 25 24"
+                                            // fill="none"
+                                            // xmlns="http://www.w3.org/2000/svg"
                                         >
                                             <path
                                                 fillRule="evenodd"
@@ -229,7 +229,7 @@ function Signup() {
                                         <span className="text-[white] font-bold">Đăng ký bằng Facebook</span>
                                     </button>
                                 </div>
-                                <div className="flex items-center h-12 mt-2 border-[1px] border-[#7c7c7c] rounded-full hover:border-white cursor-pointer">
+                                {/* <div className="flex items-center h-12 mt-2 border-[1px] border-[#7c7c7c] rounded-full hover:border-white cursor-pointer">
                                     <button className="flex items-center gap-16 px-4">
                                         <svg
                                             width="24"
@@ -245,7 +245,7 @@ function Signup() {
                                         </svg>
                                         <span className="text-white font-bold">Đăng ký bằng Apple</span>
                                     </button>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="h-px w-full mt-8 bg-[#7c7c7c]"></div>
                             <p className="text-center mt-8">
