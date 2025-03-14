@@ -25,6 +25,7 @@
         "react-router-dom": "^6.26.1",
         "react-toastify": "^10.0.6",
         "redux": "^5.0.1",
+        "spotify-clone": "file:",
         "yup": "^1.4.0"
     },
     "devDependencies": {

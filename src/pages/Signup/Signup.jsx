@@ -14,17 +14,18 @@ function Signup() {
     const { setUser } = useContext(PlayerContext);
 
     const [showPassword, setShowPassword] = useState(false);
-    const url = 'http://localhost:4000';
+    const url = 'http://localhost:8000';
 
     useEffect(() => {
         document.title = 'Đăng ký - Spotify';
-    });
+    }, []);
 
     const formik = useFormik({
         initialValues: {
             name: '',
             email: '',
             password: '',
+            password_confirm: '',
         },
         validationSchema: Yup.object({
             name: Yup.string().required('Vui lòng nhập tên người dùng'),
@@ -32,14 +33,22 @@ function Signup() {
                 .email('Email này không hợp lệ. Hãy đảm bảo rằng email được nhập dưới dạng example@email.com.')
                 .required('Vui lòng nhập email'),
             password: Yup.string().min(8, 'Mật khẩu phải có ít nhất 8 ký tự').required('Vui lòng nhập mật khẩu'),
+            password_confirm: Yup.string()
+                .oneOf([Yup.ref('password'), null], 'Mật khẩu xác nhận phải khớp với mật khẩu')
+                .required('Vui lòng xác nhận mật khẩu'),
         }),
         onSubmit: async (values) => {
+            console.log('Giá trị nhập vào:', values);
             try {
-                const response = await axios.post(`${url}/api/v1/client/user/signup`, values);
-                if (response.data.success) {
+                const response = await axios.post(`${url}/api/users/register/`, values);
+                if (response.status === 201) {
+                    // Kiểm tra status thành công
                     toast.success('Đăng ký thành công');
                     setUser(true);
+                    localStorage.setItem('access_token', response.data.access);
+                    localStorage.setItem('refresh_token', response.data.refresh);
                     formik.resetForm();
+                    window.location.href = '/login';
                 }
             } catch (error) {
                 console.error('Lỗi khi gửi dữ liệu lên server:', error);
@@ -158,6 +167,39 @@ function Signup() {
                                     ) : null}
                                 </div>
                                 <div>
+                                    <label htmlFor="password_confirm" className="text-white font-bold">
+                                        Xác nhận mật khẩu
+                                    </label>
+                                    <div
+                                        className={`flex items-center h-12 mt-2 border-[1px] ${
+                                            formik.touched.password_confirm && formik.errors.password_confirm
+                                                ? 'border-red-500 hover:border-red-500'
+                                                : 'border-[#7c7c7c]'
+                                        } rounded-md hover:border-white`}
+                                    >
+                                        <input
+                                            id="password_confirm"
+                                            name="password_confirm"
+                                            type={showPassword ? 'text' : 'password'}
+                                            className="outline-none bg-transparent text-white p-3 w-full"
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            value={formik.values.password_confirm}
+                                        />
+                                        <FontAwesomeIcon
+                                            className="text-[#b3b3b3] mr-4 hover:scale-105 hover:text-white cursor-pointer"
+                                            icon={showPassword ? faEye : faEyeSlash}
+                                            onClick={handleTogglePassword}
+                                        />
+                                    </div>
+                                    {formik.touched.password_confirm && formik.errors.password_confirm ? (
+                                        <div className="text-red-500 text-[12px] font-semibold mt-1">
+                                            <FontAwesomeIcon icon={faCircleInfo} className="text-base mr-2" />
+                                            <span>{formik.errors.password_confirm}</span>
+                                        </div>
+                                    ) : null}
+                                </div>
+                                <div>
                                     <button
                                         type="submit"
                                         className="text-black font-bold px-4 py-3 bg-[#1ed760] w-full mt-2 rounded-full hover:bg-[#3be477]"
@@ -229,23 +271,6 @@ function Signup() {
                                         <span className="text-[white] font-bold">Đăng ký bằng Facebook</span>
                                     </button>
                                 </div>
-                                {/* <div className="flex items-center h-12 mt-2 border-[1px] border-[#7c7c7c] rounded-full hover:border-white cursor-pointer">
-                                    <button className="flex items-center gap-16 px-4">
-                                        <svg
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                d="M15.195 4.513C15.873 3.69 16.351 2.567 16.351 1.433C16.351 1.278 16.341 1.123 16.318 1C15.206 1.044 13.872 1.734 13.083 2.668C12.449 3.379 11.871 4.513 11.871 5.647C11.871 5.825 11.905 5.991 11.916 6.047C11.982 6.058 12.094 6.08 12.216 6.08C13.206 6.08 14.45 5.413 15.195 4.513ZM15.973 6.313C14.317 6.313 12.961 7.325 12.093 7.325C11.171 7.325 9.97 6.38 8.525 6.38C5.779 6.38 3 8.648 3 12.918C3 15.586 4.023 18.398 5.301 20.211C6.391 21.744 7.347 23 8.725 23C10.081 23 10.682 22.1 12.371 22.1C14.083 22.1 14.472 22.978 15.973 22.978C17.463 22.978 18.453 21.61 19.397 20.265C20.442 18.72 20.887 17.219 20.897 17.142C20.809 17.119 17.963 15.952 17.963 12.695C17.963 9.871 20.198 8.604 20.331 8.504C18.852 6.381 16.596 6.314 15.973 6.314V6.313Z"
-                                                fill="white"
-                                            ></path>
-                                        </svg>
-                                        <span className="text-white font-bold">Đăng ký bằng Apple</span>
-                                    </button>
-                                </div> */}
                             </div>
                             <div className="h-px w-full mt-8 bg-[#7c7c7c]"></div>
                             <p className="text-center mt-8">

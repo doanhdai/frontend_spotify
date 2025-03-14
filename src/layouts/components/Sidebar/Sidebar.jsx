@@ -7,10 +7,10 @@ import { faBars, faGlobe, faMagnifyingGlass } from '@fortawesome/free-solid-svg-
 import { assets } from '@/assets/assets';
 import { Link, useNavigate } from 'react-router-dom';
 import config from '@/configs';
+import Language from '../Language/language';
 
 function Sidebar() {
-    // const { user } = useContext(PlayerContext);
-    const [user, setUser] = useState(true);
+    const { user } = useContext(PlayerContext);
 
     const headerRef = useRef();
     const navigate = useNavigate();
@@ -197,16 +197,18 @@ function Sidebar() {
                             </a>
                         </div>
                         <div>
-                            <button className="flex items-center text-[14px] px-3 py-1 mx-6 mb-8 border-[1px] border-[#7c7c7c] rounded-full font-bold hover:scale-105 hover:border-white">
+                            {/* <button className="flex items-center text-[14px] px-3 py-1 mx-6 mb-8 border-[1px] border-[#7c7c7c] rounded-full font-bold hover:scale-105 hover:border-white">
                                 <FontAwesomeIcon icon={faGlobe} className="mr-2" />
                                 Tiếng Việt
-                            </button>
+                            </button> */}
+
+                            <Language />
                         </div>
                     </div>
                 )}
             </div>
         </div>
     );
-}
+};
 
 export default Sidebar;

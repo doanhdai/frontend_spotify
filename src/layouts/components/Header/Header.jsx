@@ -13,8 +13,8 @@ import config from '@/configs';
 function Header() {
     const inputRef = useRef(null);
     const navgate = useNavigate();
-    // const { user } = useContext(PlayerContext);
-    const [user, setUser] = useState(false);
+    const { user } = useContext(PlayerContext);
+    // const [user, setUser] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const [username, setUsername] = useState('');
     const [targetUser, setTargetUser] = useState(false);

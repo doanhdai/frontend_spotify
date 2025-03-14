@@ -15,7 +15,7 @@ function Home() {
     const [all, setAll] = useState(true);
     const [music, setMusic] = useState(false);
     const [podcasts, setPodcasts] = useState(false);
-    const [user, setUser] = useState(true);
+    const {user } = useContext(PlayerContext);
     const handlerScroll = () => {
         if (scrollHomeRef.current.scrollTop > 0) {
             bgHomeHeader.current.style.background = '#21115f';
