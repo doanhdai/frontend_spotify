@@ -3,7 +3,7 @@ import 'tippy.js/dist/tippy.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useContext, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import {
     faArrowUpFromBracket,
     faCheck,
@@ -18,8 +18,6 @@ import { assets } from '@/assets/assets';
 import Footer from '@/layouts/components/Footer';
 
 function DisplayConcert() {
-    const { concertsData } = useContext(PlayerContext);
-
     const { id } = useParams();
 
     const [concertData, setConcertData] = useState('');

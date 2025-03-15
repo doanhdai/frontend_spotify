@@ -1,12 +1,11 @@
 import { useEffect, useContext } from 'react';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import GenreItem from '@/components/GenreItem';
 import Footer from '@/layouts/components/Footer';
 import config from '@/configs';
 import { assets } from '@/assets/assets';
 
 function Search() {
-    // const { genresData } = useContext(PlayerContext);
     const genresData = [
         {
             _id: '1',

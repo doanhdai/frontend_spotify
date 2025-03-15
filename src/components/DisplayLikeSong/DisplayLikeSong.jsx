@@ -1,6 +1,6 @@
 import { useEffect, useRef, useContext, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import { assets } from '@/assets/assets';
 
 function DisplayLikeSong() {
@@ -88,8 +88,6 @@ function DisplayLikeSong() {
     const isSongLike = location.pathname.includes('likedSongs');
     // const bgColor = songLikesData ? songLikesData.bgColor : '';
     const bgColor = '#FF5733';
-
- 
 
     useEffect(() => {
         if (isSongLike && displaySongLikeRef.current) {

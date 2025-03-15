@@ -1,12 +1,10 @@
 import { useContext } from 'react';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import Header from '@/layouts/components/Header';
 import Sidebar from '@/layouts/components/Sidebar';
 import Player from '@/layouts/components/Player';
 
 function DefaultLayout({ children }) {
-    const { audioRef, track } = useContext(PlayerContext);
-
     return (
         <>
             <div className="h-screen bg-black">
@@ -16,7 +14,7 @@ function DefaultLayout({ children }) {
                     {children}
                 </div>
                 <Player />
-                <audio ref={audioRef} src={track ? track.file : ''} preload="auto"></audio>
+                {/* <audio ref={audioRef} src={track ? track.file : ''} preload="auto"></audio> */}
             </div>
         </>
     );

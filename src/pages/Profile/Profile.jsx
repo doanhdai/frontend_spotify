@@ -3,14 +3,12 @@ import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis, faPencil, faUser } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import Footer from '@/layouts/components/Footer';
 import Artist from '@/components/Artist';
 
 function Profile() {
     const { id } = useParams();
-
-    const { artistsData, usersData, songsData, playWithId } = useContext(PlayerContext);
 
     const [username, setUsername] = useState('');
     const [hovering, setHovering] = useState(false);

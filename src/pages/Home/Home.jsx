@@ -3,19 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import PlayList from '@/components/PlayList';
 import Artist from '@/components/Artist';
 import Item from '@/components/Item';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import { assets } from '@/assets/assets';
 import Footer from '@/layouts/components/Footer';
 
 function Home() {
-    // const { artistsData, playlistsData, albumsData, scrollHomeRef, bgHomeHeader, user } = useContext(PlayerContext);
-    const { albumsData, scrollHomeRef, bgHomeHeader } = useContext(PlayerContext);
-    const topRef = useRef();
     const navigate = useNavigate();
     const [all, setAll] = useState(true);
     const [music, setMusic] = useState(false);
     const [podcasts, setPodcasts] = useState(false);
     const [user, setUser] = useState(true);
+    const topRef = useRef();
+    const { scrollHomeRef, bgHomeHeader } = useRef();
     const handlerScroll = () => {
         if (scrollHomeRef.current.scrollTop > 0) {
             bgHomeHeader.current.style.background = '#21115f';

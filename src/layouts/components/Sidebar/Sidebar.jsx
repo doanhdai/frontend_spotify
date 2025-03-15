@@ -1,7 +1,7 @@
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { useContext, useRef } from 'react';
-import { PlayerContext } from '@/context/PlayerContext';
+import { useContext, useRef, useState } from 'react';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faGlobe, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { assets } from '@/assets/assets';
@@ -10,7 +10,7 @@ import config from '@/configs';
 import Language from '../Language/language';
 
 const Sidebar = () => {
-    const { user } = useContext(PlayerContext);
+    const [user, setUser] = useState(false);
     const headerRef = useRef();
 
     const handlerScroll = (e) => {
@@ -211,11 +211,6 @@ const Sidebar = () => {
                             </a>
                         </div>
                         <div>
-                            {/* <button className="flex items-center text-[14px] px-3 py-1 mx-6 mb-8 border-[1px] border-[#7c7c7c] rounded-full font-bold hover:scale-105 hover:border-white">
-                                <FontAwesomeIcon icon={faGlobe} className="mr-2" />
-                                Tiếng Việt
-                            </button> */}
-
                             <Language />
                         </div>
                     </div>

@@ -1,0 +1,15 @@
+{
+    "header": {
+        "input": "what do you want to broadcast today",
+        "premium": "Explore premium",
+        "download": "Download the app",
+
+        "title": "Account",
+        "profile": "Profile",
+        "updatePremium": "Upgrade to Premium",
+        "setting": "Settings",
+        "logout": "Logout",
+        "login": "Login",
+        "register": "Register"
+    }
+}
