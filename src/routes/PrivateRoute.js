@@ -5,13 +5,9 @@ import config from '@/configs';
 
 const PrivateRoute = () => {
     const { user } = useContext(PlayerContext);
-
-    // Nếu người dùng chưa đăng nhập, chuyển hướng về trang home
     if (!user) {
         return <Navigate to={config.routes.home} replace />;
     }
-
-    // Nếu đã đăng nhập, cho phép truy cập route
     return <Outlet />;
 };
 
