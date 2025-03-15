@@ -6,7 +6,13 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCircleDown } from '@fortawesome/free-regular-svg-icons';
-import { faArrowUpRightFromSquare, faFolderOpen, faHouse, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import {
+    faArrowUpRightFromSquare,
+    faFolderOpen,
+    faHouse,
+    faMagnifyingGlass,
+    fas,
+} from '@fortawesome/free-solid-svg-icons';
 import { assets } from '@/assets/assets';
 import config from '@/configs';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +30,7 @@ function Header() {
         if (storedUsername) {
             setUsername(storedUsername);
         } else {
-            setUsername('Guest');
+            setUsername('Dai');
         }
     }, []);
 

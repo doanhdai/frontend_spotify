@@ -4,8 +4,6 @@ import { useParams, useLocation } from 'react-router-dom';
 import { assets } from '@/assets/assets';
 
 function DisplayLikeSong() {
-    const { playWithId, songsData, artistsData } = useContext(PlayerContext);
-
     const likedSongsData = [
         {
             _id: '1',

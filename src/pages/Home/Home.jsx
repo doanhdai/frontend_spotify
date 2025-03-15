@@ -8,13 +8,14 @@ import { assets } from '@/assets/assets';
 import Footer from '@/layouts/components/Footer';
 
 function Home() {
+    const scrollHomeRef = useRef();
+    const topRef = useRef();
+    const bgHomeHeader = useRef();
     const navigate = useNavigate();
     const [all, setAll] = useState(true);
     const [music, setMusic] = useState(false);
     const [podcasts, setPodcasts] = useState(false);
     const [user, setUser] = useState(true);
-    const topRef = useRef();
-    const { scrollHomeRef, bgHomeHeader } = useRef();
     const handlerScroll = () => {
         if (scrollHomeRef.current.scrollTop > 0) {
             bgHomeHeader.current.style.background = '#21115f';

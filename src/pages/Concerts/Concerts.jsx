@@ -7,8 +7,6 @@ import { faList, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCalendar } from '@fortawesome/free-regular-svg-icons';
 
 function Concerts() {
-    const { concertsData } = useContext(PlayerContext);
-
     useEffect(() => {
         document.title = 'Concert Tickets & Tour Dates for you in Ho Chi Minh City | Spotify';
     }, []);

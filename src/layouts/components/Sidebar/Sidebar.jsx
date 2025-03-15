@@ -1,17 +1,17 @@
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { useContext, useRef, useState } from 'react';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faGlobe, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { assets } from '@/assets/assets';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import config from '@/configs';
 import Language from '../Language/language';
 
 const Sidebar = () => {
     const [user, setUser] = useState(false);
     const headerRef = useRef();
+    const navigate = useNavigate();
 
     const handlerScroll = (e) => {
         const scrollTop = e.target.scrollTop;
@@ -66,13 +66,13 @@ const Sidebar = () => {
                                 <FontAwesomeIcon icon={faBars} />
                             </button>
                         </div>
+
                         <div className="px-1 py-1 mx-2 mt-1 rounded font-semibold flex flex-col">
-                            <div className="flex px-3 py-2 bg-[#242424] rounded-lg">
-                                <img
-                                    className="w-12 rounded mr-3"
-                                    src="https://res.cloudinary.com/dojdqs0uy/image/upload/v1726675815/hjcqjl2kjb6jbawyywsz.jpg"
-                                    alt=""
-                                />
+                            <div
+                                className="flex px-3 py-2 bg-[#242424] rounded-lg"
+                                onClick={() => navigate(config.routes.playlist + '/1')}
+                            >
+                                <img className="w-12 rounded mr-3" src={assets.img13} alt="" />
                                 <div>
                                     <h5 className="text-[#e4e4e4]">Bài hát đã thích</h5>
                                     <p className="line-clamp-1 text-[#b3b3b3] text-[14px]">
@@ -81,11 +81,7 @@ const Sidebar = () => {
                                 </div>
                             </div>
                             <div className="flex px-3 py-2 rounded-lg hover:bg-[#1f1f1f] cursor-pointer">
-                                <img
-                                    className="w-12 rounded mr-3"
-                                    src="https://res.cloudinary.com/dojdqs0uy/image/upload/v1726675815/hjcqjl2kjb6jbawyywsz.jpg"
-                                    alt=""
-                                />
+                                <img className="w-12 rounded mr-3" src={assets.img13} alt="" />
                                 <div>
                                     <h5 className="text-[#e4e4e4]">Bài hát đã thích</h5>
                                     <p className="line-clamp-1 text-[#b3b3b3] text-[14px]">
@@ -94,11 +90,7 @@ const Sidebar = () => {
                                 </div>
                             </div>
                             <div className="flex px-3 py-2 rounded-lg hover:bg-[#1f1f1f] cursor-pointer">
-                                <img
-                                    className="w-12 rounded mr-3"
-                                    src="https://res.cloudinary.com/dojdqs0uy/image/upload/v1726675815/hjcqjl2kjb6jbawyywsz.jpg"
-                                    alt=""
-                                />
+                                <img className="w-12 rounded mr-3" src={assets.img13} alt="" />
                                 <div>
                                     <h5 className="text-[#e4e4e4]">Bài hát đã thích</h5>
                                     <p className="line-clamp-1 text-[#b3b3b3] text-[14px]">
@@ -107,11 +99,7 @@ const Sidebar = () => {
                                 </div>
                             </div>
                             <div className="flex px-3 py-2 rounded-lg hover:bg-[#1f1f1f] cursor-pointer">
-                                <img
-                                    className="w-12 rounded mr-3"
-                                    src="https://res.cloudinary.com/dojdqs0uy/image/upload/v1726675815/hjcqjl2kjb6jbawyywsz.jpg"
-                                    alt=""
-                                />
+                                <img className="w-12 rounded mr-3" src={assets.img13} alt="" />
                                 <div>
                                     <h5 className="text-[#e4e4e4]">Bài hát đã thích</h5>
                                     <p className="line-clamp-1 text-[#b3b3b3] text-[14px]">
@@ -120,11 +108,7 @@ const Sidebar = () => {
                                 </div>
                             </div>
                             <div className="flex px-3 py-2 rounded-lg hover:bg-[#1f1f1f] cursor-pointer">
-                                <img
-                                    className="w-12 rounded mr-3"
-                                    src="https://res.cloudinary.com/dojdqs0uy/image/upload/v1726675815/hjcqjl2kjb6jbawyywsz.jpg"
-                                    alt=""
-                                />
+                                <img className="w-12 rounded mr-3" src={assets.img13} alt="" />
                                 <div>
                                     <h5 className="text-[#e4e4e4]">Bài hát đã thích</h5>
                                     <p className="line-clamp-1 text-[#b3b3b3] text-[14px]">

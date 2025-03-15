@@ -16,7 +16,7 @@ function Login() {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
-    const url = 'http://localhost:4000';
+    const url = 'http://localhost:8000';
 
     useEffect(() => {
         document.title = 'Spotify - Đăng nhập';
@@ -32,11 +32,11 @@ function Login() {
                 email,
                 password,
             };
-            const response = await axios.post(`${url}/api/v1/client/user/login`, user);
+            const response = await axios.post(`${url}/api/users/login/`, user);
             console.log(response.data);
 
-            if (response.data.success) {
-                const token = response.data.token;
+            if (response.status === 200) {  
+                const token = response.data.refresh;
 
                 if (token) {
                     localStorage.setItem('authToken', token);
@@ -45,9 +45,8 @@ function Login() {
 
                     toast.success('Đăng nhập thành công');
                     setUser(true);
-                    setTimeout(() => {
-                        navigate('/');
-                    }, 3000);
+                    window.location.href = '/';
+
                 } else {
                     toast.error('Lỗi: Không tìm thấy token!');
                 }
@@ -82,10 +81,8 @@ function Login() {
         <>
             <div className="h-screen items-center overflow-hidden overflow-y-auto">
                 <div className="bg-gradient-custom-login p-8">
-                    <div className="w-full max-w-[734px] bg-[#121212] my-0 mx-auto rounded-lg">
-                        <div className="flex justify-center pt-8">
-                            <img className="w-9" src={assets.spotify_logo} alt="" />
-                        </div>
+                    <hr className=" border-t border-[#292929] my-8 mx-[100px]" />
+                    <div className="w-[324px] my-0 mx-auto">
                         <div>
                             <h1 className="text-white text-[32px] font-bold text-center mb-8">Đăng nhập vào Spotify</h1>
                         </div>
