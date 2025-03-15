@@ -1,0 +1,15 @@
+{
+    "header": {
+        "input": "Hôm nay bạn muốn phát sóng gì",
+        "premium": " Khám phá Premium",
+        "download": "Cài đặt ứng dụng",
+
+        "title": "Tài khoản",
+        "profile": "Hồ sơ",
+        "updatePremiun": "Nâng cấp Premium",
+        "setting": "Cài đặt",
+        "logout": "Đăng xuất",
+        "login": "Đăng nhập",
+        "register": "Đăng ký"
+    }
+}

@@ -4,13 +4,12 @@ import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import { assets } from '@/assets/assets';
 import config from '@/configs';
 import Language from '@/layouts/components/Language/language';
 
 function Login() {
-    const { setUser } = useContext(PlayerContext);
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');

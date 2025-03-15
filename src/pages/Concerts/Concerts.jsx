@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import ConcertItem from '@/components/ConcertItem';
 import Footer from '@/layouts/components/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,8 +7,6 @@ import { faList, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCalendar } from '@fortawesome/free-regular-svg-icons';
 
 function Concerts() {
-    const { concertsData } = useContext(PlayerContext);
-
     useEffect(() => {
         document.title = 'Concert Tickets & Tour Dates for you in Ho Chi Minh City | Spotify';
     }, []);

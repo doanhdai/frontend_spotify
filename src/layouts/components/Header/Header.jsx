@@ -2,24 +2,29 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import TippyHeadless from '@tippyjs/react/headless';
 import { useState, useEffect, useRef, useContext } from 'react';
-import { PlayerContext } from '@/context/PlayerContext';
-import { Link, useNavigate } from 'react-router-dom';
+
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCircleDown } from '@fortawesome/free-regular-svg-icons';
-import { faArrowUpRightFromSquare, faFolderOpen, faHouse, faMagnifyingGlass, fas } from '@fortawesome/free-solid-svg-icons';
+import {
+    faArrowUpRightFromSquare,
+    faFolderOpen,
+    faHouse,
+    faMagnifyingGlass,
+    fas,
+} from '@fortawesome/free-solid-svg-icons';
 import { assets } from '@/assets/assets';
 import config from '@/configs';
+import { useTranslation } from 'react-i18next';
 
 function Header() {
     const inputRef = useRef(null);
-    const navgate = useNavigate();
-    const { user } = useContext(PlayerContext);
-    // const [user, setUser] = useState(false);
+    const [user, setUser] = useState(true);
     const [isFocused, setIsFocused] = useState(false);
     const [username, setUsername] = useState('');
     const [targetUser, setTargetUser] = useState(false);
     const [hovering, setHovering] = useState(false);
-
+    const { t } = useTranslation();
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
         if (storedUsername) {
@@ -81,7 +86,7 @@ function Header() {
                                 ref={inputRef}
                                 className="bg-transparent w-full h-full focus:outline-none"
                                 type="text"
-                                placeholder="Bạn muốn phát nội dung gì ?"
+                                placeholder={t('header.input')}
                                 onFocus={handleFocus}
                                 onBlur={handleBlur}
                             />
@@ -98,15 +103,12 @@ function Header() {
                 <div className={`flex items-center gap-5 ${user ? '' : 'w-[446px] justify-end'}`}>
                     {user ? (
                         <>
-                            <button
-                                className="bg-white text-black font-bold text-[14px] px-4 py-1.5 rounded-2xl hidden md:block hover:scale-105 hover:bg-[#f0f0f0]"
-                                onClick={() => navgate(config.routes.premium)}
-                            >
-                                Khám phá Premium
+                            <button className="bg-white text-black font-bold text-[14px] px-4 py-1.5 rounded-2xl hidden md:block hover:scale-105 hover:bg-[#f0f0f0]">
+                                {t('header.premium')}
                             </button>
                             <button className="flex items-center bg-black text-white font-bold px-3 py-1.5 rounded-2xl text-[14px] cursor-pointer gap-2 hover:scale-105">
                                 <FontAwesomeIcon icon={faCircleDown} />
-                                Cài đặt ứng dụng
+                                {t('header.download')}
                             </button>
                             <Tippy content="Thông tin mới">
                                 <button className="text-[#b3b3b3] hover:text-white hover:scale-110 cursor-pointer">
@@ -125,33 +127,28 @@ function Header() {
                                     >
                                         {targetUser ? (
                                             <div className="min-w-[196px] h-56">
-                                                <button
-                                                    className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]"
-                                                    onClick={() => navgate(config.routes.user + `/1`)}
-                                                >
-                                                    <span>Tài khoản</span>
+                                                <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
+                                                    <span> {t('header.title')}</span>
                                                     <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
                                                 </button>
-                                                <Link to={config.routes.user + `/1`}>
-                                                    <button
-                                                        className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]"
-                                                    >
-                                                        <span>Hồ sơ</span>
+                                                <Link to={config.routes.user + `/${localStorage.getItem('userId')}`}>
+                                                    <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
+                                                        <span>{t('header.profile')}</span>
                                                     </button>
                                                 </Link>
                                                 <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
-                                                    <span>Nâng cấp lên Premium</span>
+                                                    <span>{t('header.updatePremium')}</span>
                                                     <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
                                                 </button>
                                                 <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] border-b-[1px] rounded-b-[1px] cursor-pointer hover:bg-[#ffffff1a]">
-                                                    <span>Cài đặt</span>
+                                                    <span>{t('header.setting')}</span>
                                                 </button>
                                                 <Link to={config.routes.home}>
                                                     <button
                                                         className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]"
                                                         onClick={handleLogout}
                                                     >
-                                                        <span>Đăng xuất</span>
+                                                        <span>{t('header.logout')}</span>
                                                     </button>
                                                 </Link>
                                             </div>
@@ -180,12 +177,12 @@ function Header() {
                         <>
                             <Link to={config.routes.signup}>
                                 <button className="bg-black text-[#b3b3b3] font-bold px-4 py-1.5 rounded-2xl hidden md:block hover:scale-105 hover:text-white">
-                                    Đăng ký
+                                    {t('header.login')}
                                 </button>
                             </Link>
                             <Link to={config.routes.login}>
                                 <button className="flex items-center bg-white text-black font-bold px-8 py-3 rounded-full cursor-pointer gap-2 hover:scale-105">
-                                    Đăng nhập
+                                    {t('header.register')}
                                 </button>
                             </Link>
                         </>

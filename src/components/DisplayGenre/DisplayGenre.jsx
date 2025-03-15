@@ -1,14 +1,12 @@
 import { useEffect, useRef, useContext, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import PlayList from '@/components/PlayList';
 import GenreItem from '@/components/GenreItem';
 import config from '@/configs';
 import Footer from '@/layouts/components/Footer';
 
 function DisplayGenre() {
-    const { genresData, playlistsData } = useContext(PlayerContext);
-
     const { id } = useParams();
 
     const [genreData, setGenreData] = useState('');

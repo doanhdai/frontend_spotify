@@ -1,11 +1,9 @@
 import { useEffect, useRef, useContext, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import { assets } from '@/assets/assets';
 
 function DisplayArtist() {
-    const { playWithId, songsData, artistsData } = useContext(PlayerContext);
-
     const { id } = useParams();
 
     const [artistData, setArtistData] = useState('');

@@ -1,11 +1,9 @@
 import { useEffect, useRef, useContext, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import { assets } from '@/assets/assets';
 
 function DisplayLikeSong() {
-    const { playWithId, songsData, artistsData } = useContext(PlayerContext);
-
     const likedSongsData = [
         {
             _id: '1',
@@ -87,9 +85,7 @@ function DisplayLikeSong() {
     const location = useLocation();
     const isSongLike = location.pathname.includes('likedSongs');
     // const bgColor = songLikesData ? songLikesData.bgColor : '';
-    const bgColor = '#21115f';
-
- 
+    const bgColor = '#FF5733';
 
     useEffect(() => {
         if (isSongLike && displaySongLikeRef.current) {
@@ -111,9 +107,8 @@ function DisplayLikeSong() {
             className="bg-[#121212] w-[79%] h-[97.4%] rounded-xl my-2 mr-2 py-4 overflow-hidden overflow-y-auto"
         >
             <div className="mt-10 flex flex-col md:flex-row md:items-end gap-8 px-6">
-                <img className="w-48 rounded" src={assets.liked_songs} alt="" />
+                <img className="w-48 rounded" src={assets.img13} alt="" />
                 <div>
-                    <p className="text-white mb-2">Playlist</p>
                     <h2 className="text-white text-5xl font-bold mb-2 md:text-7xl">Bài hát bạn đã thích.</h2>
                     {/* <h4 className="text-white mb-12">{songLikesData.desc}</h4> */}
                     <p className="text-white mt-1">

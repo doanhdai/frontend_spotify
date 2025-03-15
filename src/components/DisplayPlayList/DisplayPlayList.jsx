@@ -17,12 +17,11 @@ import {
     faList,
     faPlay,
 } from '@fortawesome/free-solid-svg-icons';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import { assets } from '@/assets/assets';
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 
 function DisplayPlayList() {
-    // const { playWithId, songsData, playlistsData } = useContext(PlayerContext);
     const songsData = [
         {
             id: '1',

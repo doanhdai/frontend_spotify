@@ -6,13 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { PlayerContext } from '@/context/PlayerContext';
+
 import { assets } from '@/assets/assets';
 import config from '@/configs';
 
 function Signup() {
-    const { setUser } = useContext(PlayerContext);
-
     const [showPassword, setShowPassword] = useState(false);
     const url = 'http://localhost:8000';
 
