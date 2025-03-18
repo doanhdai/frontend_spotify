@@ -44,7 +44,7 @@ function Login() {
                     localStorage.setItem('userId', response.data.user.id);
 
                     toast.success('Đăng nhập thành công');
-                    setUser(true);
+                    // setUser(true);
                     window.location.href = '/';
 
                 } else {
