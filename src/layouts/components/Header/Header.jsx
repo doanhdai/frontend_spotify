@@ -130,13 +130,17 @@ function Header() {
                                                         <span>{t('header.profile')}</span>
                                                     </button>
                                                 </Link>
-                                                <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
-                                                    <span>{t('header.updatePremium')}</span>
-                                                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-                                                </button>
-                                                <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] border-b-[1px] rounded-b-[1px] cursor-pointer hover:bg-[#ffffff1a]">
-                                                    <span>{t('header.setting')}</span>
-                                                </button>
+                                                <Link to={config.routes.premium}>
+                                                    <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
+                                                        <span>{t('header.updatePremium')}</span>
+                                                        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                                                    </button>
+                                                </Link>
+                                                <Link to={config.routes.settings}>
+                                                    <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] border-b-[1px] rounded-b-[1px] cursor-pointer hover:bg-[#ffffff1a]">
+                                                        <span>{t('header.setting')}</span>
+                                                    </button>
+                                                </Link>
                                                 <Link to={config.routes.home}>
                                                     <button
                                                         className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]"

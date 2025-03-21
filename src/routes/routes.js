@@ -12,6 +12,9 @@ import Concerts from '@/pages/Concerts';
 import Signup from '@/pages/Signup';
 import Login from '@/pages/Login';
 import Profile from '@/pages/Profile';
+import Premium from '@/pages/Premium';
+import PremiumRegister from '@/pages/PremiumRegister';
+import Settings from '@/pages/Settings';
 import DisplayConcert from '@/components/DisplayConcert';
 import DisplayLikeSong from '@/components/DisplayLikeSong';
 
@@ -32,6 +35,9 @@ const privateRoutes = [
     { path: config.routes.playlist + '/:id', component: PlayList },
     { path: config.routes.concerts + '/:id', component: DisplayConcert },
     { path: config.routes.user + '/:id', component: Profile },
+    { path: config.routes.settings, component: Settings},
+    { path: config.routes.premium, component: Premium},
+    { path: config.routes.premium_register + '/:id', component: PremiumRegister},
 ];
 
 

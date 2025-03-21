@@ -12,6 +12,9 @@ const routes = {
     login: '/login',
     user: '/user',
     likedSongs: '/likedSongs',
+    settings: '/settings',
+    premium: '/premium',
+    premium_register: '/premium/register'
 };
 
 export default routes;
