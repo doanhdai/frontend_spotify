@@ -14,7 +14,8 @@ const routes = {
     likedSongs: '/likedSongs',
     settings: '/settings',
     premium: '/premium',
-    premium_register: '/premium/register'
+    premium_register: '/premium/register',
+    form_create_album: '/create-album',
 };
 
 export default routes;

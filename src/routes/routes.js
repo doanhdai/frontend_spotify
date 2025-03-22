@@ -15,6 +15,7 @@ import Profile from '@/pages/Profile';
 import Premium from '@/pages/Premium';
 import PremiumRegister from '@/pages/PremiumRegister';
 import Settings from '@/pages/Settings';
+import FormCreateAlbum from '@/pages/FormCreateAlbum';
 import DisplayConcert from '@/components/DisplayConcert';
 import DisplayLikeSong from '@/components/DisplayLikeSong';
 
@@ -38,6 +39,7 @@ const privateRoutes = [
     { path: config.routes.settings, component: Settings},
     { path: config.routes.premium, component: Premium},
     { path: config.routes.premium_register + '/:id', component: PremiumRegister},
+    { path: config.routes.form_create_album , component: FormCreateAlbum},
 ];
 
 
