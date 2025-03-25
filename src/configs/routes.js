@@ -16,6 +16,7 @@ const routes = {
     premium: '/premium',
     premium_register: '/premium/register',
     form_create_album: '/create-album',
+    admin_dashboard: '/admin/dashboard',
 };
 
 export default routes;

@@ -18,6 +18,7 @@ import Settings from '@/pages/Settings';
 import FormCreateAlbum from '@/pages/FormCreateAlbum';
 import DisplayConcert from '@/components/DisplayConcert';
 import DisplayLikeSong from '@/components/DisplayLikeSong';
+import DisplayDashboard from '@/pages/Admin/Dashboard';
 
 const publicRoutes = [
     { path: config.routes.home, component: Home },
@@ -40,6 +41,7 @@ const privateRoutes = [
     { path: config.routes.premium, component: Premium},
     { path: config.routes.premium_register + '/:id', component: PremiumRegister},
     { path: config.routes.form_create_album , component: FormCreateAlbum},
+    { path: config.routes.admin_dashboard, component: DisplayDashboard},
 ];
 
 
