@@ -7,12 +7,18 @@ import App from './App.jsx';
 import i18n from './Utils/i18n';
 import './index.css';
 import store from '@/redux/store.js';
+import PlayerContextProvider from './context/PlayerContext.jsx';
+import PlayerProvider from './service/PlayerProvider.jsx';
 
 createRoot(document.getElementById('root')).render(
     // <StrictMode>
+
     <Provider store={store}>
-        <ToastContainer />
-        <App />
+        <PlayerProvider>
+            <ToastContainer />
+            <App />
+        </PlayerProvider>
     </Provider>,
+
     // </StrictMode>,
 );

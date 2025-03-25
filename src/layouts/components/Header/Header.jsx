@@ -10,10 +10,11 @@ import { faArrowUpRightFromSquare, faFolderOpen, faHouse, faMagnifyingGlass, fas
 import { assets } from '@/assets/assets';
 import config from '@/configs';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 function Header() {
     const inputRef = useRef(null);
-    const [user, setUser] = useState(true);
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const [isFocused, setIsFocused] = useState(false);
     const [username, setUsername] = useState('');
     const [targetUser, setTargetUser] = useState(false);
@@ -38,9 +39,8 @@ function Header() {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('username');
-        localStorage.removeItem('userId');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         window.location.reload();
     };
 
@@ -94,8 +94,8 @@ function Header() {
                     </Link>
                 </div>
 
-                <div className={`flex items-center gap-5 ${user ? '' : 'w-[446px] justify-end'}`}>
-                    {user ? (
+                <div className={`flex items-center gap-5 ${isLoggedIn ? '' : 'w-[446px] justify-end'}`}>
+                    {isLoggedIn ? (
                         <>
                             <button className="bg-white text-black font-bold text-[14px] px-4 py-1.5 rounded-2xl hidden md:block hover:scale-105 hover:bg-[#f0f0f0]">
                                 {t('header.premium')}
@@ -169,12 +169,12 @@ function Header() {
                         </>
                     ) : (
                         <>
-                            <Link to={config.routes.signup}>
+                            <Link to={config.routes.login}>
                                 <button className="bg-black text-[#b3b3b3] font-bold px-4 py-1.5 rounded-2xl hidden md:block hover:scale-105 hover:text-white">
                                     {t('header.login')}
                                 </button>
                             </Link>
-                            <Link to={config.routes.login}>
+                            <Link to={config.routes.signup}>
                                 <button className="flex items-center bg-white text-black font-bold px-8 py-3 rounded-full cursor-pointer gap-2 hover:scale-105">
                                     {t('header.register')}
                                 </button>

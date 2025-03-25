@@ -47,9 +47,7 @@ import liked_songs from './images/songs/liked_songs.png';
 import ticket from './images/concerts/ticket.png';
 
 // Audios
-import song1 from './audio/song1.mp3';
-import song2 from './audio/song2.mp3';
-import song3 from './audio/song3.mp3';
+
 
 export const assets = {
     bell_icon,
@@ -95,8 +93,6 @@ export const assets = {
     img14,
     img15,
     img16,
-    song1,
-    song2,
-    song3,
+
     ticket,
 };

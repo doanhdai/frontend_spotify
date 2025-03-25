@@ -12,6 +12,7 @@ const routes = {
     login: '/login',
     user: '/user',
     likedSongs: '/likedSongs',
+    detailSong: '/song',
 };
 
 export default routes;
