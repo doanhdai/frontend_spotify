@@ -3,13 +3,20 @@ import 'tippy.js/dist/tippy.css';
 import TippyHeadless from '@tippyjs/react/headless';
 import { useState, useEffect, useRef, useContext } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCircleDown } from '@fortawesome/free-regular-svg-icons';
-import { faArrowUpRightFromSquare, faFolderOpen, faHouse, faMagnifyingGlass, fas } from '@fortawesome/free-solid-svg-icons';
+import {
+    faArrowUpRightFromSquare,
+    faFolderOpen,
+    faHouse,
+    faMagnifyingGlass,
+    fas,
+} from '@fortawesome/free-solid-svg-icons';
 import { assets } from '@/assets/assets';
 import config from '@/configs';
 import { useTranslation } from 'react-i18next';
+import Search from '@/pages/Search';
 
 function Header() {
     const inputRef = useRef(null);
@@ -19,6 +26,7 @@ function Header() {
     const [targetUser, setTargetUser] = useState(false);
     const [hovering, setHovering] = useState(false);
     const { t } = useTranslation();
+    const [searchTerm, setSearchTerm] = useState('');
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
         if (storedUsername) {
@@ -29,14 +37,18 @@ function Header() {
     }, []);
 
     const handleFocus = () => {
-        setIsFocused(true);
-        inputRef.current.focus();
+        if (inputRef.current) inputRef.current.focus();
     };
 
     const handleBlur = () => {
-        setIsFocused(false);
+        if (inputRef.current) inputRef.current.blur();
     };
 
+    const handleSearch = (e) => {
+        if (e.key === 'Enter' && searchTerm.trim() !== '') {
+            navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
+        }
+    };
     const handleLogout = () => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('username');
@@ -80,9 +92,12 @@ function Header() {
                                 ref={inputRef}
                                 className="bg-transparent w-full h-full focus:outline-none"
                                 type="text"
-                                placeholder={t('header.input')}
+                                placeholder="Nhập tên bài hát..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                                 onFocus={handleFocus}
                                 onBlur={handleBlur}
+                                onKeyDown={handleSearch}
                             />
                             <div className="absolute right-[60px] h-[24px] w-[1px] bg-gray-500"></div>
                             <Tippy content="Duyệt tìm">
