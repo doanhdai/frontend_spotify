@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,7 +12,7 @@ import config from '@/configs';
 
 function Signup() {
     const [showPassword, setShowPassword] = useState(false);
-    const url = 'http://localhost:8000';
+    const navigate = useNavigate();
 
     useEffect(() => {
         document.title = 'Đăng ký - Spotify';
@@ -38,15 +38,15 @@ function Signup() {
         onSubmit: async (values) => {
             console.log('Giá trị nhập vào:', values);
             try {
-                const response = await axios.post(`${url}/api/users/register/`, values);
+                const response = await axios.post(`${import.meta.env.VITE_REACT_API}/users/register/`, values);
                 if (response.status === 201) {
                     // Kiểm tra status thành công
                     toast.success('Đăng ký thành công');
-                    setUser(true);
                     localStorage.setItem('access_token', response.data.access);
                     localStorage.setItem('refresh_token', response.data.refresh);
                     formik.resetForm();
-                    window.location.href = '/login';
+                    navigate("/login")
+                    
                 }
             } catch (error) {
                 console.error('Lỗi khi gửi dữ liệu lên server:', error);

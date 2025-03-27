@@ -8,15 +8,16 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { assets } from '@/assets/assets';
 import config from '@/configs';
 import Language from '@/layouts/components/Language/language';
+import { useDispatch } from 'react-redux';
+import { login } from '@/redux/Reducer/authSlice';
+import { loginUser } from '@/service/apiService';
 
-function Login() {
+function Login({ setIsLoggedIn }) {
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-
-    const url = 'http://localhost:8000';
 
     useEffect(() => {
         document.title = 'Spotify - Đăng nhập';
@@ -28,30 +29,19 @@ function Login() {
 
     const handleLogin = async () => {
         try {
-            const user = {
-                email,
-                password,
-            };
-            const response = await axios.post(`${url}/api/users/login/`, user);
-            console.log(response.data);
+            const data = await loginUser({ email, password });
+            console.log(data)
+            if (data.access) {
+                localStorage.setItem('access_token', data.access);
+                localStorage.setItem('refresh_token', data.refresh);
+                localStorage.setItem('name_user', data.user.name);
+                localStorage.setItem('id_user', JSON.stringify(data.user.id));
 
-            if (response.status === 200) {  
-                const token = response.data.refresh;
-
-                if (token) {
-                    localStorage.setItem('authToken', token);
-                    localStorage.setItem('username', response.data.user.name);
-                    localStorage.setItem('userId', response.data.user.id);
-
-                    toast.success('Đăng nhập thành công');
-                    // setUser(true);
-                    window.location.href = '/';
-
-                } else {
-                    toast.error('Lỗi: Không tìm thấy token!');
-                }
+                dispatch(login(data.access));
+                toast.success('Đăng nhập thành công');
+                navigate('/');
             } else {
-                toast.error(response.data.error);
+                toast.error('Lỗi: Không tìm thấy token!');
             }
         } catch (error) {
             if (error.response && error.response.data && error.response.data.error) {

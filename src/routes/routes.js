@@ -14,24 +14,28 @@ import Login from '@/pages/Login';
 import Profile from '@/pages/Profile';
 import DisplayConcert from '@/components/DisplayConcert';
 import DisplayLikeSong from '@/components/DisplayLikeSong';
+import DisplayDetaiSong from '@/components/DisplayDetailSong';
+import DefaultLayout from '@/layouts/DefaultLayout';
 
 const publicRoutes = [
     { path: config.routes.home, component: Home },
     { path: config.routes.search, component: Search },
     { path: config.routes.concerts, component: Concerts },
     { path: config.routes.album + '/:id', component: Album },
-    { path: config.routes.artist + '/:id', component: Artist },
+    { path: config.routes.artist + '/:id', component: Artist},
     { path: config.routes.genre + '/:id', component: Genre },
     { path: config.routes.signup, component: Signup, layout: NoLayout },
     { path: config.routes.login, component: Login, layout: NoLayout },
-];
-
-const privateRoutes = [
     { path: config.routes.likedSongs, component: DisplayLikeSong },
     { path: config.routes.podcast + '/:id', component: Podcast },
     { path: config.routes.playlist + '/:id', component: PlayList },
     { path: config.routes.concerts + '/:id', component: DisplayConcert },
     { path: config.routes.user + '/:id', component: Profile },
+    { path: config.routes.detailSong + '/:id', component: DisplayDetaiSong},
+];
+
+const privateRoutes = [
+//...
 ];
 
 

@@ -1,47 +1,114 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { Link } from 'react-router-dom';
 import { assets } from '@/assets/assets';
 import config from '@/configs';
+import { useSelector, useDispatch } from 'react-redux';
+import { setPlayStatus, setVolume, playWithId, seekTo, previous, next } from '@/redux/Reducer/playerSlice';
+import { GoMute, GoUnmute } from 'react-icons/go';
 
 function Player() {
-    const [user, setUser] = useState(true);
+    const dispatch = useDispatch();
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const {
+        track,
+        playStatus,
+        time,
+        volume: reduxVolume,
+        currentIndex,
+        currentPlaylist,
+    } = useSelector((state) => state.player);
+    const seekBg = useRef();
+    const seekBar = useRef();
+    const [volume, setVolumeState] = useState(reduxVolume || 0.5);
+    const [isMuted, setIsMuted] = useState(false);
 
-    // Fake dữ liệu cho track
-    const [track, setTrack] = useState({
-        name: 'Shape of You',
-        artist: 'Ed Sheeran',
-        image: assets.default_track_image, // giả sử có một ảnh mặc định
-    });
+    useEffect(() => {
+        if (seekBar.current && time.totalTime.second >= 0 && time.totalTime.minute >= 0) {
+            const totalSeconds = time.totalTime.minute * 60 + time.totalTime.second;
+            const currentSeconds = time.currentTime.minute * 60 + time.currentTime.second;
+            const width = totalSeconds > 0 ? (currentSeconds / totalSeconds) * 100 : 0;
+            seekBar.current.style.width = `${width}%`;
+        }
+    }, [time]);
 
-    // Trạng thái phát nhạc
-    const [playStatus, setPlayStatus] = useState(false);
+    useEffect(() => {
+        if (seekBar.current) {
+            seekBar.current.style.width = '0%';
+        }
+    }, [track]);
 
-    // Thời gian giả lập
-    const [time, setTime] = useState({
-        currentTime: { minute: '01', second: '25' },
-        totalTime: { minute: '03', second: '45' },
-    });
+    const play = () => {
+        const audio = document.querySelector('audio');
+        if (audio) {
+            audio.play().then(() => dispatch(setPlayStatus(true)));
+        }
+    };
 
-    // Refs cho thanh tiến trình
-    const seekBg = useRef(null);
-    const seekBar = useRef(null);
+    const pause = () => {
+        const audio = document.querySelector('audio');
+        if (audio) {
+            audio.pause();
+            dispatch(setPlayStatus(false));
+        }
+    };
 
-    // Hàm xử lý điều khiển nhạc (fake)
-    const play = () => setPlayStatus(true);
-    const pause = () => setPlayStatus(false);
-    const previous = () => console.log('Previous track');
-    const next = () => console.log('Next track');
-    const seekSong = () => console.log('Seeking song...');
+    const handlePrevious = () => {
+        console.log('Previous called - currentIndex:', currentIndex, 'currentPlaylist:', currentPlaylist);
+        if (currentIndex <= 0) {
+            console.warn('No previous song available');
+            return;
+        }
+        dispatch(previous());
+    };
 
-    return user ? (
+    const handleNext = () => {
+        console.log('Next called - currentIndex:', currentIndex, 'currentPlaylist:', currentPlaylist);
+        if (currentIndex >= currentPlaylist.length - 1) {
+            console.warn('No next song available');
+            return;
+        }
+        dispatch(next());
+    };
+
+    const seekSong = (e) => {
+        const audio = document.querySelector('audio');
+        if (
+            !track ||
+            !audio ||
+            !seekBg.current ||
+            seekBg.current.offsetWidth <= 0 ||
+            isNaN(audio.duration)
+        ) {
+            console.warn('Cannot seek: Invalid state or audio duration');
+            return;
+        }
+        const newCurrentTime = (e.nativeEvent.offsetX / seekBg.current.offsetWidth) * audio.duration;
+        audio.currentTime = newCurrentTime;
+        dispatch(seekTo(newCurrentTime));
+    };
+
+    const handleVolumeChange = (e) => {
+        const newVolume = parseFloat(e.target.value);
+        setVolumeState(newVolume);
+        dispatch(setVolume(newVolume));
+        setIsMuted(newVolume === 0);
+    };
+
+    const handleMuteClick = () => {
+        const newVolume = isMuted ? 0.5 : 0;
+        setIsMuted(!isMuted);
+        setVolumeState(newVolume);
+        dispatch(setVolume(newVolume));
+    };
+    return track ? (
         <div className="h-[10%] bg-black flex justify-between items-center text-white px-4">
             <div className="hidden lg:flex items-center gap-4 w-64">
-                <img className="w-12" src={track.image} alt="Track Cover" />
+                <img className="w-12" src={track.hinh_anh} alt="Track Cover" />
                 <div>
-                    <p>{track.name}</p>
-                    <p className="text-[12px] text-[#b3b3b3]">{track.artist}</p>
+                    <p>{track.ten_bai_hat}</p>
+                    <p className="text-[12px] text-[#b3b3b3]">{track.ma_user?.name}</p>
                 </div>
             </div>
 
@@ -51,7 +118,12 @@ function Player() {
                         <img className="w-4 cursor-pointer" src={assets.shuffle_icon} alt="Shuffle" />
                     </Tippy>
                     <Tippy content="Trước">
-                        <img onClick={previous} className="w-4 cursor-pointer" src={assets.prev_icon} alt="Previous" />
+                        <img
+                            onClick={handlePrevious}
+                            className="w-4 cursor-pointer"
+                            src={assets.prev_icon}
+                            alt="Previous"
+                        />
                     </Tippy>
                     {playStatus ? (
                         <Tippy content="Tạm dừng">
@@ -63,7 +135,7 @@ function Player() {
                         </Tippy>
                     )}
                     <Tippy content="Tiếp">
-                        <img onClick={next} className="w-4 cursor-pointer" src={assets.next_icon} alt="Next" />
+                        <img onClick={handleNext} className="w-4 cursor-pointer" src={assets.next_icon} alt="Next" />
                     </Tippy>
                     <Tippy content="Lặp lại">
                         <img className="w-4 cursor-pointer" src={assets.loop_icon} alt="Loop" />
@@ -71,17 +143,28 @@ function Player() {
                 </div>
                 <div className="flex items-center gap-5">
                     <p>
-                        {time.currentTime.minute}:{time.currentTime.second}
+                        {time.currentTime.minute}:
+                        {time.currentTime.second < 10 ? `0${time.currentTime.second}` : time.currentTime.second}
                     </p>
                     <div
                         ref={seekBg}
                         onClick={seekSong}
                         className="w-[60vw] max-w-[500px] bg-gray-300 rounded-full cursor-pointer"
                     >
-                        <hr ref={seekBar} className="h-1 border-none w-0 bg-green-800 rounded-full" />
+                        <hr
+                            ref={seekBar}
+                            className="h-1 border-none bg-green-800 rounded-full"
+                            style={{
+                                width: `${
+                                    (time.currentTime.second / (time.totalTime.second + time.totalTime.minute * 60)) *
+                                    100
+                                }%`,
+                            }}
+                        />
                     </div>
                     <p>
-                        {time.totalTime.minute}:{time.totalTime.second}
+                        {time.totalTime.minute}:
+                        {time.totalTime.second < 10 ? `0${time.totalTime.second}` : time.totalTime.second}
                     </p>
                 </div>
             </div>
@@ -99,12 +182,37 @@ function Player() {
                 <Tippy content="Kết nối với một thiết bị">
                     <img className="w-4 cursor-pointer hover:scale-105" src={assets.speaker_icon} alt="Speaker" />
                 </Tippy>
-                <Tippy content="Âm lượng">
-                    <img className="w-4 cursor-pointer" src={assets.volume_icon} alt="Volume" />
-                </Tippy>
-                <div className="w-20 bg-slate-50 h-1 rounded"></div>
+                {isMuted ? <GoMute onClick={handleMuteClick} /> : <GoUnmute onClick={handleMuteClick} />}
+                <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={volume}
+                    onChange={handleVolumeChange}
+                    className="w-20 bg-white h-1 rounded"
+                />
                 <img className="w-4 cursor-pointer hover:scale-105" src={assets.zoom_icon} alt="Zoom" />
             </div>
+        </div>
+    ) : isLoggedIn ? (
+        <div className="h-[10%]">
+            <Link to='/'>
+                <div className="h-[90%] bg-gradient-custom-player flex justify-between items-center text-white px-4 mx-2">
+                    <div>
+                        <h1 className="text-[14px] font-bold">Xem trước Spotify</h1>
+                        <p className="font-semibold">
+                            Đăng ký Premium để nghe không giới hạn các bài hát với quảng cáo không thường xuyên.
+                        
+                        </p>
+                    </div>
+                    <div>
+                        <button className="mr-2 bg-white text-black px-7 py-3 rounded-full font-bold hover:scale-105 hover:bg-[#f0f0f0]">
+                            Khám Phá premium
+                        </button>
+                    </div>
+                </div>
+            </Link>
         </div>
     ) : (
         <div className="h-[10%]">

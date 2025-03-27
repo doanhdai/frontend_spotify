@@ -6,6 +6,8 @@ import Item from '@/components/Item';
 
 import { assets } from '@/assets/assets';
 import Footer from '@/layouts/components/Footer';
+import { useSelector } from 'react-redux';
+import { getAllArtist, getAllSongs } from '@/service/apiService';
 
 function Home() {
     const scrollHomeRef = useRef();
@@ -13,9 +15,11 @@ function Home() {
     const bgHomeHeader = useRef();
     const navigate = useNavigate();
     const [all, setAll] = useState(true);
+    const [artists, setArtists] = useState([]);
     const [music, setMusic] = useState(false);
     const [podcasts, setPodcasts] = useState(false);
-    const [user, setUser] = useState(true);
+    const [songs, setSongs] = useState([]);
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const handlerScroll = () => {
         if (scrollHomeRef.current.scrollTop > 0) {
             bgHomeHeader.current.style.background = '#21115f';
@@ -23,10 +27,34 @@ function Home() {
             bgHomeHeader.current.style.background = 'transparent';
         }
     };
+    const fetchArtists = async () => {
+        try {
+            const response = await getAllArtist();
+            setArtists(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.log('Lỗi khi tải dữ liệu nghệ sĩ!');
+            console.error(error);
+        }
+    };
+    const fetchAllSongs = async () => {
+        try {
+            const response = await getAllSongs();
+            setSongs(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.log('Lỗi khi tải dữ liệu bài hát!');
+            console.error(error);
+        }
+    };
+    useEffect(() => {
+        fetchArtists();
+        fetchAllSongs();
+    }, []);
 
     useEffect(() => {
         document.title = 'Spotify - Web Player: Music for everyone';
-        console.log(topRef);
+        // console.log(topRef);
     }, []);
     const playlistsData = [
         {
@@ -78,68 +106,17 @@ function Home() {
             desc: 'Giai điệu nhẹ nhàng từ guitar acoustic.',
         },
     ];
-    const artistsData = [
-        {
-            _id: '1',
-            image: 'https://source.unsplash.com/200x200/?singer',
-            name: 'Taylor Swift',
-            desc: 'Nữ ca sĩ, nhạc sĩ nổi tiếng với những bản hit pop.',
-        },
-        {
-            _id: '2',
-            image: 'https://source.unsplash.com/200x200/?rapper',
-            name: 'Drake',
-            desc: 'Rapper hàng đầu với nhiều bản hit trên bảng xếp hạng.',
-        },
-        {
-            _id: '3',
-            image: 'https://source.unsplash.com/200x200/?dj',
-            name: 'Marshmello',
-            desc: 'DJ nổi tiếng với phong cách EDM sôi động.',
-        },
-        {
-            _id: '4',
-            image: 'https://source.unsplash.com/200x200/?guitarist',
-            name: 'John Mayer',
-            desc: 'Nghệ sĩ guitar tài năng với chất nhạc trữ tình.',
-        },
-        {
-            _id: '5',
-            image: 'https://source.unsplash.com/200x200/?rockstar',
-            name: 'Freddie Mercury',
-            desc: 'Huyền thoại nhạc rock của ban nhạc Queen.',
-        },
-        {
-            _id: '6',
-            image: 'https://source.unsplash.com/200x200/?hiphop',
-            name: 'Kendrick Lamar',
-            desc: 'Một trong những rapper xuất sắc nhất hiện nay.',
-        },
-        {
-            _id: '7',
-            image: 'https://source.unsplash.com/200x200/?jazzsinger',
-            name: 'Norah Jones',
-            desc: 'Giọng ca jazz mượt mà và đầy cảm xúc.',
-        },
-        {
-            _id: '8',
-            image: 'https://source.unsplash.com/200x200/?popstar',
-            name: 'Ariana Grande',
-            desc: 'Ngôi sao nhạc pop với chất giọng ấn tượng.',
-        },
-    ];
-
     return (
         <>
             <div
                 ref={scrollHomeRef}
                 onScroll={handlerScroll}
                 className={`${
-                    user ? 'bg-gradient-custom-home' : 'bg-[#121212]'
+                    isLoggedIn ? 'bg-gradient-custom-home' : 'bg-[#121212]'
                 } w-[79%] h-[97.4%] rounded-xl my-2 mr-2 py-4 pt-0 overflow-hidden overflow-y-auto`}
             >
                 <div ref={topRef}></div>
-                {user ? (
+                {isLoggedIn ? (
                     <div
                         ref={bgHomeHeader}
                         className="flex items-center w-full gap-2 px-6 py-4 rounded-t-xl font-medium bg-transparent sticky top-0 z-10"
@@ -172,7 +149,7 @@ function Home() {
                         >
                             Âm nhạc
                         </p>
-                        <p
+                        {/* <p
                             className={`${
                                 podcasts
                                     ? 'bg-white text-black hover:bg-none'
@@ -186,11 +163,11 @@ function Home() {
                             }}
                         >
                             Podcasts
-                        </p>
+                        </p> */}
                     </div>
                 ) : null}
 
-                {user ? (
+                {isLoggedIn ? (
                     <div className="flex px-6 py-4">
                         <div className="flex items-center w-96  cursor-pointer" onClick={() => navigate('/likedSongs')}>
                             <img className="w-14 rounded-tl-[4px] rounded-bl-[4px]" src={assets.liked_songs} alt="" />
@@ -211,29 +188,53 @@ function Home() {
                     </div>
                 ) : null}
 
-                {user ? (
+                {isLoggedIn ? (
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
-                                Dành cho {localStorage.getItem('username')}
+                                Dành cho {localStorage.getItem('name_user')}
                             </h1>
-                            <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            {songs.length > 7 ? (
+                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            ) : null}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {playlistsData.slice(0, 7).map((item, index) => (
+                            {songs.slice(0, 7).map((item, index) => (
                                 <PlayList
                                     key={index}
-                                    id={item._id}
-                                    image={assets.img5}
-                                    name={item.name}
-                                    desc={item.desc}
+                                    id={item.id}
+                                    image={item.hinh_anh}
+                                    name={item.ten_bai_hat}
+                                    artist={item.ma_user.name}
                                 />
                             ))}
                         </div>
                     </div>
-                ) : null}
+                ) : (
+                    <div className="px-6 mb-4 mt-8">
+                        <div className="flex items-center justify-between text-white mb-2">
+                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
+                                Dành cho {localStorage.getItem('name_user')}
+                            </h1>
+                            {songs.length > 7 ? (
+                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            ) : null}
+                        </div>
+                        <div className="flex overflow-auto space-x-2 ml-[-6px]">
+                            {songs.slice(0, 7).map((item, index) => (
+                                <PlayList
+                                    key={index}
+                                    id={item.id}
+                                    image={item.hinh_anh}
+                                    name={item.ten_bai_hat}
+                                    artist={item.ma_user.name}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
 
-                {user ? (
+                {isLoggedIn ? (
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
@@ -258,30 +259,27 @@ function Home() {
                 <div className="px-6 mb-4 mt-8">
                     <div className="flex items-center justify-between text-white mb-2">
                         <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
-                            {user ? 'Nghệ sĩ yêu thích của bạn' : 'Nghệ sĩ phổ biến'}
+                            {isLoggedIn ? 'Nghệ sĩ yêu thích của bạn' : 'Nghệ sĩ phổ biến'}
                         </h1>
-                        <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                        {/* <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p> */}
+                        {artists.length > 7 ? (
+                            <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                        ) : null}
                     </div>
                     <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                        {user
-                            ? artistsData
+                        {isLoggedIn
+                            ? artists
+                                  .slice(0, 7)
+                                  .map((item, index) => (
+                                      <Artist key={index} id={item.id} image={assets.img13} name={item.name} />
+                                  ))
+                            : artists
                                   .slice(0, 7)
                                   .map((item, index) => (
                                       <Artist
                                           key={index}
-                                          id={item._id}
-                                          image={assets.img6}
-                                          name={item.name}
-                                          desc={item.desc}
-                                      />
-                                  ))
-                            : artistsData
-                                  .slice(7, 14)
-                                  .map((item, index) => (
-                                      <Artist
-                                          key={index}
-                                          id={item._id}
-                                          image={item.image}
+                                          id={item.id}
+                                          image={assets.img7}
                                           name={item.name}
                                           desc={item.desc}
                                       />
@@ -289,7 +287,7 @@ function Home() {
                     </div>
                 </div>
 
-                {user ? (
+                {isLoggedIn ? (
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Đài phát Gợi ý</h1>
@@ -311,28 +309,31 @@ function Home() {
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Album phổ biến</h1>
-                            <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            {/* <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p> */}
+                            {playlistsData.length > 7 ? (
+                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            ) : null}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {albumsData.map((item, index) => (
+                            {playlistsData.map((item, index) => (
                                 <Item key={index} id={item._id} image={item.image} name={item.name} desc={item.desc} />
                             ))}
                         </div>
                     </div>
                 )}
 
-                {user ? null : (
+                {isLoggedIn ? null : (
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Radio phổ biến</h1>
                             <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {playlistsData.slice(7, 14).map((item, index) => (
+                            {playlistsData.slice(0, 7).map((item, index) => (
                                 <PlayList
                                     key={index}
-                                    id={item._id}
-                                    image={item.image}
+                                    id={item.id}
+                                    image={assets.img14}
                                     name={item.name}
                                     desc={item.desc}
                                 />
@@ -347,5 +348,6 @@ function Home() {
 }
 
 export default Home;
+
 // TASK: Làm podcast ở trang home *
 // TASK: Thêm tính năng lưu vào thư viện, hiện đúng thư viện - CHƯA XONG
