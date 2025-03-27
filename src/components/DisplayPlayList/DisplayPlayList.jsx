@@ -7,7 +7,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaPlay } from 'react-icons/fa';
-import { IoMdPause } from 'react-icons/io';
+import { IoMdPause, IoMdMore } from 'react-icons/io';
 import {
     faArrowUpFromBracket,
     faArrowUpRightFromSquare,
@@ -24,7 +24,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { assets } from '@/assets/assets';
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
-import { getSongPlaylist } from '@/service/apiService';
+import { getSongPlaylist, removeSongFromPlaylist } from '@/service/apiService';
 import { setCurrentPlaylist, playWithId, setPlayStatus } from '@/redux/Reducer/playerSlice';
 
 function DisplayPlayList() {
@@ -35,7 +35,8 @@ function DisplayPlayList() {
     const [shortType, setShortType] = useState(false);
     const [target, setTarget] = useState(false);
     const [hovering, setHovering] = useState(false);
-    const [hoveredSongId, setHoveredSongId] = useState(null); // Theo dõi bài hát đang hover
+    const [hoveredSongId, setHoveredSongId] = useState(null);
+    const [menuSongId, setMenuSongId] = useState(null);
     const displayPlaylistRef = useRef();
     const location = useLocation();
     const isPlaylist = location.pathname.includes('playlist');
@@ -82,6 +83,17 @@ function DisplayPlayList() {
 
     const handlePause = () => {
         dispatch(setPlayStatus(false));
+    };
+
+    const handleRemoveSong = async (songId) => {
+        try {
+            await removeSongFromPlaylist({ ma_playlist: id, ma_bai_hat: songId }); 
+            console.log(id,"///", songId);
+            setPlaylistData(playlistData.filter((song) => song.id !== songId)); 
+            setMenuSongId(null);
+        } catch (error) {
+            console.error('Lỗi khi xóa bài hát khỏi playlist:', error);
+        }
     };
 
     return playlistData.length > 0 ? (
@@ -226,39 +238,45 @@ function DisplayPlayList() {
                     </TippyHeadless>
                 </div>
             </div>
+
+            {/* Tiêu đề cột */}
             {shortType ? (
-                <div className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr] px-6 mt-10 mb-4 text-[#a7a7a7]">
+                <div className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr_0.2fr] px-6 mt-10 mb-4 text-[#a7a7a7]">
                     <p className="font-semibold">
                         <b className="mr-4">#</b>Tiêu đề
                     </p>
                     <p className="font-semibold">Nghệ sĩ</p>
                     <p className="font-semibold">Album</p>
                     <img className="m-auto w-4" src={assets.clock_icon} alt="" />
+                    <span></span> 
                 </div>
             ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr] px-6 mt-10 mb-4 text-[#a7a7a7]">
+                <div className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr_0.2fr] px-6 mt-10 mb-4 text-[#a7a7a7]">
                     <p className="font-semibold">
                         <b className="mr-4">#</b>Tiêu đề
                     </p>
                     <p className="font-semibold">Album</p>
                     <img className="m-auto w-4" src={assets.clock_icon} alt="" />
+                    <span></span> 
                 </div>
             )}
             <hr className="mt-[-8px] mb-4 mx-6" />
+
+            {/* Danh sách bài hát */}
             {playlistData.map((item, index) =>
                 shortType ? (
                     <div
                         key={index}
-                        onClick={() => navigate(config.routes.detailSong + `/${item.id}`)} // Điều hướng khi click ngoài icon
-                        onMouseEnter={() => setHoveredSongId(item.id)} // Hover vào bài hát
-                        onMouseLeave={() => setHoveredSongId(null)} // Rời hover
-                        className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
+                        onClick={() => navigate(config.routes.detailSong + `/${item.id}`)}
+                        onMouseEnter={() => setHoveredSongId(item.id)}
+                        onMouseLeave={() => setHoveredSongId(null)}
+                        className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr_0.2fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
                     >
                         <div className="flex items-center">
                             <div
                                 className="mr-4 w-5 h-5 flex items-center justify-center"
                                 onClick={(e) => {
-                                    e.stopPropagation(); // Ngăn điều hướng khi click icon
+                                    e.stopPropagation();
                                     if (playStatus && track?.id === item.id) {
                                         handlePause();
                                     } else {
@@ -289,20 +307,56 @@ function DisplayPlayList() {
                         <div className="text-center">
                             <p>4:12</p>
                         </div>
+                        <div className="text-center">
+                            {hoveredSongId === item.id && (
+                                <TippyHeadless
+                                    interactive
+                                    visible={menuSongId === item.id}
+                                    placement="bottom-end"
+                                    render={(attrs) => (
+                                        <div
+                                            className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
+                                            tabIndex="-1"
+                                            {...attrs}
+                                        >
+                                            <button
+                                                className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleRemoveSong(item.id);
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faCircleXmark} />
+                                                <span>Xóa khỏi playlist</span>
+                                            </button>
+                                        </div>
+                                    )}
+                                >
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setMenuSongId(menuSongId === item.id ? null : item.id);
+                                        }}
+                                    >
+                                        <IoMdMore size={20} className="text-white" />
+                                    </button>
+                                </TippyHeadless>
+                            )}
+                        </div>
                     </div>
                 ) : (
                     <div
                         key={index}
-                        onClick={() => navigate(config.routes.detailSong + `/${item.id}`)} 
-                        onMouseEnter={() => setHoveredSongId(item.id)} 
-                        onMouseLeave={() => setHoveredSongId(null)} 
-                        className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
+                        onClick={() => navigate(config.routes.detailSong + `/${item.id}`)}
+                        onMouseEnter={() => setHoveredSongId(item.id)}
+                        onMouseLeave={() => setHoveredSongId(null)}
+                        className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr_0.2fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
                     >
                         <div className="flex items-center">
                             <div
                                 className="mr-4 w-5 h-5 flex items-center justify-center"
                                 onClick={(e) => {
-                                    e.stopPropagation(); 
+                                    e.stopPropagation();
                                     if (playStatus && track?.id === item.id) {
                                         handlePause();
                                     } else {
@@ -331,6 +385,42 @@ function DisplayPlayList() {
                         </div>
                         <div className="text-center">
                             <p>4:12</p>
+                        </div>
+                        <div className="text-center">
+                            {hoveredSongId === item.id && (
+                                <TippyHeadless
+                                    interactive
+                                    visible={menuSongId === item.id}
+                                    placement="bottom-end"
+                                    render={(attrs) => (
+                                        <div
+                                            className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
+                                            tabIndex="-1"
+                                            {...attrs}
+                                        >
+                                            <button
+                                                className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleRemoveSong(item.id);
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faCircleXmark} />
+                                                <span>Xóa khỏi playlist</span>
+                                            </button>
+                                        </div>
+                                    )}
+                                >
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setMenuSongId(menuSongId === item.id ? null : item.id);
+                                        }}
+                                    >
+                                        <IoMdMore size={20} className="text-white" />
+                                    </button>
+                                </TippyHeadless>
+                            )}
                         </div>
                     </div>
                 ),
