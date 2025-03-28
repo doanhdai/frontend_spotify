@@ -32,3 +32,7 @@ export const getArtistSong =  async (idArtist) => apiClient.get(`/songs/artist/$
 export const getFavoriteSongs = async () => apiClient.get('songs/favorites/list/')
 export const addLikeSong = async (data) => apiClient.post(`/songs/favorites/`, data)
 export const removeLikeSong = async (idSong) => apiClient.delete(`/songs/favorites/${idSong}/`)
+
+
+export const getAlbum = async () => apiClient.get('/songs/album/all/')
+export const getAlbumById = async (idAlbum) => apiClient.get(`/songs/album/${idAlbum}/detail/`)

@@ -20,6 +20,7 @@ import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import { getFavoriteSongs, getAllPlaylist, removeLikeSong, addSongToPlaylist } from '@/service/apiService';
 import { setCurrentPlaylist, playWithId, setPlayStatus } from '@/redux/Reducer/playerSlice';
+import Footer from '@/layouts/components/Footer';
 
 function DisplayLikeSong() {
     const dispatch = useDispatch();
@@ -322,6 +323,7 @@ function DisplayLikeSong() {
                                     interactive
                                     visible={menuSongId === item.id}
                                     placement="bottom-end"
+                                    appendTo={() => document.body}
                                     render={(attrs) => (
                                         <div
                                             className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
@@ -342,19 +344,20 @@ function DisplayLikeSong() {
                                             <TippyHeadless
                                                 interactive
                                                 placement="left"
+                                                appendTo={() => document.body}
                                                 render={(subAttrs) => (
                                                     <div
-                                                        className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
+                                                        className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl min-w-[200px]"
                                                         tabIndex="-1"
                                                         {...subAttrs}
                                                     >
                                                         {playlists.map((playlist) => (
                                                             <button
-                                                                key={playlist.id}
+                                                                key={playlist.ma_playlist}
                                                                 className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
-                                                                    handleAddToPlaylist(item.id, playlist.id);
+                                                                    handleAddToPlaylist(item.id, playlist.ma_playlist);
                                                                     setMenuSongId(null);
                                                                 }}
                                                             >
@@ -432,6 +435,7 @@ function DisplayLikeSong() {
                                     interactive
                                     visible={menuSongId === item.id}
                                     placement="bottom-end"
+                                    appendTo={() => document.body}
                                     render={(attrs) => (
                                         <div
                                             className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
@@ -452,9 +456,10 @@ function DisplayLikeSong() {
                                             <TippyHeadless
                                                 interactive
                                                 placement="left"
+                                                appendTo={() => document.body}
                                                 render={(subAttrs) => (
                                                     <div
-                                                        className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
+                                                        className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl min-w-[200px]"
                                                         tabIndex="-1"
                                                         {...subAttrs}
                                                     >
@@ -496,7 +501,9 @@ function DisplayLikeSong() {
                     </div>
                 ),
             )}
+            <Footer />
         </div>
+
     ) : null;
 }
 

@@ -3,6 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 
 function Footer() {
+    const socialIcons = [
+        { icon: faInstagram, href: 'https://www.instagram.com/spotify' },
+        { icon: faTwitter, href: 'https://x.com/spotify' },
+        { icon: faFacebook, href: 'https://www.facebook.com/SpotifyVietnam/?brand_redir=6243987495' },
+    ];
+
     return (
         <div className="flex-col px-8 pt-20 ">
             <div className="flex">
@@ -74,25 +80,13 @@ function Footer() {
                     </div>
                 </div>
                 <div className="flex gap-4">
-                    <a href="https://www.instagram.com/spotify" target="_blank" rel="noopener noreferrer">
-                        <div className="flex justify-center items-center w-10 h-10 rounded-[50%] text-white bg-[#292929] cursor-pointer hover:bg-[#727272]">
-                            <FontAwesomeIcon icon={faInstagram} className="text-lg" />
-                        </div>
-                    </a>
-                    <a href="https://x.com/spotify" target="_blank" rel="noopener noreferrer">
-                        <div className="flex justify-center items-center w-10 h-10 rounded-[50%] text-white bg-[#292929] cursor-pointer hover:bg-[#727272]">
-                            <FontAwesomeIcon icon={faTwitter} className="text-lg" />
-                        </div>
-                    </a>
-                    <a
-                        href="https://www.facebook.com/SpotifyVietnam/?brand_redir=6243987495"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <div className="flex justify-center items-center w-10 h-10 rounded-[50%] text-white bg-[#292929] cursor-pointer hover:bg-[#727272]">
-                            <FontAwesomeIcon icon={faFacebook} className="text-lg" />
-                        </div>
-                    </a>
+                    {socialIcons.map((social, index) => (
+                        <a key={index} href={social.href} target="_blank" rel="noopener noreferrer">
+                            <div className="flex justify-center items-center w-10 h-10 rounded-[50%] text-white bg-[#292929] cursor-pointer hover:bg-[#727272]">
+                                <FontAwesomeIcon icon={social.icon} size="lg" className="text-white" />
+                            </div>
+                        </a>
+                    ))}
                 </div>
             </div>
             <hr className="mt-4 mb-9 border-0 border-t border-t-[1px] border-t-[#292929]" />

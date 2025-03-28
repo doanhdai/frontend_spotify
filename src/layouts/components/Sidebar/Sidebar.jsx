@@ -42,11 +42,26 @@ const Sidebar = () => {
         };
         fetchInitialPlaylists();
     }, [dispatch, playlists.length]);
-    console.log(playlists);
 
-    // Xử lý sự kiện chuột phải
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (contextMenu.visible) {
+                handleCloseContextMenu();
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [contextMenu.visible]);
+
+    // console.log(playlists);
+
     const handleContextMenu = (e, playlistId) => {
         e.preventDefault();
+        if (!playlistId) return;
+
         setContextMenu({
             visible: true,
             playlistId,
@@ -59,7 +74,6 @@ const Sidebar = () => {
         setContextMenu({ visible: false, playlistId: null, x: 0, y: 0 });
     };
 
-    // Xử lý xóa playlist
     const handleDeletePlaylist = async (id) => {
         try {
             await deletePlaylist(id);
@@ -153,35 +167,31 @@ const Sidebar = () => {
                         </div>
 
                         {/* Context Menu */}
-                        {contextMenu.visible && (
-                            <TippyHeadless
-                                interactive
-                                visible={contextMenu.visible}
-                                onClickOutside={handleCloseContextMenu}
-                                render={(attrs) => (
-                                    <div
-                                        className="bg-[#282828] text-white text-[14px] font-semibold rounded-md shadow-xl"
-                                        style={{ position: 'absolute', left: contextMenu.x, top: contextMenu.y }}
-                                        tabIndex="-1"
-                                        {...attrs}
-                                    >
-                                        <button
-                                            className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
-                                            onClick={() => handleEditPlaylist(contextMenu.playlistId)}
-                                        >
-                                            <FontAwesomeIcon icon={faEdit} />
-                                            <span>Chỉnh sửa playlist</span>
-                                        </button>
-                                        <button
-                                            className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
-                                            onClick={() => handleDeletePlaylist(contextMenu.playlistId)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                            <span>Xóa playlist</span>
-                                        </button>
-                                    </div>
-                                )}
-                            />
+                        {contextMenu.visible && contextMenu.playlistId !== null && (
+                            <div
+                                className="fixed bg-[#282828] text-white text-[14px] font-semibold rounded-md shadow-xl z-50"
+                                style={{
+                                    position: 'fixed',
+                                    left: contextMenu.x,
+                                    top: contextMenu.y,
+                                    minWidth: '200px',
+                                }}
+                            >
+                                <button
+                                    className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
+                                    onClick={() => handleEditPlaylist(contextMenu.playlistId)}
+                                >
+                                    <FontAwesomeIcon icon={faEdit} />
+                                    <span>Chỉnh sửa playlist</span>
+                                </button>
+                                <button
+                                    className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
+                                    onClick={() => handleDeletePlaylist(contextMenu.playlistId)}
+                                >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                    <span>Xóa playlist</span>
+                                </button>
+                            </div>
                         )}
                     </>
                 ) : (
@@ -277,7 +287,7 @@ const Sidebar = () => {
                         </div>
                     </div>
                 ) : (
-                    ""
+                    ''
                 )}
             </div>
         </div>

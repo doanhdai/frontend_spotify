@@ -26,6 +26,7 @@ import { assets } from '@/assets/assets';
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import { getSongPlaylist, removeSongFromPlaylist } from '@/service/apiService';
 import { setCurrentPlaylist, playWithId, setPlayStatus } from '@/redux/Reducer/playerSlice';
+import Footer from '@/layouts/components/Footer';
 
 function DisplayPlayList() {
     const { id } = useParams();
@@ -89,9 +90,9 @@ function DisplayPlayList() {
 
     const handleRemoveSong = async (songId) => {
         try {
-            await removeSongFromPlaylist({ ma_playlist: id, ma_bai_hat: songId }); 
-            console.log(id,"///", songId);
-            setPlaylistData(playlistData.filter((song) => song.id !== songId)); 
+            await removeSongFromPlaylist({ ma_playlist: id, ma_bai_hat: songId });
+            console.log(id, '///', songId);
+            setPlaylistData(playlistData.filter((song) => song.id !== songId));
             setMenuSongId(null);
         } catch (error) {
             console.error('Lỗi khi xóa bài hát khỏi playlist:', error);
@@ -113,11 +114,11 @@ function DisplayPlayList() {
                         {infoPlaylist.ten_playlist || 'Playlist của bạn #1'}
                     </h2>
                     <h4 className="text-[#b3b3b3] font-medium">{playlistData.desc || 'Danh sách phát của bạn'}</h4>
-                    <p className="text-[#b3b3b3] mt-1 font-medium text-[14px] flex">
+                    <div className="text-[#b3b3b3] mt-1 font-medium text-[14px] flex">
                         <img className="inline-block w-5 mr-2" src={assets.spotify_logo} alt="" />
                         {playlistData.length > 0 ? (
                             <div>
-                                <b className="text-white text-[14px]">  Spotify </b>• {playlistData.length} bài hát ,
+                                <b className="text-white text-[14px]"> Spotify </b>• {playlistData.length} bài hát ,
                                 khoảng 3 giờ 30 phút
                             </div>
                         ) : (
@@ -125,7 +126,7 @@ function DisplayPlayList() {
                                 <b className="text-white text-[14px]"> Spotify </b>• {playlistData.length} bài hát{' '}
                             </div>
                         )}
-                    </p>
+                    </div>
                 </div>
             </div>
             {playlistData.length > 0 ? (
@@ -395,8 +396,9 @@ function DisplayPlayList() {
                     <p className="text-white text-sm font-semibold">Không có bài hát nào trong playlist</p>
                 </div>
             )}
+            <Footer />
         </div>
-    ); 
+    );
 }
 
 export default DisplayPlayList;

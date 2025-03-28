@@ -21,11 +21,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
+import Footer from '@/layouts/components/Footer';
 
 const DisplayDetaiSong = () => {
     const dispatch = useDispatch();
     const { playStatus, track } = useSelector((state) => state.player);
-    const playlists = useSelector((state) => state.playlist.playlists); 
+    const playlists = useSelector((state) => state.playlist.playlists);
 
     const [songData, setSongData] = useState({});
     const [isLiked, setIsLiked] = useState(false);
@@ -191,7 +192,7 @@ const DisplayDetaiSong = () => {
                                                 <hr className="my-1 border-gray-600" />
                                                 {playlists.map((playlist) => (
                                                     <button
-                                                        key={playlist.id}
+                                                        key={playlist.ma_playlist}
                                                         className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
                                                         onClick={() => handleAddToPlaylist(playlist.ma_playlist)}
                                                     >
@@ -230,6 +231,7 @@ const DisplayDetaiSong = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };
