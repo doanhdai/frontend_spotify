@@ -100,10 +100,10 @@ function Header() {
                             <button className="bg-white text-black font-bold text-[14px] px-4 py-1.5 rounded-2xl hidden md:block hover:scale-105 hover:bg-[#f0f0f0]">
                                 {t('header.premium')}
                             </button>
-                            <button className="flex items-center bg-black text-white font-bold px-3 py-1.5 rounded-2xl text-[14px] cursor-pointer gap-2 hover:scale-105">
+                            {/* <button className="flex items-center bg-black text-white font-bold px-3 py-1.5 rounded-2xl text-[14px] cursor-pointer gap-2 hover:scale-105">
                                 <FontAwesomeIcon icon={faCircleDown} />
                                 {t('header.download')}
-                            </button>
+                            </button> */}
                             <Tippy content="Thông tin mới">
                                 <button className="text-[#b3b3b3] hover:text-white hover:scale-110 cursor-pointer">
                                     <FontAwesomeIcon icon={faBell} className="h-4 w-4" />

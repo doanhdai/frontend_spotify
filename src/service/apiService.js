@@ -11,6 +11,9 @@ export const refreshToken = async (refreshToken) => {
     return response.data;
 };
 
+export const createNewPlaylist = async () => apiClient.post('/songs/playlists/create/')
+export const deletePlaylist = async (id) => apiClient.delete(`/songs/playlists/delete/${id}/`)
+
 
 export const getAllArtist = async () => apiClient.get('/users/artist/getAll/');
 export const getAllPlaylist = async () => apiClient.get('/songs/playlists/get-all/');

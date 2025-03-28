@@ -1,35 +1,25 @@
 import Tippy from '@tippyjs/react';
+import TippyHeadless from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faGlobe, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faGlobe, faMagnifyingGlass, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { assets } from '@/assets/assets';
 import { Link, useNavigate } from 'react-router-dom';
 import config from '@/configs';
 import Language from '../Language/language';
-import { useSelector } from 'react-redux';
-import { use } from 'react';
-import { getAllPlaylist } from '@/service/apiService';
-import Item from '@/components/Item';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllPlaylist, deletePlaylist, createNewPlaylist } from '@/service/apiService';
+import { setPlaylists } from '@/redux/Reducer/playlistSlice';
 
 const Sidebar = () => {
+    const dispatch = useDispatch();
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const playlists = useSelector((state) => state.playlist.playlists);
     const headerRef = useRef();
     const navigate = useNavigate();
-    const [playlists, setPlaylists] = useState([]);
+    const [contextMenu, setContextMenu] = useState({ visible: false, playlistId: null, x: 0, y: 0 });
 
-    const GetAllPlaylist = async () => {
-        try {
-            const response = await getAllPlaylist();
-            setPlaylists(response.data);
-            console.log(response.data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    useEffect(() => {
-        GetAllPlaylist();
-    }, []);
     const handlerScroll = (e) => {
         const scrollTop = e.target.scrollTop;
         if (scrollTop > 0) {
@@ -39,8 +29,64 @@ const Sidebar = () => {
         }
     };
 
+    useEffect(() => {
+        const fetchInitialPlaylists = async () => {
+            if (playlists.length === 0) {
+                try {
+                    const response = await getAllPlaylist();
+                    dispatch(setPlaylists(response.data));
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        };
+        fetchInitialPlaylists();
+    }, [dispatch, playlists.length]);
+    console.log(playlists);
+
+    // Xử lý sự kiện chuột phải
+    const handleContextMenu = (e, playlistId) => {
+        e.preventDefault();
+        setContextMenu({
+            visible: true,
+            playlistId,
+            x: e.pageX,
+            y: e.pageY,
+        });
+    };
+
+    const handleCloseContextMenu = () => {
+        setContextMenu({ visible: false, playlistId: null, x: 0, y: 0 });
+    };
+
+    // Xử lý xóa playlist
+    const handleDeletePlaylist = async (id) => {
+        try {
+            await deletePlaylist(id);
+            const updatedPlaylists = playlists.filter((playlist) => playlist.ma_playlist !== id);
+            dispatch(setPlaylists(updatedPlaylists));
+            handleCloseContextMenu();
+        } catch (error) {
+            console.error('Lỗi khi xóa playlist:', error);
+            alert('Không thể xóa playlist.');
+        }
+    };
+    const handleCreatePlaylist = async () => {
+        try {
+            const response = await createNewPlaylist();
+            const newPlaylist = response.data;
+            dispatch(setPlaylists([...playlists, newPlaylist]));
+        } catch (error) {
+            console.error('Lỗi khi tạo playlist:', error);
+        }
+    };
+
+    const handleEditPlaylist = (id) => {
+        handleCloseContextMenu();
+    };
+
     return (
-        <div className="w-[21%] h-full] p-2 flex-col gap-2 text-white hidden lg:flex">
+        <div className="w-[21%] h-full p-2 flex-col gap-2 text-white hidden lg:flex">
             <div className="bg-[#121212] h-full rounded-xl">
                 <div ref={headerRef}>
                     <div className="p-4 pt-5 flex items-center justify-between mx-2 z-10">
@@ -49,8 +95,11 @@ const Sidebar = () => {
                             <p className="font-semibold">Thư viện</p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Tippy content="Tạo danh sách phát hoặc thư mục">
-                                <button className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#1f1f1f]">
+                            <Tippy content="Tạo danh sách phát">
+                                <button
+                                    className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#1f1f1f]"
+                                    onClick={handleCreatePlaylist}
+                                >
                                     <img className="w-4" src={assets.plus_icon} alt="" />
                                 </button>
                             </Tippy>
@@ -64,13 +113,13 @@ const Sidebar = () => {
                         </div>
                     </div>
                 </div>
-                {isLoggedIn ? (
+                {isLoggedIn && playlists.length > 0 ? (
                     <>
                         <div className="p-3 pt-2 flex items-center mx-1 text-[14px] gap-2 text-b">
-                            <button className="bg-[#2a2a2a] text-white px-4 py-1.5 rounded-2xl cursor-pointer font-semibold hover:bg-[#333333] transition-colors transition-colors duration-200">
+                            <button className="bg-[#2a2a2a] text-white px-4 py-1.5 rounded-2xl cursor-pointer font-semibold hover:bg-[#333333] transition-colors duration-200">
                                 Danh sách phát
                             </button>
-                            <button className="bg-[#2a2a2a] text-white px-4 py-1.5 rounded-2xl cursor-pointer font-semibold hover:bg-[#333333] transition-colors transition-colors duration-200">
+                            <button className="bg-[#2a2a2a] text-white px-4 py-1.5 rounded-2xl cursor-pointer font-semibold hover:bg-[#333333] transition-colors duration-200">
                                 Album
                             </button>
                         </div>
@@ -90,6 +139,7 @@ const Sidebar = () => {
                                     key={index}
                                     className="flex px-3 py-2 hover:bg-[#1f1f1f] rounded-lg"
                                     onClick={() => navigate(config.routes.playlist + `/${item.ma_playlist}`)}
+                                    onContextMenu={(e) => handleContextMenu(e, item.ma_playlist)} // Thêm sự kiện chuột phải
                                 >
                                     <img className="w-12 rounded mr-3" src={item.hinh_anh} alt="" />
                                     <div>
@@ -101,6 +151,38 @@ const Sidebar = () => {
                                 </div>
                             ))}
                         </div>
+
+                        {/* Context Menu */}
+                        {contextMenu.visible && (
+                            <TippyHeadless
+                                interactive
+                                visible={contextMenu.visible}
+                                onClickOutside={handleCloseContextMenu}
+                                render={(attrs) => (
+                                    <div
+                                        className="bg-[#282828] text-white text-[14px] font-semibold rounded-md shadow-xl"
+                                        style={{ position: 'absolute', left: contextMenu.x, top: contextMenu.y }}
+                                        tabIndex="-1"
+                                        {...attrs}
+                                    >
+                                        <button
+                                            className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
+                                            onClick={() => handleEditPlaylist(contextMenu.playlistId)}
+                                        >
+                                            <FontAwesomeIcon icon={faEdit} />
+                                            <span>Chỉnh sửa playlist</span>
+                                        </button>
+                                        <button
+                                            className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
+                                            onClick={() => handleDeletePlaylist(contextMenu.playlistId)}
+                                        >
+                                            <FontAwesomeIcon icon={faTrash} />
+                                            <span>Xóa playlist</span>
+                                        </button>
+                                    </div>
+                                )}
+                            />
+                        )}
                     </>
                 ) : (
                     <>
@@ -114,12 +196,21 @@ const Sidebar = () => {
                                     <p className="text-[14px] mb-6">Rất dễ! Chúng tôi sẽ giúp bạn</p>
                                 </div>
                                 <div>
-                                    <button
-                                        className="text-[14px] text-black bg-white px-4 py-1 rounded-full font-bold hover:scale-105 hover:bg-[#f0f0f0]"
-                                        onClick={() => navigate('/login')}
-                                    >
-                                        Tạo danh sách phát
-                                    </button>
+                                    {isLoggedIn ? (
+                                        <button
+                                            className="text-[14px] text-black bg-white px-4 py-1 rounded-full font-bold hover:scale-105 hover:bg-[#f0f0f0]"
+                                            onClick={handleCreatePlaylist}
+                                        >
+                                            Tạo danh sách phát
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="text-[14px] text-black bg-white px-4 py-1 rounded-full font-bold hover:scale-105 hover:bg-[#f0f0f0]"
+                                            onClick={() => navigate('/login')}
+                                        >
+                                            Tạo danh sách phát
+                                        </button>
+                                    )}
                                 </div>
                             </section>
                             <section className="px-6 py-4 bg-[#1f1f1f] rounded-lg">
@@ -142,7 +233,7 @@ const Sidebar = () => {
                         </div>
                     </>
                 )}
-                {isLoggedIn ? null : (
+                {playlists.length == 0 ? (
                     <div>
                         <div className="px-6 my-8">
                             <div className="flex flex-wrap">
@@ -185,6 +276,8 @@ const Sidebar = () => {
                             <Language />
                         </div>
                     </div>
+                ) : (
+                    ""
                 )}
             </div>
         </div>

@@ -192,7 +192,7 @@ function Home() {
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
-                                Dành cho {localStorage.getItem('name_user')}
+                                Bài hát thịnh hành
                             </h1>
                             {songs.length > 7 ? (
                                 <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
@@ -238,12 +238,16 @@ function Home() {
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
-                                Tuyển tập hàng đầu của bạn
+                                Tuyển tập nhạc hàng đầu của bạn
                             </h1>
-                            <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            {playlistsData.length > 7 ? (
+                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            ) : (
+                                ''
+                            )}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {playlistsData.slice(0, 5).map((item, index) => (
+                            {playlistsData.slice(0, 7).map((item, index) => (
                                 <PlayList
                                     key={index}
                                     id={item._id}
@@ -290,8 +294,10 @@ function Home() {
                 {isLoggedIn ? (
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
-                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Đài phát Gợi ý</h1>
-                            <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Album phổ biến</h1>
+                            {playlistsData.length > 7 ? (
+                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            ) : null}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
                             {playlistsData.slice(0, 6).map((item, index) => (
@@ -309,8 +315,7 @@ function Home() {
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Album phổ biến</h1>
-                            {/* <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p> */}
-                            {playlistsData.length > 7 ? (
+                            {playlistsData.length > 6 ? (
                                 <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
                             ) : null}
                         </div>

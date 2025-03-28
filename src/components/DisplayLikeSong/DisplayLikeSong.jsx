@@ -26,12 +26,12 @@ function DisplayLikeSong() {
     const { track, playStatus } = useSelector((state) => state.player);
 
     const [songLikesData, setSongLikesData] = useState([]);
-    const [playlists, setPlaylists] = useState([]); // Danh sách playlist
+    const [playlists, setPlaylists] = useState([]);
     const [target, setTarget] = useState(false);
     const [hovering, setHovering] = useState(false);
     const [shortType, setShortType] = useState(false);
     const [hoveredSongId, setHoveredSongId] = useState(null);
-    const [menuSongId, setMenuSongId] = useState(null); // ID bài hát đang mở menu
+    const [menuSongId, setMenuSongId] = useState(null);
     const displaySongLikeRef = useRef();
     const location = useLocation();
     const isSongLike = location.pathname.includes('likedSongs');
@@ -49,6 +49,7 @@ function DisplayLikeSong() {
         fetchSongs();
         fetchPlaylists();
     }, []);
+    console.log(playlists);
 
     const handlePlayPlaylist = () => {
         if (songLikesData.length > 0) {
@@ -68,7 +69,7 @@ function DisplayLikeSong() {
     const handleRemoveLikeSong = async (songId) => {
         try {
             await removeLikeSong(songId);
-            setSongLikesData(songLikesData.filter((song) => song.id !== songId)); // Cập nhật danh sách
+            setSongLikesData(songLikesData.filter((song) => song.id !== songId));
         } catch (error) {
             console.error('Failed to remove song from favorites:', error);
         }
@@ -76,13 +77,13 @@ function DisplayLikeSong() {
 
     const handleAddToPlaylist = async (songId, playlistId) => {
         try {
-            await addSongToPlaylist({ ma_playlist: playlistId, song_id: songId });
+            await addSongToPlaylist({ ma_playlist: playlistId, ma_bai_hat: songId });
             console.log('Added song to playlist!');
         } catch (error) {
             console.error('Failed to add song to playlist:', error);
         }
     };
-
+    // const bgColor = songLikesData;
     const bgColor = '#21115f';
 
     useEffect(() => {
@@ -340,7 +341,7 @@ function DisplayLikeSong() {
                                             </button>
                                             <TippyHeadless
                                                 interactive
-                                                placement="left-start"
+                                                placement="left"
                                                 render={(subAttrs) => (
                                                     <div
                                                         className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
@@ -357,7 +358,7 @@ function DisplayLikeSong() {
                                                                     setMenuSongId(null);
                                                                 }}
                                                             >
-                                                                <span>{playlist.name}</span>
+                                                                <span>{playlist.ten_playlist}</span>
                                                             </button>
                                                         ))}
                                                     </div>
@@ -450,7 +451,7 @@ function DisplayLikeSong() {
                                             </button>
                                             <TippyHeadless
                                                 interactive
-                                                placement="right-start"
+                                                placement="left"
                                                 render={(subAttrs) => (
                                                     <div
                                                         className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
@@ -459,15 +460,15 @@ function DisplayLikeSong() {
                                                     >
                                                         {playlists.map((playlist) => (
                                                             <button
-                                                                key={playlist.id}
+                                                                key={playlist.ma_playlist}
                                                                 className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
-                                                                    handleAddToPlaylist(item.id, playlist.id);
+                                                                    handleAddToPlaylist(item.id, playlist.ma_playlist);
                                                                     setMenuSongId(null);
                                                                 }}
                                                             >
-                                                                <span>{playlist.name}</span>
+                                                                <span>{playlist.ten_playlist}</span>
                                                             </button>
                                                         ))}
                                                     </div>
