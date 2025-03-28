@@ -15,8 +15,24 @@ const routes = {
     settings: '/settings',
     premium: '/premium',
     premium_register: '/premium/register',
-    form_create_album: '/create-album',
+    detailSong: '/song',
+
     admin_dashboard: '/admin/dashboard',
+    admin_user: '/admin/account/list_users',
+    admin_artist: '/admin/account/list_artists',
+    admin_album: '/admin/list_albums',
+    admin_song: '/admin/list_songs',
+    admin_playlist: '/admin/list_playlists',
+    admin_premium: '/admin/list_premium',
+    admin_premium_register: '/admin/list_premium_register',
+
+    artist_dashboard: '/artist/dashboard',
+    artist_song: '/artist/list_songs',
+    artist_album: '/artist/list_albums',
+    artist_playlist: '/artist/list_playlists',
+    artist_createform: '/artist/create',
+    artist_listens: '/artist/listens',
+    artist_turnover: '/artist/turn_over',
 };
 
 export default routes;

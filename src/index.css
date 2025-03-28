@@ -5,7 +5,9 @@
 ::-webkit-scrollbar {
     display: none;
 }
-
+body {
+    color: white;
+}
 @layer utilities {
     .bg-gradient-custom-home {
         background: linear-gradient(#21115f, #121212);
@@ -19,3 +21,4 @@
         background: linear-gradient(#2a2a2a 0%, rgb(0, 0, 0) 100%);
     }
 }
+

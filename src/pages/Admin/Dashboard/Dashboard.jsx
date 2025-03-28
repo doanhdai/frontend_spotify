@@ -1,10 +1,10 @@
-import Dashboard from '@/components/Admin/Dashboard/index'
+import DisplayDashboard from '@/components/Admin/Dashboard/index'
 
-const DisplayDashboard = () => {
+const Dashboard = () => {
     return (
         <>
-            <Dashboard />
+            <DisplayDashboard />
         </>
     )
 }
-export default DisplayDashboard;
+export default Dashboard;

@@ -1,25 +1,28 @@
-import { useContext, useState } from 'react';
+import { useRef } from 'react';
+import { useSelector } from 'react-redux';
+
 import Header from '@/layouts/components/Header';
 import Sidebar from '@/layouts/components/Sidebar';
 import Player from '@/layouts/components/Player';
-import SidebarArtist from '@/layouts/components/SidebarArtist';
-import { useLocation } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 function DefaultLayout({ children }) {
-    const location = useLocation()
+    const track = useSelector((state) => state.player.track);
+    const audioRef = useRef();
+
+    console.log('Audio URL:', track?.audio);
 
     return (
-        <>
-            <div className="h-screen bg-black">
-                <Header />
-                <div className="flex h-[82%]">
-                    {location.pathname === "/create-album" ? <SidebarArtist /> : <Sidebar />}
-                    {children}
-                </div>
-                {/* <Player /> */}
-                {/* <audio ref={audioRef} src={track ? track.file : ''} preload="auto"></audio> */}
+        <div className="h-screen bg-black">
+            <Header />
+            <div className="flex h-[82%]">
+                <Sidebar />
+                {children}
             </div>
-        </>
+            {/* <Footer /> */}
+            <Player />
+            {/* <audio ref={audioRef} preload="auto" onError={(e) => console.error('Lỗi tải audio:', e)}></audio> */}
+        </div>
     );
 }
 
