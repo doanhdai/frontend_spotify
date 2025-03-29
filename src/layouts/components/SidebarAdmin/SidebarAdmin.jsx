@@ -38,6 +38,7 @@ const SidebarAdmin = () => {
                         <li><Link to={config.routes.admin_song} className="block p-2 hover:bg-[#2a2a2a] rounded">Bài hát</Link></li>
                         <li><Link to={config.routes.admin_album} className="block p-2 hover:bg-[#2a2a2a] rounded">Album</Link></li>
                         <li><Link to={config.routes.admin_playlist} className="block p-2 hover:bg-[#2a2a2a] rounded">Playlist</Link></li>
+                        <li><Link to={config.routes.admin_genre} className="block p-2 hover:bg-[#2a2a2a] rounded">Thể loại</Link></li>
                     </ul>
                 </li>
                 <li className='group'>

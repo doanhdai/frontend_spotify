@@ -25,6 +25,7 @@ const routes = {
     admin_playlist: '/admin/list_playlists',
     admin_premium: '/admin/list_premium',
     admin_premium_register: '/admin/list_premium_register',
+    admin_genre: '/admin/list_genres',
 
     artist_dashboard: '/artist/dashboard',
     artist_song: '/artist/list_songs',
@@ -33,6 +34,8 @@ const routes = {
     artist_createform: '/artist/create',
     artist_listens: '/artist/listens',
     artist_turnover: '/artist/turn_over',
+    artist_turnover: '/artist/list_genres',
+    
 };
 
 export default routes;

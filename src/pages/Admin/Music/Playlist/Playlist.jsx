@@ -1,4 +1,4 @@
-import DisplayPlaylist from '@/components/Admin/Playlist/index'
+import DisplayPlaylist from '@/components/Admin/Music/Playlist/index'
 
 const Playlist = () => {
     return (

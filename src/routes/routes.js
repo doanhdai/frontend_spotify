@@ -31,14 +31,14 @@ import DisplayDetaiSong from '@/components/DisplayDetailSong';
 /**
  * Admin routes
  */
-import DisplayUser from '@/pages/Admin/Account/User';
-import DisplayArtist from '@/pages/Admin/Account/Artist';
-import DisplayAdminPlayList from '@/pages/Admin/Playlist';
-import DisplaySong from '@/pages/Admin/Song';
-import DisplayAlbum from '@/pages/Admin/Album';
-import DisplayPlayList from '@/components/DisplayPlayList';
-import DisplayPremium from '@/pages/Admin/Premium';
-import DisplayPremiumRegister from '@/pages/Admin/PremiumRegister';
+import DisplayAdminUser from '@/pages/Admin/Account/User';
+import DisplayAdminArtist from '@/pages/Admin/Account/Artist';
+import DisplayAdminPlayList from '@/pages/Admin/Music/Playlist';
+import DisplayAdminSong from '@/pages/Admin/Music/Song';
+import DisplayAdminAlbum from '@/pages/Admin/Music/Album';
+import DisplayAdminGenre from '@/pages/Admin/Music/Genre';
+import DisplayAdminPremium from '@/pages/Admin/Premium';
+import DisplayAdminPremiumRegister from '@/pages/Admin/PremiumRegister';
 
 /**
  * Artist routes
@@ -69,13 +69,14 @@ const publicRoutes = [
     { path: config.routes.detailSong + '/:id', component: DisplayDetaiSong},
 
     { path: config.routes.admin_dashboard, component: Dashboard, layout: AdminLayout},
-    { path: config.routes.admin_user, component: DisplayUser, layout: AdminLayout},
-    { path: config.routes.admin_artist, component: DisplayArtist, layout: AdminLayout},
-    { path: config.routes.admin_album, component: DisplayAlbum, layout: AdminLayout},
-    { path: config.routes.admin_song, component: DisplaySong, layout: AdminLayout},
+    { path: config.routes.admin_user, component: DisplayAdminUser, layout: AdminLayout},
+    { path: config.routes.admin_artist, component: DisplayAdminArtist, layout: AdminLayout},
+    { path: config.routes.admin_album, component: DisplayAdminAlbum, layout: AdminLayout},
+    { path: config.routes.admin_song, component: DisplayAdminSong, layout: AdminLayout},
     { path: config.routes.admin_playlist, component: DisplayAdminPlayList, layout: AdminLayout},
-    { path: config.routes.admin_premium, component: DisplayPremium, layout: AdminLayout},
-    { path: config.routes.admin_premium_register, component: DisplayPremiumRegister, layout: AdminLayout},
+    { path: config.routes.admin_premium, component: DisplayAdminPremium, layout: AdminLayout},
+    { path: config.routes.admin_premium_register, component: DisplayAdminPremiumRegister, layout: AdminLayout},
+    { path: config.routes.admin_genre, component: DisplayAdminGenre, layout: AdminLayout},
 
     { path: config.routes.artist_dashboard, component: DisplayArtistDashboard, layout: ArtistLayout},
     { path: config.routes.artist_song, component: DisplayArtistSong, layout: ArtistLayout},

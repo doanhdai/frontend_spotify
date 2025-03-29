@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { getAll } from "@/service/apiService";
+
 const User = () => {
   return (
     <div className="w-full p-6 bg-gray-800">

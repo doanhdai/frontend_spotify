@@ -61,7 +61,9 @@ function DisplayArtist() {
     useEffect(() => {
         GetArtistSong();
     }, [id]);
+
     console.log(topSongs);
+    
     useEffect(() => {
         if (isArtist && displayArtistRef.current) {
             displayArtistRef.current.style.background = `linear-gradient(${bgColor}, #121212)`;

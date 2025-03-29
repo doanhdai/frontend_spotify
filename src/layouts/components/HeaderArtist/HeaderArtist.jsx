@@ -27,20 +27,20 @@ function HeaderArtist() {
     };
 
     return (
-        <header className="bg-gray-900 text-white shadow-md w-full h-16 flex items-center px-6 justify-between">
+        <header className="bg-white text-white shadow-md w-full h-16 flex items-center px-6 justify-between">
             {/* Logo */}
             <div className="flex items-center">
                 <Link to={config.routes.artist_dashboard}>
                     <img className="w-10 h-10" src={assets.spotify_logo} alt="Admin Logo" />
                 </Link>
-                <h1 className="ml-3 text-xl font-semibold">Artist Management</h1>
+                <h1 className="ml-3 text-xl text-black font-semibold">Artist Management</h1>
             </div>
             
             {/* Search Bar */}
             <div className="relative w-1/3">
                 <input
                     ref={inputRef}
-                    className="w-full bg-gray-800 text-white rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring focus:ring-blue-500"
+                    className="w-full bg-gray-100 text-black rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring focus:ring-blue-100"
                     type="text"
                     placeholder={t('header.search')}
                 />
@@ -50,7 +50,7 @@ function HeaderArtist() {
             {/* Icons & User Dropdown */}
             <div className="flex items-center gap-6">
                 <Tippy content={t('header.notifications')}>
-                    <button className="text-gray-300 hover:text-white">
+                    <button className="text-gray-300 hover:text-gray-800">
                         <FontAwesomeIcon icon={faBell} className="w-5 h-5" />
                     </button>
                 </Tippy>

@@ -11,7 +11,7 @@ import { getAllPlaylist } from '@/service/apiService';
 const SidebarArtist = () => {
 
     return (
-        <div className="w-[17.5%] h-[100%] bg-[#121212] p-4 text-white hidden lg:flex flex-col">
+        <div className="w-[17.5%] h-[100%] rounded-xl bg-black p-4 text-white hidden lg:flex flex-col">
             <ul className="space-y-2">
                 <li className="group">
                     <button className="flex items-center justify-between w-full p-3 rounded-lg bg-[#1f1f1f] hover:bg-[#333]">

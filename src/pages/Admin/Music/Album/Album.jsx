@@ -1,4 +1,4 @@
-import DisplayAlbum from '@/components/Admin/Album/index'
+import DisplayAlbum from '@/components/Admin/Music/Album/index'
 
 const Album = () => {
     return (

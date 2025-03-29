@@ -13,6 +13,7 @@ export const refreshToken = async (refreshToken) => {
 
 
 export const getAllArtist = async () => apiClient.get('/users/artist/getAll/');
+export const getAll = async () => apiClient.get('/users/artist/getAll/');
 export const getAllPlaylist = async () => apiClient.get('/songs/playlists/get-all/');
 export const getAllSongs = async () => apiClient.get('/songs/all/');
 export const getSongById = async (id) => apiClient.get(`/songs/detail/${id}/`);

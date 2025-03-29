@@ -1,4 +1,4 @@
-import DisplaySong from '@/components/Admin/Song/index'
+import DisplaySong from '@/components/Admin/Music/Song/index'
 
 const Song = () => {
     return (

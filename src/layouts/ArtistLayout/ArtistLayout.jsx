@@ -4,7 +4,7 @@ import SidebarArtist from '@/layouts/components/SidebarArtist';
 
 const ArtistLayout = ({ children }) => {
     return (
-        <div className="h-screen bg-gray-800">
+        <div className="h-screen bg-white">
             <HeaderArtist />
             <div className="flex h-[82%]">
                 <SidebarArtist />
