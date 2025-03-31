@@ -11,13 +11,14 @@ import { useSelector } from 'react-redux';
 import { use } from 'react';
 import { getAllPlaylist } from '@/service/apiService';
 import Item from '@/components/Item';
+import { useTranslation } from 'react-i18next';
 
 const Sidebar = () => {
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const headerRef = useRef();
     const navigate = useNavigate();
     const [playlists, setPlaylists] = useState([]);
-
+    const { t } = useTranslation();
     const GetAllPlaylist = async () => {
         try {
             const response = await getAllPlaylist();
@@ -46,16 +47,16 @@ const Sidebar = () => {
                     <div className="p-4 pt-5 flex items-center justify-between mx-2 z-10">
                         <div className="flex items-center gap-3">
                             <img className="w-6" src={assets.stack_icon} alt="" />
-                            <p className="font-semibold">Thư viện</p>
+                            <p className="font-semibold">{t('library')}</p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Tippy content="Tạo danh sách phát hoặc thư mục">
+                            <Tippy content={t('create_playlist_or_folder')}>
                                 <button className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#1f1f1f]">
                                     <img className="w-4" src={assets.plus_icon} alt="" />
                                 </button>
                             </Tippy>
                             {isLoggedIn ? (
-                                <Tippy content="Xem thêm">
+                                <Tippy content={t('see_more')}>
                                     <button className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#1f1f1f]">
                                         <img className="w-4" src={assets.arrow_icon} alt="" />
                                     </button>
@@ -68,10 +69,10 @@ const Sidebar = () => {
                     <>
                         <div className="p-3 pt-2 flex items-center mx-1 text-[14px] gap-2 text-b">
                             <button className="bg-[#2a2a2a] text-white px-4 py-1.5 rounded-2xl cursor-pointer font-semibold hover:bg-[#333333] transition-colors transition-colors duration-200">
-                                Danh sách phát
+                                {t('buttons.playlists')}
                             </button>
                             <button className="bg-[#2a2a2a] text-white px-4 py-1.5 rounded-2xl cursor-pointer font-semibold hover:bg-[#333333] transition-colors transition-colors duration-200">
-                                Album
+                                {t('buttons.albums')}
                             </button>
                         </div>
                         <div className="flex px-8 pl-5 justify-between mb-1">
@@ -79,7 +80,7 @@ const Sidebar = () => {
                                 <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4" />
                             </button>
                             <button className="flex items-center gap-2 text-[#b3b3b3] hover:text-white hover:scale-105">
-                                <span className="text-[14px] font-semibold">Gần đây</span>
+                                <span className="text-[14px] font-semibold">{t('buttons.recent')}</span>
                                 <FontAwesomeIcon icon={faBars} />
                             </button>
                         </div>
@@ -95,7 +96,7 @@ const Sidebar = () => {
                                     <div>
                                         <h5 className="text-white">{item.ten_playlist}</h5>
                                         <p className="line-clamp-1 text-[#b3b3b3] text-[14px]">
-                                            Danh mục phát • {localStorage.getItem('name_user')}
+                                            {t('playlist.category')} {localStorage.getItem('name_user')}
                                         </p>
                                     </div>
                                 </div>
@@ -110,31 +111,27 @@ const Sidebar = () => {
                         >
                             <section className="px-6 py-4 bg-[#1f1f1f] rounded-lg">
                                 <div>
-                                    <h1 className="text-white font-bold mb-2">Tạo danh sách phát đầu tiên của bạn</h1>
-                                    <p className="text-[14px] mb-6">Rất dễ! Chúng tôi sẽ giúp bạn</p>
+                                    <h1 className="text-white font-bold mb-2">{t('createPlaylistSection.title')}</h1>
+                                    <p className="text-[14px] mb-6">{t('createPlaylistSection.subtitle')}</p>
                                 </div>
                                 <div>
                                     <button
                                         className="text-[14px] text-black bg-white px-4 py-1 rounded-full font-bold hover:scale-105 hover:bg-[#f0f0f0]"
                                         onClick={() => navigate('/login')}
                                     >
-                                        Tạo danh sách phát
+                                        {t('buttons.createPlaylist')}
                                     </button>
                                 </div>
                             </section>
                             <section className="px-6 py-4 bg-[#1f1f1f] rounded-lg">
                                 <div>
-                                    <h1 className="text-white font-bold mb-2">
-                                        Hãy cùng tìm và theo dõi một số podcast
-                                    </h1>
-                                    <p className="text-[14px] mb-6">
-                                        Chúng tôi sẽ cập nhật cho bạn thông tin về các tập mới
-                                    </p>
+                                    <h1 className="text-white font-bold mb-2">{t('podcastSection.title')}</h1>
+                                    <p className="text-[14px] mb-6">{t('podcastSection.subtitle')}</p>
                                 </div>
                                 <div>
                                     <Link to={config.routes.genre + `/670655c188f507216de96d30`}>
                                         <button className="text-[14px] text-black bg-white px-4 py-1 rounded-full font-bold hover:scale-105 hover:bg-[#f0f0f0]">
-                                            Duyệt xem podcast
+                                            {t('buttons.browsePodcasts')}
                                         </button>
                                     </Link>
                                 </div>
@@ -148,37 +145,37 @@ const Sidebar = () => {
                             <div className="flex flex-wrap">
                                 <div className="mr-4 mb-2">
                                     <a href="" className="text-[11px] text-[#b3b3b3]">
-                                        Pháp lý
+                                        {t('footer.legal')}
                                     </a>
                                 </div>
                                 <div className="mr-4 mb-2">
                                     <a href="" className="text-[11px] text-[#b3b3b3]">
-                                        Trung tâm an toàn và quyền riêng tư
+                                        {t('footer.safetyCenter')}
                                     </a>
                                 </div>
                                 <div className="mr-4 mb-2">
                                     <a href="" className="text-[11px] text-[#b3b3b3]">
-                                        Chính sách quyền riêng tư
+                                        {t('footer.privacyPolicy')}
                                     </a>
                                 </div>
                                 <div className="mr-4 mb-2">
                                     <a href="" className="text-[11px] text-[#b3b3b3]">
-                                        Cookie
+                                        {t('footer.cookies')}
                                     </a>
                                 </div>
                                 <div className="mr-4 mb-2">
                                     <a href="" className="text-[11px] text-[#b3b3b3]">
-                                        Giới thiệu Quảng cáo
+                                        {t('footer.aboutAds')}
                                     </a>
                                 </div>
                                 <div className="mr-4 mb-2">
                                     <a href="" className="text-[11px] text-[#b3b3b3]">
-                                        Hỗ trợ tiếp cận
+                                        {t('footer.accessibility')}
                                     </a>
                                 </div>
                             </div>
                             <a href="" className="text-white text-[12px]">
-                                Cookie
+                                {t('footer.cookies')}
                             </a>
                         </div>
                         <div>

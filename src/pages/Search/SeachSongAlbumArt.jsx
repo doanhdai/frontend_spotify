@@ -1,143 +1,218 @@
-import React from 'react';
-import { assets } from '@/assets/assets';
-import { useEffect, useState } from 'react';
-const SeachSongAlbumArt = () => {
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { searchSongsByName } from '@/service/apiService';
+import { useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisH, faPlay, faPlus } from '@fortawesome/free-solid-svg-icons';
+
+const SearchSongAlbumArt = () => {
     const [activeCategory, setActiveCategory] = useState('All');
-
-    const fakeData = {
-        topResult: {
-            title: 'Xe Đạp',
-            artist: 'Thùy Chi',
-            image: assets.img6,
-        },
-        songs: [
-            { title: 'Xe Đạp', artist: 'Thùy Chi', duration: '4:45', image: assets.img6 },
-            { title: 'Tiếng chuông', artist: 'Minh Vương M4U, Thùy Chi', duration: '4:46', image: assets.img7 },
-            { title: 'Nơi này có anh', artist: 'Thùy Chi', duration: '4:44', image: assets.img6 },
-            { title: 'Lạc Trôi', artist: 'Hoaprox, Đặng Minh, CONTREKZ', duration: '4:12', image: assets.img7 },
-        ],
-        artists: [
-            { name: 'Baby Red aka Hung Xe Dap', image: assets.img6 },
-            { name: 'RPT MCK', image: assets.img7 },
-            { name: 'W/N', image: assets.img6 },
-            { name: 'Da LAB', image: assets.img7 },
-            { name: 'WEAN', image: assets.img13 },
-        ],
-        albums: [
-            { title: 'Đánh Đổi', year: '2023', artist: 'Obito, Shiki', image: assets.img6 },
-            { title: 'NGỰA Ô', year: '2024', artist: 'Dangrangto, TeuYungBoy, DONAL', image: assets.img7 },
-            { title: 'Slatt ON', year: '2022', artist: 'Hustlang Robber', image: assets.img6 },
-            { title: '99%', year: '2023', artist: 'RPT MCK', image: assets.img7 },
-            { title: 'Đánh Đổi', year: '2025', artist: 'Toann', image: assets.img13 },
-        ],
-    };
-
-    const categories = [
-        'All',
-        'Songs',
-        'Playlists',
-        'Artists',
-        'Albums',
-        'Podcasts & Shows',
-        'Profiles',
-        'Genres & Moods',
-    ];
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const searchQuery = searchParams.get('keyword') || '';
+    const [searchResults, setSearchResults] = useState([]);
+    const navigate = useNavigate();
+    const {
+        track,
+        playStatus,
+        time,
+        volume: reduxVolume,
+        currentIndex,
+        currentPlaylist,
+    } = useSelector((state) => state.player);
+    const seekBg = useRef();
+    const seekBar = useRef();
+    useEffect(() => {
+        if (seekBar.current && time.totalTime.second >= 0 && time.totalTime.minute >= 0) {
+            const totalSeconds = time.totalTime.minute * 60 + time.totalTime.second;
+            const currentSeconds = time.currentTime.minute * 60 + time.currentTime.second;
+            const width = totalSeconds > 0 ? (currentSeconds / totalSeconds) * 100 : 0;
+            seekBar.current.style.width = `${width}%`;
+        }
+    }, [time]);
 
     useEffect(() => {
         document.title = 'Spotify - Tìm kiếm';
-    }, []);
+        fetchData();
+    }, [searchQuery]);
+
+    const fetchData = async () => {
+        try {
+            let res = await searchSongsByName(searchQuery);
+
+            if (res && res.data) {
+                let resData = res.data;
+
+                const fetchDuration = async (audioUrl) => {
+                    return new Promise((resolve) => {
+                        const audio = new Audio(audioUrl);
+                        audio.addEventListener('loadedmetadata', () => {
+                            const duration = Math.floor(audio.duration); // Lấy thời gian bằng giây
+                            resolve(formatTime(duration));
+                        });
+                        audio.addEventListener('error', () => resolve('00:00')); // Nếu lỗi, trả về 00:00
+                    });
+                };
+
+                const formattedData = await Promise.all(
+                    resData.map(async (song) => {
+                        const duration = await fetchDuration(song.audio);
+                        return {
+                            id: song.id,
+                            title: song.ten_bai_hat,
+                            artist: song.ma_user.name,
+                            album: song.ma_album ? song.ma_album.ten_album : 'Unknown Album',
+                            genre: song.ma_the_loai?.ten_the_loai,
+                            image: song.hinh_anh,
+                            audio: song.audio,
+                            listens: song.luot_nghe,
+                            releaseDate: song.ngay_phat_hanh,
+                            duration, // Thêm thời gian bài hát
+                        };
+                    }),
+                );
+
+                if (formattedData.length === 0) {
+                    const allSongsRes = await searchSongsByName('');
+                    if (allSongsRes && allSongsRes.data) {
+                        setSearchResults(
+                            await Promise.all(
+                                allSongsRes.data.map(async (song) => {
+                                    const duration = await fetchDuration(song.audio);
+                                    return {
+                                        id: song.id,
+                                        title: song.ten_bai_hat,
+                                        artist: song.ma_user.name,
+                                        album: song.ma_album ? song.ma_album.ten_album : 'Unknown Album',
+                                        genre: song.ma_the_loai?.ten_the_loai,
+                                        image: song.hinh_anh,
+                                        audio: song.audio,
+                                        listens: song.luot_nghe,
+                                        releaseDate: song.ngay_phat_hanh,
+                                        duration,
+                                    };
+                                }),
+                            ),
+                        );
+                    }
+                } else {
+                    setSearchResults(formattedData);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching songs:', error);
+        }
+    };
+
+    // Hàm định dạng thời gian từ giây thành mm:ss
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const sec = seconds % 60;
+        return `${minutes}:${sec < 10 ? '0' : ''}${sec}`;
+    };
+
+    const topResult = searchResults.length > 0 ? searchResults[0] : null;
+    console.log(topResult);
     return (
-        <div>
-            <div className="ml-6 mt-4 mb-12">
-                {/* Thanh danh mục */}
-                <div className="flex gap-3 mb-6">
-                    {categories.map((category) => (
+        <div className="bg-[#121212] w-full h-full rounded-xl p-6 overflow-y-auto">
+            {/* Thanh danh mục */}
+            <div className="flex gap-3 mb-6">
+                {['All', 'Songs', 'Artists', 'Albums'].map((category) => (
+                    <button
+                        key={category}
+                        onClick={() => setActiveCategory(category)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 
+                        ${activeCategory === category ? 'bg-white text-black' : 'bg-gray-800 hover:bg-gray-700'}`}
+                    >
+                        {category}
+                    </button>
+                ))}
+            </div>
+
+            {/* Kết quả hàng đầu */}
+            <div className="flex gap-8">
+                {/* Kết quả hàng đầu */}
+                <div className="flex-1 " style={{ flexBasis: '30%' }}>
+                    <h1 className="text-white text-2xl font-bold mb-4">Kết quả hàng đầu</h1>
+                    <div className="relative flex items-center gap-4 bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition duration-200 group cursor-pointer">
+                        <img src={topResult?.image} alt={topResult?.title} className="w-24 h-24 rounded-md" />
+                        <div>
+                            <h2 className="text-white text-xl font-bold group-hover:underline">{topResult?.title}</h2>
+                            <p className="text-gray-400">
+                                <span className="border border-gray-500 px-1 text-xs rounded">E</span> Bài hát •{' '}
+                                <span className="text-white">{topResult?.artist}</span>
+                            </p>
+                        </div>
                         <button
-                            key={category}
-                            onClick={() => setActiveCategory(category)}
-                            className={`px-4 py-2 text-black rounded-full text-sm font-medium 
-                    ${activeCategory === category ? 'bg-white text-black' : 'bg-gray-800 hover:bg-gray-700'}`}
+                            className="absolute right-4 bg-green-500 w-12 h-12 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110"
+                            onClick={() => {
+                                navigate(`/song/${topResult.id}`);
+                            }}
                         >
-                            {category}
+                            <FontAwesomeIcon icon={faPlay} className="text-black text-lg" />
                         </button>
-                    ))}
+                    </div>
                 </div>
 
-                {/* Top result */}
-                <div className="ml-2 mt-10 mb-12">
-                    <h1 className="text-white font-bold text-2xl ml-3 mb-2">Top result</h1>
-                    <div className="flex items-center gap-4 bg-gray-800 p-4 rounded-lg">
-                        <img
-                            src={fakeData.topResult.image}
-                            alt={fakeData.topResult.title}
-                            className="w-16 h-16 rounded-md"
-                        />
-                        <div>
-                            <h2 className="text-white font-bold text-xl">{fakeData.topResult.title}</h2>
-                            <p className="text-gray-400">{fakeData.topResult.artist}</p>
-                        </div>
-                    </div>
-
-                    {/* Songs */}
-                    <h2 className="text-white font-bold text-2xl ml-3 mt-6 mb-2">Songs</h2>
-                    <div>
-                        {fakeData.songs.map((song, index) => (
+                {/* Danh sách bài hát */}
+                <div className="flex-grow" style={{ flexBasis: '70%' }}>
+                    <h2 className="text-white text-2xl font-bold mb-4">Bài hát</h2>
+                    {searchResults.slice(0, 4).map(
+                        (
+                            song, // Chỉ lấy tối đa 4 bài hát
+                        ) => (
                             <div
-                                key={index}
-                                className="flex items-center gap-4 bg-gray-800 p-2 rounded-lg mb-2 transition-all duration-300 hover:bg-gray-700 hover:scale-[1]"
+                                key={song.id}
+                                onClick={() => {
+                                    navigate(`/song/${song.id}`);
+                                }}
+                                className="group flex items-center gap-4 bg-gray-800 p-3 rounded-lg mb-2 hover:bg-gray-700 transition duration-200 cursor-pointer"
                             >
                                 <img src={song.image} alt={song.title} className="w-12 h-12 rounded-md" />
                                 <div className="flex-grow">
-                                    <h3 className="text-white">{song.title}</h3>
+                                    <h3 className="text-white font-medium group-hover:underline">{song.title}</h3>
                                     <p className="text-gray-400 text-sm">{song.artist}</p>
                                 </div>
-                                <span className="text-gray-400 text-sm">{song.duration}</span>
+                                <span className="text-gray-400 group-hover:hidden">{song.duration}</span>
+                                <div className="hidden group-hover:flex items-center space-x-3">
+                                    <button className="text-white hover:text-green-500">
+                                        <FontAwesomeIcon icon={faPlay} />
+                                    </button>
+                                    <button className="text-white hover:text-gray-400">
+                                        <FontAwesomeIcon icon={faPlus} />
+                                    </button>
+                                    <button className="text-white hover:text-gray-400">
+                                        <FontAwesomeIcon icon={faEllipsisH} />
+                                    </button>
+                                </div>
                             </div>
-                        ))}
-                    </div>
-
-                    {/* Artists */}
-                    <h2 className="text-white font-bold text-2xl ml-3 mt-6 mb-2">Artists</h2>
-                    <div className="flex gap-4">
-                        {fakeData.artists.map((artist, index) => (
-                            <div
-                                key={index}
-                                className="flex flex-col items-center transition-transform duration-300 hover:scale-110 hover:text-green-400"
-                            >
-                                <img
-                                    src={artist.image}
-                                    alt={artist.name}
-                                    className="w-16 h-16 rounded-full transition-shadow duration-300 hover:shadow-lg hover:shadow-green-500/50"
-                                />
-                                <p className="text-white text-sm mt-2">{artist.name}</p>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Albums */}
-                    <h2 className="text-white font-bold text-2xl ml-3 mt-6 mb-2">Albums</h2>
-                    <div className="flex gap-4 hover:overflow-x-auto cursor-pointer">
-                        {fakeData.albums.map((album, index) => (
-                            <div
-                                key={index}
-                                className="flex flex-col items-center w-36 transition-transform duration-300 hover:scale-105 hover:bg-gray-900 p-3 rounded-lg"
-                            >
-                                <img
-                                    src={album.image}
-                                    alt={album.title}
-                                    className="w-36 h-36 rounded-md transition-shadow duration-300 hover:shadow-xl hover:shadow-gray-500/50"
-                                />
-                                <p className="text-white font-bold mt-2 text-center">{album.title}</p>
-                                <p className="text-gray-400 text-sm text-center">
-                                    {album.year} • {album.artist}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
+                        ),
+                    )}
                 </div>
+            </div>
+            {/* Danh sách nghệ sĩ */}
+            <h2 className="text-white text-2xl font-bold mt-6 mb-4">Nghệ sĩ</h2>
+            <div className="flex gap-4 overflow-x-auto pb-2">
+                {searchResults.slice(0, 6).map((artist) => (
+                    <div key={artist.id} className="flex flex-col items-center">
+                        <img src={artist.image} alt={artist.artist} className="w-20 h-20 rounded-full" />
+                        <p className="text-white text-sm mt-2">{artist.artist}</p>
+                    </div>
+                ))}
+            </div>
+
+            {/* Danh sách album */}
+            <h2 className="text-white text-2xl font-bold mt-6 mb-4">Album</h2>
+            <div className="flex gap-4 overflow-x-auto pb-2">
+                {searchResults.slice(0, 6).map((album) => (
+                    <div key={album.id} className="flex flex-col items-center">
+                        <img src={album.image} alt={album.album} className="w-20 h-20 rounded-md" />
+                        <p className="text-white text-sm mt-2">{album.album}</p>
+                    </div>
+                ))}
             </div>
         </div>
     );
 };
 
-export default SeachSongAlbumArt;
+export default SearchSongAlbumArt;

@@ -1,74 +1,96 @@
 import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 function Footer() {
+    const { t } = useTranslation();
     return (
         <div className="flex-col px-8 pt-20 ">
             <div className="flex">
                 <div className="flex flex-1">
                     <div className="w-48 h-44 mr-6 mb-8">
                         <ul>
-                            <li className="text-white font-bold">Công ty</li>
-                            <li className="mt-2">
-                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">Giới thiệu</Link>
-                            </li>
-                            <li className="mt-2">
-                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">Việc làm</Link>
-                            </li>
-                            <li className="mt-2">
-                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">For the Record</Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="w-48 h-44 mr-6 mb-8">
-                        <ul>
-                            <li className="text-white font-bold">Cộng đồng</li>
+                            <li className="text-white font-bold">{t('footer.company')}</li>
                             <li className="mt-2">
                                 <Link className="text-[#b3b3b3] hover:text-white hover:underline">
-                                    Dành cho các Nghệ sĩ
+                                    {t('footer.about')}
                                 </Link>
                             </li>
                             <li className="mt-2">
-                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">Nhà phát triển</Link>
-                            </li>
-                            <li className="mt-2">
-                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">Quảng cáo</Link>
-                            </li>
-                            <li className="mt-2">
-                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">Nhà đầu tư</Link>
-                            </li>
-                            <li className="mt-2">
-                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">Nhà cung cấp</Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="w-48 h-44 mr-6 mb-8">
-                        <ul>
-                            <li className="text-white font-bold">Liên kết hữu ích</li>
-                            <li className="mt-2">
-                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">Hỗ trợ</Link>
+                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">
+                                    {t('footer.jobs')}
+                                </Link>
                             </li>
                             <li className="mt-2">
                                 <Link className="text-[#b3b3b3] hover:text-white hover:underline">
-                                    Ứng dụng Di động Miễn phí
+                                    {t('footer.forTheRecord')}
                                 </Link>
                             </li>
                         </ul>
                     </div>
                     <div className="w-48 h-44 mr-6 mb-8">
                         <ul>
-                            <li className="text-white font-bold">Các gói của Spotify</li>
+                            <li className="text-white font-bold">{t('footer.community')}</li>
                             <li className="mt-2">
                                 <Link className="text-[#b3b3b3] hover:text-white hover:underline">
-                                    Premium Individual
+                                    {t('footer.forArtists')}
                                 </Link>
                             </li>
                             <li className="mt-2">
-                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">Premium Student</Link>
+                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">
+                                    {t('footer.developers')}
+                                </Link>
                             </li>
                             <li className="mt-2">
-                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">Spotify Free</Link>
+                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">
+                                    {t('footer.advertising')}
+                                </Link>
+                            </li>
+                            <li className="mt-2">
+                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">
+                                    {t('footer.investors')}
+                                </Link>
+                            </li>
+                            <li className="mt-2">
+                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">
+                                    {t('footer.vendors')}
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="w-48 h-44 mr-6 mb-8">
+                        <ul>
+                            <li className="text-white font-bold">{t('footer.usefulLinks')}</li>
+                            <li className="mt-2">
+                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">
+                                    {t('footer.support')}
+                                </Link>
+                            </li>
+                            <li className="mt-2">
+                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">
+                                    {t('footer.freeApp')}
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="w-48 h-44 mr-6 mb-8">
+                        <ul>
+                            <li className="text-white font-bold">{t('footer.spotifyPlans')}</li>
+                            <li className="mt-2">
+                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">
+                                    {t('footer.premiumIndividual')}
+                                </Link>
+                            </li>
+                            <li className="mt-2">
+                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">
+                                    {t('footer.premiumStudent')}
+                                </Link>
+                            </li>
+                            <li className="mt-2">
+                                <Link className="text-[#b3b3b3] hover:text-white hover:underline">
+                                    {t('footer.spotifyFree')}
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -102,32 +124,32 @@ function Footer() {
                         <ul className="flex gap-5 text-[#b3b3b3]">
                             <li>
                                 <a href="" className="hover:text-white">
-                                    Pháp lý
+                                    {t('footer.legal')}
                                 </a>
                             </li>
                             <li>
                                 <a href="" className="hover:text-white">
-                                    Trung tâm an toàn và quyền riêng tư
+                                    {t('footer.safetyCenter')}
                                 </a>
                             </li>
                             <li>
                                 <a href="" className="hover:text-white">
-                                    Chính sách quyền riêng tư
+                                    {t('footer.privacyPolicy')}
                                 </a>
                             </li>
                             <li>
                                 <a href="" className="hover:text-white">
-                                    Cookie
+                                    {t('footer.cookies')}
                                 </a>
                             </li>
                             <li>
                                 <a href="" className="hover:text-white">
-                                    Giới thiệu Quảng cáo
+                                    {t('footer.aboutAds')}
                                 </a>
                             </li>
                             <li>
                                 <a href="" className="hover:text-white">
-                                    Hỗ trợ tiếp cận
+                                    {t('footer.accessibility')}
                                 </a>
                             </li>
                         </ul>

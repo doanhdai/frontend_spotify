@@ -7,9 +7,11 @@ import config from '@/configs';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPlayStatus, setVolume, playWithId, seekTo, previous, next } from '@/redux/Reducer/playerSlice';
 import { GoMute, GoUnmute } from 'react-icons/go';
+import { useTranslation } from 'react-i18next';
 
 function Player() {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const {
         track,
@@ -74,13 +76,7 @@ function Player() {
 
     const seekSong = (e) => {
         const audio = document.querySelector('audio');
-        if (
-            !track ||
-            !audio ||
-            !seekBg.current ||
-            seekBg.current.offsetWidth <= 0 ||
-            isNaN(audio.duration)
-        ) {
+        if (!track || !audio || !seekBg.current || seekBg.current.offsetWidth <= 0 || isNaN(audio.duration)) {
             console.warn('Cannot seek: Invalid state or audio duration');
             return;
         }
@@ -114,10 +110,10 @@ function Player() {
 
             <div className="flex flex-col items-center gap-1 m-auto">
                 <div className="flex gap-4">
-                    <Tippy content="Bật tính năng Trộn bài">
+                    <Tippy content={t('controls.shuffle')}>
                         <img className="w-4 cursor-pointer" src={assets.shuffle_icon} alt="Shuffle" />
                     </Tippy>
-                    <Tippy content="Trước">
+                    <Tippy content={t('controls.previous')}>
                         <img
                             onClick={handlePrevious}
                             className="w-4 cursor-pointer"
@@ -126,18 +122,18 @@ function Player() {
                         />
                     </Tippy>
                     {playStatus ? (
-                        <Tippy content="Tạm dừng">
+                        <Tippy content={t('controls.pause')}>
                             <img onClick={pause} className="w-4 cursor-pointer" src={assets.pause_icon} alt="Pause" />
                         </Tippy>
                     ) : (
-                        <Tippy content="Phát">
+                        <Tippy content={t('controls.play')}>
                             <img onClick={play} className="w-4 cursor-pointer" src={assets.play_icon} alt="Play" />
                         </Tippy>
                     )}
-                    <Tippy content="Tiếp">
+                    <Tippy content={t('controls.next')}>
                         <img onClick={handleNext} className="w-4 cursor-pointer" src={assets.next_icon} alt="Next" />
                     </Tippy>
-                    <Tippy content="Lặp lại">
+                    <Tippy content={t('controls.loop')}>
                         <img className="w-4 cursor-pointer" src={assets.loop_icon} alt="Loop" />
                     </Tippy>
                 </div>
@@ -170,16 +166,16 @@ function Player() {
             </div>
 
             <div className="hidden lg:flex items-center gap-4 opacity-75">
-                <Tippy content="Chế độ xem Đang phát">
+                <Tippy content={t('queue.view')}>
                     <img className="w-4 cursor-pointer hover:scale-105" src={assets.plays_icon} alt="Playing View" />
                 </Tippy>
-                <Tippy content="Lời bài hát">
+                <Tippy content={t('queue.lyrics')}>
                     <img className="w-4 cursor-pointer hover:scale-105" src={assets.mic_icon} alt="Lyrics" />
                 </Tippy>
-                <Tippy content="Danh sách chờ">
+                <Tippy content={t('queue.queue')}>
                     <img className="w-4 cursor-pointer hover:scale-105" src={assets.queue_icon} alt="Queue" />
                 </Tippy>
-                <Tippy content="Kết nối với một thiết bị">
+                <Tippy content={t('queue.connect')}>
                     <img className="w-4 cursor-pointer hover:scale-105" src={assets.speaker_icon} alt="Speaker" />
                 </Tippy>
                 {isMuted ? <GoMute onClick={handleMuteClick} /> : <GoUnmute onClick={handleMuteClick} />}
@@ -197,18 +193,15 @@ function Player() {
         </div>
     ) : isLoggedIn ? (
         <div className="h-[10%]">
-            <Link to='/'>
+            <Link to="/">
                 <div className="h-[90%] bg-gradient-custom-player flex justify-between items-center text-white px-4 mx-2">
                     <div>
-                        <h1 className="text-[14px] font-bold">Xem trước Spotify</h1>
-                        <p className="font-semibold">
-                            Đăng ký Premium để nghe không giới hạn các bài hát với quảng cáo không thường xuyên.
-                        
-                        </p>
+                        <h1 className="text-[14px] font-bold">{t('preview.title')}</h1>
+                        <p className="font-semibold">{t('preview.premium.description')}</p>
                     </div>
                     <div>
                         <button className="mr-2 bg-white text-black px-7 py-3 rounded-full font-bold hover:scale-105 hover:bg-[#f0f0f0]">
-                            Khám Phá premium
+                            {t('preview.premium.button')}
                         </button>
                     </div>
                 </div>
@@ -219,15 +212,12 @@ function Player() {
             <Link to={config.routes.signup}>
                 <div className="h-[90%] bg-gradient-custom-player flex justify-between items-center text-white px-4 mx-2">
                     <div>
-                        <h1 className="text-[14px] font-bold">Xem trước Spotify</h1>
-                        <p className="font-semibold">
-                            Đăng ký để nghe không giới hạn các bài hát và podcast với quảng cáo không thường xuyên.
-                            Không cần thẻ tín dụng.
-                        </p>
+                        <h1 className="text-[14px] font-bold">{t('preview.title')}</h1>
+                        <p className="font-semibold">{t('preview.free.description')}</p>
                     </div>
                     <div>
                         <button className="mr-2 bg-white text-black px-7 py-3 rounded-full font-bold hover:scale-105 hover:bg-[#f0f0f0]">
-                            Đăng ký miễn phí
+                            {t('preview.free.button')}
                         </button>
                     </div>
                 </div>

@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux';
 
 function Header() {
     const inputRef = useRef(null);
+    const navigate = useNavigate();
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const [isFocused, setIsFocused] = useState(false);
     const [username, setUsername] = useState('');
@@ -45,11 +46,6 @@ function Header() {
         if (inputRef.current) inputRef.current.blur();
     };
 
-    const handleSearch = (e) => {
-        if (e.key === 'Enter' && searchTerm.trim() !== '') {
-            navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
-        }
-    };
     const handleLogout = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
@@ -73,38 +69,13 @@ function Header() {
                             </button>
                         </Tippy>
                     </Link>
-                    <Link to={config.routes.search} className="block w-full">
+                    <Link className="block w-full">
                         <div
                             className={`relative w-full h-[48px] rounded-full flex items-center gap-2 ${
                                 isFocused ? 'outline outline-white outline-2' : ''
-                            } bg-[#1f1f1f] text-[#b3b3b3]  transition-all duration-150 cursor-pointer hover:bg-[#2a2a2a]`}
+                            } bg-[#1f1f1f] text-[#b3b3b3] transition-all duration-150 cursor-pointer hover:bg-[#2a2a2a]`}
                         >
-                            <Tippy content="Tìm kiếm">
-                                <div className="flex">
-                                    <FontAwesomeIcon
-                                        icon={faMagnifyingGlass}
-                                        className="w-6 h-6 px-3 -hover:text-white transition-colors duration-200"
-                                        onClick={handleFocus}
-                                    />
-                                </div>
-                            </Tippy>
-                            <input
-                                ref={inputRef}
-                                className="bg-transparent w-full h-full focus:outline-none"
-                                type="text"
-                                placeholder="Nhập tên bài hát..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                onFocus={handleFocus}
-                                onBlur={handleBlur}
-                                onKeyDown={handleSearch}
-                            />
-                            <div className="absolute right-[60px] h-[24px] w-[1px] bg-gray-500"></div>
-                            <Tippy content="Duyệt tìm">
-                                <div className="px-5 text-[#b3b3b3] relative hover:text-white hover:scale-110">
-                                    <FontAwesomeIcon icon={faFolderOpen} />
-                                </div>
-                            </Tippy>
+                            <Search />
                         </div>
                     </Link>
                 </div>

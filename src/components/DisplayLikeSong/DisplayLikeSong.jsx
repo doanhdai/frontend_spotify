@@ -4,7 +4,7 @@ import config from '@/configs';
 import { assets } from '@/assets/assets';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaPlay } from 'react-icons/fa';
+import { FaPlay } from 'react-icons/fa6';
 import { IoMdMore, IoMdPause } from 'react-icons/io';
 import {
     faArrowUpFromBracket,
@@ -17,14 +17,12 @@ import {
     faEllipsis,
     faFolder,
     faList,
-    faPlay,
 } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import { getFavoriteSongs } from '@/service/apiService';
-import { setCurrentPlaylist, playWithId, setPlayStatus } from '@/redux/Reducer/playerSlice'; 
-
+import { setCurrentPlaylist, playWithId, setPlayStatus } from '@/redux/Reducer/playerSlice';
 
 function DisplayLikeSong() {
     const dispatch = useDispatch();
@@ -284,7 +282,7 @@ function DisplayLikeSong() {
                     <div
                         key={index}
                         onClick={() => navigate(config.routes.detailSong + `/${item.id}`)}
-                        onMouseEnter={() => setHoveredSongId(item.id)} 
+                        onMouseEnter={() => setHoveredSongId(item.id)}
                         onMouseLeave={() => setHoveredSongId(null)}
                         className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
                     >
@@ -292,7 +290,7 @@ function DisplayLikeSong() {
                             <div
                                 className="mr-4 w-5 h-5 flex items-center justify-center"
                                 onClick={(e) => {
-                                    e.stopPropagation(); 
+                                    e.stopPropagation();
                                     if (playStatus && track?.id === item.id) {
                                         handlePause();
                                     } else {
@@ -328,7 +326,7 @@ function DisplayLikeSong() {
                     <div
                         key={index}
                         onClick={() => navigate(config.routes.detailSong + `/${item.id}`)}
-                        onMouseEnter={() => setHoveredSongId(item.id)} 
+                        onMouseEnter={() => setHoveredSongId(item.id)}
                         onMouseLeave={() => setHoveredSongId(null)}
                         className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
                     >

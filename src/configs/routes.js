@@ -13,6 +13,8 @@ const routes = {
     user: '/user',
     likedSongs: '/likedSongs',
     detailSong: '/song',
+    category: '/category',
+    searchSongAlbumArt: '/searchSongAlbumArt',
 };
 
 export default routes;
