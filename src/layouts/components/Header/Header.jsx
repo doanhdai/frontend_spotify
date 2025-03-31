@@ -18,6 +18,7 @@ import config from '@/configs';
 import { useTranslation } from 'react-i18next';
 import Search from '@/pages/Search';
 import { useSelector } from 'react-redux';
+import Language from '../Language/Language';
 
 function Header() {
     const inputRef = useRef(null);
@@ -55,17 +56,20 @@ function Header() {
     return (
         <>
             <div className="w-full h-[8%] flex justify-between items-center font-semibold px-2 pt-2">
-                <div className="ml-5 flex-1">
+                <div className="ml-5 flex-1 flex items-center gap-2">
                     <Link to={config.routes.home}>
                         <img className="w-8 h-8" src={assets.spotify_logo} alt="" />
                     </Link>
+                    <div className="mt-8">
+                        <Language />
+                    </div>{' '}
                 </div>
 
                 <div className="flex flex-1 items-center gap-2 mr-24 focus:outline-white">
                     <Link to={config.routes.home}>
                         <Tippy content="Trang chủ">
                             <button className="text-black bg-[#1f1f1f] w-12 h-12 rounded-full flex justify-center items-center hover:scale-105">
-                                <FontAwesomeIcon icon={faHouse} className="w-6 h-6 text-white" />
+                                <FontAwesomeIcon icon={faHouse} size="lg" className="text-white" />
                             </button>
                         </Tippy>
                     </Link>
@@ -86,13 +90,13 @@ function Header() {
                             <button className="bg-white text-black font-bold text-[14px] px-4 py-1.5 rounded-2xl hidden md:block hover:scale-105 hover:bg-[#f0f0f0]">
                                 {t('header.premium')}
                             </button>
-                            <button className="flex items-center bg-black text-white font-bold px-3 py-1.5 rounded-2xl text-[14px] cursor-pointer gap-2 hover:scale-105">
+                            {/* <button className="flex items-center bg-black text-white font-bold px-3 py-1.5 rounded-2xl text-[14px] cursor-pointer gap-2 hover:scale-105">
                                 <FontAwesomeIcon icon={faCircleDown} />
                                 {t('header.download')}
-                            </button>
+                            </button> */}
                             <Tippy content="Thông tin mới">
                                 <button className="text-[#b3b3b3] hover:text-white hover:scale-110 cursor-pointer">
-                                    <FontAwesomeIcon icon={faBell} className="h-4 w-4" />
+                                    <FontAwesomeIcon icon={faBell} size="sm" />
                                 </button>
                             </Tippy>
                             <TippyHeadless
@@ -109,7 +113,7 @@ function Header() {
                                             <div className="min-w-[196px] h-56">
                                                 <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
                                                     <span> {t('header.title')}</span>
-                                                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                                                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} size="sm" />
                                                 </button>
                                                 <Link to={config.routes.user + `/${localStorage.getItem('userId')}`}>
                                                     <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
@@ -118,7 +122,7 @@ function Header() {
                                                 </Link>
                                                 <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
                                                     <span>{t('header.updatePremium')}</span>
-                                                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                                                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} size="sm" />
                                                 </button>
                                                 <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] border-b-[1px] rounded-b-[1px] cursor-pointer hover:bg-[#ffffff1a]">
                                                     <span>{t('header.setting')}</span>

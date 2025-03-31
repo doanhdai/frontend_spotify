@@ -4,6 +4,8 @@ import { searchSongsByName } from '@/service/apiService';
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faPlay, faPlus } from '@fortawesome/free-solid-svg-icons';
+import Footer from '@/layouts/components/Footer';
+import { useTranslation } from 'react-i18next';
 
 const SearchSongAlbumArt = () => {
     const [activeCategory, setActiveCategory] = useState('All');
@@ -11,6 +13,7 @@ const SearchSongAlbumArt = () => {
     const searchParams = new URLSearchParams(location.search);
     const searchQuery = searchParams.get('keyword') || '';
     const [searchResults, setSearchResults] = useState([]);
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const {
         track,
@@ -33,11 +36,20 @@ const SearchSongAlbumArt = () => {
 
     useEffect(() => {
         document.title = 'Spotify - Tìm kiếm';
+
+        if (searchQuery.trim() === '') {
+            navigate('/category');
+        }
         fetchData();
     }, [searchQuery]);
 
     const fetchData = async () => {
         try {
+            if (!searchQuery.trim()) {
+                setSearchResults([]);
+                return;
+            }
+
             let res = await searchSongsByName(searchQuery);
 
             if (res && res.data) {
@@ -133,14 +145,14 @@ const SearchSongAlbumArt = () => {
             <div className="flex gap-8">
                 {/* Kết quả hàng đầu */}
                 <div className="flex-1 " style={{ flexBasis: '30%' }}>
-                    <h1 className="text-white text-2xl font-bold mb-4">Kết quả hàng đầu</h1>
+                    <h1 className="text-white text-2xl font-bold mb-4">{t('search.topResult')}</h1>
                     <div className="relative flex items-center gap-4 bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition duration-200 group cursor-pointer">
                         <img src={topResult?.image} alt={topResult?.title} className="w-24 h-24 rounded-md" />
                         <div>
                             <h2 className="text-white text-xl font-bold group-hover:underline">{topResult?.title}</h2>
                             <p className="text-gray-400">
-                                <span className="border border-gray-500 px-1 text-xs rounded">E</span> Bài hát •{' '}
-                                <span className="text-white">{topResult?.artist}</span>
+                                <span className="border border-gray-500 px-1 text-xs rounded">{t('search.song')}</span>{' '}
+                                • <span className="text-white">{topResult?.artist}</span>
                             </p>
                         </div>
                         <button
@@ -156,7 +168,7 @@ const SearchSongAlbumArt = () => {
 
                 {/* Danh sách bài hát */}
                 <div className="flex-grow" style={{ flexBasis: '70%' }}>
-                    <h2 className="text-white text-2xl font-bold mb-4">Bài hát</h2>
+                    <h2 className="text-white text-2xl font-bold mb-4">{t('search.songs')}</h2>
                     {searchResults.slice(0, 4).map(
                         (
                             song, // Chỉ lấy tối đa 4 bài hát
@@ -191,26 +203,48 @@ const SearchSongAlbumArt = () => {
                 </div>
             </div>
             {/* Danh sách nghệ sĩ */}
-            <h2 className="text-white text-2xl font-bold mt-6 mb-4">Nghệ sĩ</h2>
-            <div className="flex gap-4 overflow-x-auto pb-2">
+            <h2 className="text-white text-2xl font-bold mt-6 mb-4">{t('search.artists')}</h2>
+            <div className="flex gap-10 overflow-x-auto pb-2 cursor-pointer">
                 {searchResults.slice(0, 6).map((artist) => (
-                    <div key={artist.id} className="flex flex-col items-center">
-                        <img src={artist.image} alt={artist.artist} className="w-20 h-20 rounded-full" />
-                        <p className="text-white text-sm mt-2">{artist.artist}</p>
+                    <div
+                        key={artist.id}
+                        className="flex flex-col  hover:bg-gray-700 transition duration-200 rounded-lg p-2"
+                    >
+                        <img src={artist.image} alt={artist.artist} className="w-40 h-40 rounded-full" />
+                        <div>
+                            <h3 className="text-white font-medium group-hover:underline">{artist.artist}</h3>
+                            <p className="text-white text-sm mt-2">{t('search.artist')}</p>
+                        </div>
                     </div>
                 ))}
             </div>
 
             {/* Danh sách album */}
-            <h2 className="text-white text-2xl font-bold mt-6 mb-4">Album</h2>
-            <div className="flex gap-4 overflow-x-auto pb-2">
-                {searchResults.slice(0, 6).map((album) => (
-                    <div key={album.id} className="flex flex-col items-center">
-                        <img src={album.image} alt={album.album} className="w-20 h-20 rounded-md" />
-                        <p className="text-white text-sm mt-2">{album.album}</p>
-                    </div>
-                ))}
+            <div>
+                <h2 className="text-white text-2xl font-bold mt-6 mb-4">{t('search.albums')}</h2>
+                <div className="flex gap-4 overflow-x-auto pb-2">
+                    {searchResults.slice(0, 6).map((album) => (
+                        <div
+                            key={album.id}
+                            className="relative bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition duration-200 group cursor-pointer w-45 h-45"
+                        >
+                            <img src={album.image} alt={album.album} className="w-full h-40 rounded-md object-cover" />
+                            <p className="text-white text-sm mt-2 font-semibold">{album.album}</p>
+                            <p className="text-gray-400 text-xs">
+                                {album.year} • {album.artist}
+                            </p>
+                            <button
+                                className="absolute bottom-4 right-4 bg-green-500 w-10 h-10 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110"
+                                onClick={() => navigate(`/album/${album.id}`)}
+                            >
+                                <FontAwesomeIcon icon={faPlay} className="text-black text-lg" />
+                            </button>
+                        </div>
+                    ))}
+                </div>
             </div>
+
+            <Footer />
         </div>
     );
 };

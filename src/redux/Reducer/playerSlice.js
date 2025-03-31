@@ -31,34 +31,40 @@ const playerSlice = createSlice({
             state.currentIndex = 0;
             state.track = action.payload[0] || null;
         },
-previous: (state) => {
-    if (state.currentPlaylist.length > 0 && state.currentIndex > 0) {
-        state.currentIndex -= 1;
-        state.track = state.currentPlaylist[state.currentIndex];
-        state.playStatus = true;
-        state.time = { currentTime: { second: 0, minute: 0 }, totalTime: { second: 0, minute: 0 } };
-    }
-},
-next: (state) => {
-    if (state.currentPlaylist.length > 0 && state.currentIndex < state.currentPlaylist.length - 1) {
-        state.currentIndex += 1;
-        state.track = state.currentPlaylist[state.currentIndex];
-        state.playStatus = true;
-        state.time = { currentTime: { second: 0, minute: 0 }, totalTime: { second: 0, minute: 0 } };
-    }
-},
+
+        previous: (state) => {
+            if (state.currentPlaylist.length > 0 && state.currentIndex > 0) {
+                state.currentIndex -= 1;
+                state.track = state.currentPlaylist[state.currentIndex];
+                state.playStatus = true;
+                state.time = { currentTime: { second: 0, minute: 0 }, totalTime: { second: 0, minute: 0 } };
+            }
+        },
+
+        next: (state) => {
+            if (state.currentPlaylist.length > 0 && state.currentIndex < state.currentPlaylist.length - 1) {
+                state.currentIndex += 1;
+                state.track = state.currentPlaylist[state.currentIndex];
+                state.playStatus = true;
+                state.time = { currentTime: { second: 0, minute: 0 }, totalTime: { second: 0, minute: 0 } };
+            }
+        },
+
         setTrack: (state, action) => {
             state.track = action.payload;
             const index = state.currentPlaylist.findIndex((song) => song.id === action.payload.id);
             state.currentIndex = index !== -1 ? index : 0;
             state.playStatus = true;
         },
+
         setPlayStatus: (state, action) => {
             state.playStatus = action.payload;
         },
+
         setTime: (state, action) => {
             state.time = action.payload;
         },
+
         seekTo: (state, action) => {
             const newTime = action.payload;
             state.time.currentTime = {
@@ -66,52 +72,54 @@ next: (state) => {
                 minute: Math.floor(newTime / 60),
             };
         },
+
         setVolume: (state, action) => {
             state.volume = action.payload;
         },
+        
         muteVolume: (state) => {
             state.volume = 0;
         },
-playWithId: (state, action) => {
-    const song = state.songsData.find((item) => item.id === action.payload);
-    if (song) {
-        state.track = song;
-        state.playStatus = true;
-        // Nếu currentPlaylist chưa được thiết lập, đồng bộ nó với songsData
-        if (state.currentPlaylist.length === 0) {
-            state.currentPlaylist = [...state.songsData];
-        }
-        const index = state.currentPlaylist.findIndex((item) => item.id === action.payload);
-        state.currentIndex = index !== -1 ? index : 0;
-    }
-},
-    },
-extraReducers: (builder) => {
-    builder
-        .addCase(fetchAllSongs.pending, (state) => {
-            state.status = 'loading';
-        })
-        .addCase(fetchAllSongs.fulfilled, (state, action) => {
-            state.status = 'succeeded';
-            state.songsData = action.payload;
-            state.currentPlaylist = action.payload; // Đồng bộ currentPlaylist với songsData
-            if (action.payload.length > 0 && !state.track) {
-                state.track = action.payload[0];
-                state.currentIndex = 0;
+        playWithId: (state, action) => {
+            const song = state.songsData.find((item) => item.id === action.payload);
+            if (song) {
+                state.track = song;
+                state.playStatus = true;
+                // Nếu currentPlaylist chưa được thiết lập, đồng bộ nó với songsData
+                if (state.currentPlaylist.length === 0) {
+                    state.currentPlaylist = [...state.songsData];
+                }
+                const index = state.currentPlaylist.findIndex((item) => item.id === action.payload);
+                state.currentIndex = index !== -1 ? index : 0;
             }
-        })
-        .addCase(fetchSongDetails.fulfilled, (state, action) => {
-            state.track = action.payload;
-            state.playStatus = true;
-            // Cập nhật currentIndex nếu bài hát đã tồn tại trong currentPlaylist
-            const index = state.currentPlaylist.findIndex((item) => item.id === action.payload.id);
-            state.currentIndex = index !== -1 ? index : 0;
-        })
-        .addCase(fetchAllSongs.rejected, (state, action) => {
-            state.status = 'failed';
-            state.error = action.error.message;
-        });
-},
+        },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchAllSongs.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(fetchAllSongs.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.songsData = action.payload;
+                state.currentPlaylist = action.payload; // Đồng bộ currentPlaylist với songsData
+                if (action.payload.length > 0 && !state.track) {
+                    state.track = action.payload[0];
+                    state.currentIndex = 0;
+                }
+            })
+            .addCase(fetchSongDetails.fulfilled, (state, action) => {
+                state.track = action.payload;
+                state.playStatus = true;
+                // Cập nhật currentIndex nếu bài hát đã tồn tại trong currentPlaylist
+                const index = state.currentPlaylist.findIndex((item) => item.id === action.payload.id);
+                state.currentIndex = index !== -1 ? index : 0;
+            })
+            .addCase(fetchAllSongs.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            });
+    },
 });
 
 export const {

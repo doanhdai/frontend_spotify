@@ -26,6 +26,7 @@ const Language = () => {
 
     const handleSelectLanguage = (langCode) => {
         dispatch(changeLanguage(langCode));
+        setIsOpen(false);
     };
 
     return (

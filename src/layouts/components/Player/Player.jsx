@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { assets } from '@/assets/assets';
 import config from '@/configs';
 import { useSelector, useDispatch } from 'react-redux';
@@ -21,6 +21,9 @@ function Player() {
         currentIndex,
         currentPlaylist,
     } = useSelector((state) => state.player);
+
+    const navigate = useNavigate();
+
     const seekBg = useRef();
     const seekBar = useRef();
     const [volume, setVolumeState] = useState(reduxVolume || 0.5);
@@ -100,7 +103,10 @@ function Player() {
     };
     return track ? (
         <div className="h-[10%] bg-black flex justify-between items-center text-white px-4">
-            <div className="hidden lg:flex items-center gap-4 w-64">
+            <div className="hidden lg:flex items-center gap-4 w-64"
+            onClick={() => {
+                navigate(`${config.routes.detailSong}/${track.id}`);
+            }}>
                 <img className="w-12" src={track.hinh_anh} alt="Track Cover" />
                 <div>
                     <p>{track.ten_bai_hat}</p>
