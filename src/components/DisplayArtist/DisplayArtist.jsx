@@ -32,7 +32,7 @@ function DisplayArtist() {
     const dispatch = useDispatch();
     const { track, playStatus } = useSelector((state) => state.player);
     const [artistData, setArtistData] = useState(null);
-    const [topSongs, setTopSongs] = useState([]); 
+    const [topSongs, setTopSongs] = useState([]);
     const [shortType, setShortType] = useState(false);
     const [target, setTarget] = useState(false);
     const [hovering, setHovering] = useState(false);
@@ -40,7 +40,7 @@ function DisplayArtist() {
     const displayArtistRef = useRef();
     const location = useLocation();
     const isArtist = location.pathname.includes('artist');
-    const bgColor =  '#4A90E2';
+    const bgColor = '#4A90E2';
     const navigate = useNavigate();
 
     const GetArtistSong = async () => {
@@ -225,114 +225,117 @@ function DisplayArtist() {
                 </div>
             </div>
             <h3 className="text-white text-2xl font-bold px-6 mt-6">Phổ biến</h3>
-            {shortType ? (
-                <div className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr] px-6 mt-4 mb-4 text-[#a7a7a7]">
-                    <p className="font-semibold">
-                        <b className="mr-4">#</b>Tiêu đề
-                    </p>
-                    {/* <p className="font-semibold">Nghệ sĩ</p> */}
-                    <p className="font-semibold">Album</p>
-                    <img className="m-auto w-4" src={assets.clock_icon} alt="" />
-                </div>
+            {topSongs.length > 0 ? (
+                <>
+                    {shortType ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr] px-6 mt-4 mb-4 text-[#a7a7a7]">
+                            <p className="font-semibold">
+                                <b className="mr-4">#</b>Tiêu đề
+                            </p>
+                            <p className="font-semibold">Album</p>
+                            <img className="m-auto w-4" src={assets.clock_icon} alt="" />
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr] px-6 mt-4 mb-4 text-[#a7a7a7]">
+                            <p className="font-semibold">
+                                <b className="mr-4">#</b>Tiêu đề
+                            </p>
+                            <p className="font-semibold">Album</p>
+                            <img className="m-auto w-4" src={assets.clock_icon} alt="" />
+                        </div>
+                    )}
+                    <hr className="mt-[-8px] mb-4 mx-6" />
+                    {topSongs.map((item, index) =>
+                        shortType ? (
+                            <div
+                                key={index}
+                                onClick={() => navigate(config.routes.detailSong + `/${item.id}`)}
+                                onMouseEnter={() => setHoveredSongId(item.id)}
+                                onMouseLeave={() => setHoveredSongId(null)}
+                                className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
+                            >
+                                <div className="flex items-center">
+                                    <div
+                                        className="mr-4 w-5 h-5 flex items-center justify-center"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (playStatus && track?.id === item.id) {
+                                                handlePause();
+                                            } else {
+                                                handlePlaySong(item.id);
+                                            }
+                                        }}
+                                    >
+                                        {hoveredSongId === item.id ? (
+                                            playStatus && track?.id === item.id ? (
+                                                <IoMdPause size={16} className="text-white" />
+                                            ) : (
+                                                <FaPlay size={14} className="text-white" />
+                                            )
+                                        ) : (
+                                            <b>{index + 1}</b>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <p className="text-white font-semibold">{item.ten_bai_hat}</p>
+                                    </div>
+                                </div>
+                                <div className="text-[15px] font-semibold">
+                                    <p>{item.albums}</p>
+                                </div>
+                                <div className="text-center">
+                                    <p>4:12</p>
+                                </div>
+                            </div>
+                        ) : (
+                            <div
+                                key={index}
+                                onClick={() => navigate(config.routes.detailSong + `/${item.id}`)}
+                                onMouseEnter={() => setHoveredSongId(item.id)}
+                                onMouseLeave={() => setHoveredSongId(null)}
+                                className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
+                            >
+                                <div className="flex items-center">
+                                    <div
+                                        className="mr-4 w-5 h-5 flex items-center justify-center"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (playStatus && track?.id === item.id) {
+                                                handlePause();
+                                            } else {
+                                                handlePlaySong(item.id);
+                                            }
+                                        }}
+                                    >
+                                        {hoveredSongId === item.id ? (
+                                            playStatus && track?.id === item.id ? (
+                                                <IoMdPause size={16} className="text-white" />
+                                            ) : (
+                                                <FaPlay size={14} className="text-white" />
+                                            )
+                                        ) : (
+                                            <b>{index + 1}</b>
+                                        )}
+                                    </div>
+                                    <img className="inline w-10 mr-5" src={item.hinh_anh} alt="" />
+                                    <div>
+                                        <p className="text-white font-semibold">{item.ten_bai_hat}</p>
+                                    </div>
+                                </div>
+                                <div className="text-[15px] font-semibold">
+                                    <p>{item.albums}</p>
+                                </div>
+                                <div className="text-center">
+                                    <p>4:12</p>
+                                </div>
+                            </div>
+                        ),
+                    )}
+                </>
             ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr] px-6 mt-4 mb-4 text-[#a7a7a7]">
-                    <p className="font-semibold">
-                        <b className="mr-4">#</b>Tiêu đề
-                    </p>
-                    <p className="font-semibold">Album</p>
-                    <img className="m-auto w-4" src={assets.clock_icon} alt="" />
+                <div className="flex justify-center items-center h-[200px]">
+                    <p className="text-white text-sm font-semibold">Nghệ sĩ này chưa có bài hát nào</p>
                 </div>
-            )}
-            <hr className="mt-[-8px] mb-4 mx-6" />
-            {topSongs.map((item, index) =>
-                shortType ? (
-                    <div
-                        key={index}
-                        onClick={() => navigate(config.routes.detailSong + `/${item.id}`)}
-                        onMouseEnter={() => setHoveredSongId(item.id)}
-                        onMouseLeave={() => setHoveredSongId(null)}
-                        className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
-                    >
-                        <div className="flex items-center">
-                            <div
-                                className="mr-4 w-5 h-5 flex items-center justify-center"
-                                onClick={(e) => {
-                                    e.stopPropagation(); // Ngăn điều hướng khi click icon
-                                    if (playStatus && track?.id === item.id) {
-                                        handlePause();
-                                    } else {
-                                        handlePlaySong(item.id);
-                                    }
-                                }}
-                            >
-                                {hoveredSongId === item.id ? (
-                                    playStatus && track?.id === item.id ? (
-                                        <IoMdPause size={16} className="text-white" />
-                                    ) : (
-                                        <FaPlay size={14} className="text-white" />
-                                    )
-                                ) : (
-                                    <b>{index + 1}</b>
-                                )}
-                            </div>
-                            <div>
-                                <p className="text-white font-semibold">{item.ten_bai_hat}</p>
-                            </div>
-                        </div>
-                        {/* <div className="text-[15px] font-semibold">
-                            <p>{item.ma_user?.name || artistData.name}</p>
-                        </div> */}
-                        <div className="text-[15px] font-semibold">
-                            <p>{item.albums}</p>
-                        </div>
-                        <div className="text-center">
-                            <p>4:12</p>
-                        </div>
-                    </div>
-                ) : (
-                    <div
-                        key={index}
-                        onClick={() => navigate(config.routes.detailSong + `/${item.id}`)} // Điều hướng khi click ngoài icon
-                        onMouseEnter={() => setHoveredSongId(item.id)} // Hover vào bài hát
-                        onMouseLeave={() => setHoveredSongId(null)} // Rời hover
-                        className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
-                    >
-                        <div className="flex items-center">
-                            <div
-                                className="mr-4 w-5 h-5 flex items-center justify-center"
-                                onClick={(e) => {
-                                    e.stopPropagation(); // Ngăn điều hướng khi click icon
-                                    if (playStatus && track?.id === item.id) {
-                                        handlePause();
-                                    } else {
-                                        handlePlaySong(item.id);
-                                    }
-                                }}
-                            >
-                                {hoveredSongId === item.id ? (
-                                    playStatus && track?.id === item.id ? (
-                                        <IoMdPause size={16} className="text-white" />
-                                    ) : (
-                                        <FaPlay size={14} className="text-white" />
-                                    )
-                                ) : (
-                                    <b>{index + 1}</b>
-                                )}
-                            </div>
-                            <img className="inline w-10 mr-5" src={item.hinh_anh} alt="" />
-                            <div>
-                                <p className="text-white font-semibold">{item.ten_bai_hat}</p>
-                                {/* <p className="text-[14px] font-semibold">{item.ma_user?.name || artistData.name}</p> */}
-                            </div>
-                        </div>
-                        <div className="text-[15px] font-semibold">
-                            <p>{item.albums}</p>
-                        </div>
-                        <div className="text-center">
-                            <p>4:12</p>
-                        </div>
-                    </div>
-                ),
             )}
             <Footer />
         </div>

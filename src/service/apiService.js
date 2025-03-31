@@ -1,4 +1,5 @@
 import apiClient from './api';
+import axios from 'axios';
 
 
 export const loginUser = async (data) => {
@@ -7,7 +8,7 @@ export const loginUser = async (data) => {
 };
 
 export const refreshToken = async (refreshToken) => {
-    const response = await apiClient.post('/auth/token/refresh/', { refresh: refreshToken });
+    const response = await axios.post(`${import.meta.env.VITE_REACT_API}/auth/token/refresh/`, { refresh: refreshToken });
     return response.data;
 };
 
@@ -36,3 +37,11 @@ export const removeLikeSong = async (idSong) => apiClient.delete(`/songs/favorit
 
 export const getAlbum = async () => apiClient.get('/songs/album/all/')
 export const getAlbumById = async (idAlbum) => apiClient.get(`/songs/album/${idAlbum}/detail/`)
+
+// chat
+export const getChat = async (conversation_id) => apiClient.get(`/conversations/${conversation_id}/messages/`) // get all messages in a conversation
+export const getAllConversation = async () => apiClient.get('/conversations/') // get all conversations
+
+
+
+

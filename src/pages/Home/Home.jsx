@@ -24,16 +24,15 @@ function Home() {
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const handlerScroll = () => {
         if (scrollHomeRef.current.scrollTop > 0) {
-            bgHomeHeader.current.style.background = '#21115f';
+            bgHomeHeader.current.style.background = '';
         } else {
-            bgHomeHeader.current.style.background = 'transparent';
+            bgHomeHeader.current.style.background = '';
         }
     };
     const fetchArtists = async () => {
         try {
             const response = await getAllArtist();
             setArtists(response.data);
-            console.log(response.data);
         } catch (error) {
             console.log('Lỗi khi tải dữ liệu nghệ sĩ!');
             console.error(error);
@@ -43,7 +42,6 @@ function Home() {
         try {
             const response = await getAllSongs();
             setSongs(response.data);
-            console.log(response.data);
         } catch (error) {
             console.log('Lỗi khi tải dữ liệu bài hát!');
             console.error(error);
@@ -54,7 +52,6 @@ function Home() {
         try {
             const response = await getAlbum();
             setAlbum(response.data);
-            console.log(response.data);
         } catch (error) {
             console.log('Lỗi khi tải dữ liệu album!');
             console.error(error);
@@ -68,7 +65,6 @@ function Home() {
 
     useEffect(() => {
         document.title = 'Spotify - Web Player: Music for everyone';
-        // console.log(topRef);
     }, []);
     const playlistsData = [
         {
@@ -133,7 +129,7 @@ function Home() {
                 {isLoggedIn ? (
                     <div
                         ref={bgHomeHeader}
-                        className="flex items-center w-full gap-2 px-6 py-4 rounded-t-xl font-medium bg-transparent sticky top-0 z-10"
+                        className="flex items-center w-full gap-2 px-6 py-4 rounded-t-xl font-medium bg-transparent top-0 z-10"
                     >
                         <p
                             className={` ${
@@ -277,7 +273,6 @@ function Home() {
                         <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
                             {isLoggedIn ? 'Nghệ sĩ yêu thích của bạn' : 'Nghệ sĩ phổ biến'}
                         </h1>
-                        {/* <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p> */}
                         {artists.length > 7 ? (
                             <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
                         ) : null}
@@ -327,13 +322,19 @@ function Home() {
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Album phổ biến</h1>
-                            {playlistsData.length > 6 ? (
+                            {album.length > 6 ? (
                                 <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
                             ) : null}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {playlistsData.map((item, index) => (
-                                <Item key={index} id={item._id} image={item.image} name={item.name} desc={item.desc} />
+                            {album.slice(0, 7).map((item, index) => (
+                                <Album
+                                    key={index}
+                                    id={item.ma_album}
+                                    image={item.hinh_anh}
+                                    name={item.ten_album}
+                                    artist={item.ma_user?.name}
+                                />
                             ))}
                         </div>
                     </div>

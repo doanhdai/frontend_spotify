@@ -16,7 +16,7 @@ import DisplayConcert from '@/components/DisplayConcert';
 import DisplayLikeSong from '@/components/DisplayLikeSong';
 import DisplayDetaiSong from '@/components/DisplayDetailSong';
 import DefaultLayout from '@/layouts/DefaultLayout';
-
+import ChatPage from '@/components/Chat';
 const publicRoutes = [
     { path: config.routes.home, component: Home },
     { path: config.routes.search, component: Search },
@@ -24,6 +24,7 @@ const publicRoutes = [
     { path: config.routes.album + '/:id', component: Album },
     { path: config.routes.artist + '/:id', component: Artist},
     { path: config.routes.genre + '/:id', component: Genre },
+    { path: config.routes.chat, component: ChatPage},
     { path: config.routes.signup, component: Signup, layout: NoLayout },
     { path: config.routes.login, component: Login, layout: NoLayout },
     { path: config.routes.likedSongs, component: DisplayLikeSong },
@@ -32,6 +33,7 @@ const publicRoutes = [
     { path: config.routes.concerts + '/:id', component: DisplayConcert },
     { path: config.routes.user + '/:id', component: Profile },
     { path: config.routes.detailSong + '/:id', component: DisplayDetaiSong},
+    
 ];
 
 const privateRoutes = [

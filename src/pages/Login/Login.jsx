@@ -30,7 +30,6 @@ function Login({ setIsLoggedIn }) {
     const handleLogin = async () => {
         try {
             const data = await loginUser({ email, password });
-            console.log(data)
             if (data.access) {
                 localStorage.setItem('access_token', data.access);
                 localStorage.setItem('refresh_token', data.refresh);

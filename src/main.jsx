@@ -9,16 +9,16 @@ import './index.css';
 import store from '@/redux/store.js';
 import PlayerContextProvider from './context/PlayerContext.jsx';
 import PlayerProvider from './service/PlayerProvider.jsx';
+import AuthInitializer from './redux/Action/AuthInitializer.jsx';
 
 createRoot(document.getElementById('root')).render(
     // <StrictMode>
-
     <Provider store={store}>
         <PlayerProvider>
+            <AuthInitializer />
             <ToastContainer />
             <App />
         </PlayerProvider>
     </Provider>,
-
     // </StrictMode>,
 );
