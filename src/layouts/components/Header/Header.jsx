@@ -18,7 +18,9 @@ import { LuMessageSquareMore } from 'react-icons/lu';
 import { FaRegBell } from 'react-icons/fa';
 import config from '@/configs';
 import { useTranslation } from 'react-i18next';
+import Search from '@/pages/Search';
 import { useSelector } from 'react-redux';
+import Language from '../Language/Language';
 
 function Header() {
     const inputRef = useRef(null);
@@ -30,6 +32,7 @@ function Header() {
     const [hovering, setHovering] = useState(false);
 
     const { t } = useTranslation();
+    const [searchTerm, setSearchTerm] = useState('');
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
         if (storedUsername) {
@@ -40,27 +43,34 @@ function Header() {
     }, []);
 
     const handleFocus = () => {
-        setIsFocused(true);
-        inputRef.current.focus();
+        if (inputRef.current) inputRef.current.focus();
     };
 
     const handleBlur = () => {
-        setIsFocused(false);
+        if (inputRef.current) inputRef.current.blur();
     };
 
     const handleLogout = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('id_user');
+        localStorage.removeItem('musicPlayerState');
+        localStorage.removeItem('name_user');
+
         window.location.reload();
     };
 
     return (
         <>
             <div className="w-full h-[8%] flex justify-between items-center font-semibold px-2 pt-2">
-                <div className="ml-5 flex-1">
+                <div className="ml-5 flex-1 flex items-center gap-2">
                     <Link to={config.routes.home}>
                         <img className="w-8 h-8" src={assets.spotify_logo} alt="" />
                     </Link>
+                    <div className="mt-8">
+                        <Language />
+                    </div>{' '}
                 </div>
 
                 <div className="flex flex-1 items-center gap-2 mr-24 focus:outline-white">
@@ -71,38 +81,15 @@ function Header() {
                             </button>
                         </Tippy>
                     </Link>
-                    <Link to={config.routes.search} className="block w-full">
+                    <div className="block w-full">
                         <div
                             className={`relative w-full h-[48px] rounded-full flex items-center gap-2 ${
                                 isFocused ? 'outline outline-white outline-2' : ''
-                            } bg-[#1f1f1f] text-[#b3b3b3]  transition-all duration-150 cursor-pointer hover:bg-[#2a2a2a]`}
+                            } bg-[#1f1f1f] text-[#b3b3b3] transition-all duration-150 cursor-pointer hover:bg-[#2a2a2a]`}
                         >
-                            <Tippy content="Tìm kiếm">
-                                <div className="flex">
-                                    <FontAwesomeIcon
-                                        icon={faMagnifyingGlass}
-                                        size="lg"
-                                        className="px-3 -hover:text-white transition-colors duration-200"
-                                        onClick={handleFocus}
-                                    />
-                                </div>
-                            </Tippy>
-                            <input
-                                ref={inputRef}
-                                className="bg-transparent w-full h-full focus:outline-none"
-                                type="text"
-                                placeholder={t('header.input')}
-                                onFocus={handleFocus}
-                                onBlur={handleBlur}
-                            />
-                            <div className="absolute right-[60px] h-[24px] w-[1px] bg-gray-500"></div>
-                            <Tippy content="Duyệt tìm">
-                                <div className="px-5 text-[#b3b3b3] relative hover:text-white hover:scale-110">
-                                    <FontAwesomeIcon icon={faFolderOpen} size="lg" />
-                                </div>
-                            </Tippy>
+                            <Search />
                         </div>
-                    </Link>
+                    </div>
                 </div>
 
                 <div className={`flex items-center gap-5 ${isLoggedIn ? '' : 'w-[446px] justify-end'}`}>
@@ -112,12 +99,14 @@ function Header() {
                                 {t('header.premium')}
                             </button>
                             <button
-                                onClick={() => {
-                                    navigate(config.routes.chat);
-                                }}
+                                // onClick={() => {
+                                //     navigate("/chat");
+                                // }}
                                 className="text-[#b3b3b3] hover:text-white hover:scale-110 cursor-pointer"
                             >
-                                <LuMessageSquareMore size={20} />
+                                <Link to="/chat">
+                                    <LuMessageSquareMore size={20} />
+                                </Link>
                             </button>
                             <Tippy content="Thông tin mới">
                                 <button className="text-[#b3b3b3] hover:text-white hover:scale-110 cursor-pointer">

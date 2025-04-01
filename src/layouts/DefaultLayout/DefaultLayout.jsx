@@ -7,11 +7,6 @@ import Player from '@/layouts/components/Player';
 import Footer from '../components/Footer';
 
 function DefaultLayout({ children }) {
-    const track = useSelector((state) => state.player.track);
-    const audioRef = useRef();
-
-    console.log('Audio URL:', track?.audio);
-
     return (
         <div className="h-screen bg-black">
             <Header />

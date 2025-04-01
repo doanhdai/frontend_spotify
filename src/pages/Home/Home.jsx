@@ -9,6 +9,7 @@ import Footer from '@/layouts/components/Footer';
 import { useSelector } from 'react-redux';
 import { getAlbum, getAllArtist, getAllSongs } from '@/service/apiService';
 import Album from '@/components/Album';
+import { useTranslation } from 'react-i18next';
 
 function Home() {
     const scrollHomeRef = useRef();
@@ -21,6 +22,8 @@ function Home() {
     const [album, setAlbum] = useState([]);
     const [podcasts, setPodcasts] = useState(false);
     const [songs, setSongs] = useState([]);
+    const { t } = useTranslation();
+
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const handlerScroll = () => {
         if (scrollHomeRef.current.scrollTop > 0) {
@@ -142,7 +145,7 @@ function Home() {
                                 topRef.current.scrollIntoView({ behavior: 'smooth' });
                             }}
                         >
-                            Tất cả
+                            {t('home.all')}
                         </p>
                         <p
                             className={`${
@@ -157,7 +160,7 @@ function Home() {
                                 topRef.current.scrollIntoView({ behavior: 'smooth' });
                             }}
                         >
-                            Âm nhạc
+                            {t('home.music')}
                         </p>
                         {/* <p
                             className={`${
@@ -182,7 +185,7 @@ function Home() {
                         <div className="flex items-center w-96  cursor-pointer" onClick={() => navigate('/likedSongs')}>
                             <img className="w-14 rounded-tl-[4px] rounded-bl-[4px]" src={assets.liked_songs} alt="" />
                             <div className="bg-[#33295c] px-4 py-4 w-full rounded-tr-[4px] rounded-br-[4px] -hover:bg-[#fff3] transition-colors duration-300">
-                                <h4 className="text-white font-semibold">Bài hát đã thích</h4>
+                                <h4 className="text-white font-semibold">{t('home.likedSongs')}</h4>
                             </div>
                         </div>
                         <div className="flex items-center w-96 ml-6  cursor-pointer">
@@ -192,7 +195,7 @@ function Home() {
                                 alt=""
                             />
                             <div className="bg-[#33295c] px-4 py-4 w-full rounded-tr-[4px] rounded-br-[4px] -hover:bg-[#fff3] transition-colors duration-300">
-                                <h4 className="text-white font-semibold">Ngày Em Đẹp Nhất Radio</h4>
+                                <h4 className="text-white font-semibold">Ngày e đẹp nhất </h4>
                             </div>
                         </div>
                     </div>
@@ -201,9 +204,13 @@ function Home() {
                 {isLoggedIn ? (
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
-                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Bài hát thịnh hành</h1>
+                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
+                                {t('home.popularSongs')}
+                            </h1>
                             {songs.length > 7 ? (
-                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">
+                                    {t('home.showAll')}
+                                </p>
                             ) : null}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
@@ -222,10 +229,12 @@ function Home() {
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
-                                Dành cho {localStorage.getItem('name_user')}
+                                {t('home.forYou', { name: localStorage.getItem('name_user') })}
                             </h1>
                             {songs.length > 7 ? (
-                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">
+                                    {t('home.showAll')}
+                                </p>
                             ) : null}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
@@ -271,10 +280,12 @@ function Home() {
                 <div className="px-6 mb-4 mt-8">
                     <div className="flex items-center justify-between text-white mb-2">
                         <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
-                            {isLoggedIn ? 'Nghệ sĩ yêu thích của bạn' : 'Nghệ sĩ phổ biến'}
+                            {isLoggedIn ? `${t('home.favoriteArtists')}` : `${t('home.popularArtists')}`}
                         </h1>
                         {artists.length > 7 ? (
-                            <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">
+                                {t('home.showAll')}
+                            </p>
                         ) : null}
                     </div>
                     <div className="flex overflow-auto space-x-2 ml-[-6px]">
@@ -301,9 +312,13 @@ function Home() {
                 {isLoggedIn ? (
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
-                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Album phổ biến</h1>
+                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
+                                {t('home.popularAlbums')}
+                            </h1>
                             {album.length > 7 ? (
-                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">
+                                    {t('home.showAll')}
+                                </p>
                             ) : null}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
@@ -343,8 +358,12 @@ function Home() {
                 {isLoggedIn ? null : (
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
-                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Radio phổ biến</h1>
-                            <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
+                                {t('home.popularRadio')}
+                            </h1>
+                            <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">
+                                {t('home.showAll')}
+                            </p>
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
                             {playlistsData.slice(0, 7).map((item, index) => (

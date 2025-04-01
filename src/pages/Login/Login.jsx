@@ -33,8 +33,9 @@ function Login({ setIsLoggedIn }) {
             if (data.access) {
                 localStorage.setItem('access_token', data.access);
                 localStorage.setItem('refresh_token', data.refresh);
-                localStorage.setItem('name_user', data.user.name);
-                localStorage.setItem('id_user', JSON.stringify(data.user.id));
+                localStorage.setItem('name_user', data.user?.name);
+                localStorage.setItem('id_user', JSON.stringify(data.user?.id));
+                console.log(data.user)
 
                 dispatch(login(data.access));
                 toast.success('Đăng nhập thành công');

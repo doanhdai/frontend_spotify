@@ -1,85 +1,90 @@
-import { useEffect, useContext } from 'react';
-
-import GenreItem from '@/components/GenreItem';
-import Footer from '@/layouts/components/Footer';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass, faFolderOpen, faTimes } from '@fortawesome/free-solid-svg-icons';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 import config from '@/configs';
-import { assets } from '@/assets/assets';
+import { useTranslation } from 'react-i18next';
 
 function Search() {
-    const genresData = [
-        {
-            _id: '1',
-            name: 'Pop',
-            bgColor: '#1DB954',
-            image: assets.img6,
-            isEvent: false,
-        },
-        {
-            _id: '2',
-            name: 'Rock',
-            bgColor: '#E50914',
-            image: assets.img7,
-            isEvent: false,
-        },
-        {
-            _id: '3',
-            name: 'Hip-Hop',
-            bgColor: '#FF9800',
-            image: assets.img6,
-            isEvent: false,
-        },
-        {
-            _id: '4',
-            name: 'EDM',
-            bgColor: '#6200EA',
-            image: assets.img7,
-            isEvent: false,
-        },
-        {
-            _id: '5',
-            name: 'Classical',
-            bgColor: '#FFC107',
-            image: assets.img13,
-            isEvent: false,
-        },
-        {
-            _id: '6',
-            name: 'Jazz',
-            bgColor: '#795548',
-            image: assets.img6,
-            isEvent: false,
-        },
-        {
-            _id: '7',
-            name: 'Concerts',
-            bgColor: '#4CAF50',
-            image: assets.img7,
-            isEvent: true,
-        },
-    ];
+    const location = useLocation();
+    const navigate = useNavigate();
+    const searchParams = new URLSearchParams(location.search);
+    const { t } = useTranslation();
+
+    const [searchTerm, setSearchTerm] = useState('');
+
     useEffect(() => {
-        document.title = 'Spotify - Tìm kiếm';
-    }, []);
+        const query = searchParams.get('keyword') || '';
+        setSearchTerm(query);
+    }, [location.search]);
+
+    // useEffect(() => {
+    //     if (searchTerm.trim() === '') {
+    //         if (location.pathname !== '/') {
+    //             navigate('/category');
+    //         }
+    //     } else {
+    //         const delaySearch = setTimeout(() => {
+    //             navigate(`/search?keyword=${encodeURIComponent(searchTerm.trim())}`);
+    //         }, 50);
+
+    //         return () => clearTimeout(delaySearch);
+    //     }
+    // }, [searchTerm, navigate, location.pathname]);
+
+    const handleChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const handleClearSearch = () => {
+        setSearchTerm('');
+        navigate('/'); // Xóa input và reset về trang chủ
+    };
+
+    const handleBrowseClick = () => {
+        navigate(config.routes.category);
+    };
 
     return (
-        <div className="bg-[#121212] w-[79%] h-[97.4%] rounded-xl my-2 mr-2 py-4 pt-0 overflow-hidden overflow-y-auto">
-            <div className="ml-2 mt-20 mb-12">
-                <h1 className="text-white font-bold text-2xl ml-3 mb-2">Duyệt tìm tất cả</h1>
-                <div className="grid grid-cols-4">
-                    {genresData.map((item, index) => (
-                        <GenreItem
-                            key={index}
-                            id={item._id}
-                            name={item.name}
-                            bgColor={item.bgColor}
-                            image={item.image}
-                            link={item.isEvent ? config.routes.concerts : config.routes.genre + `/${item._id}`}
+        <>
+            <div>
+                <Tippy content={t('header.search')}>
+                    <div className="flex">
+                        <FontAwesomeIcon
+                            icon={faMagnifyingGlass}
+                            className="w-6 h-6 px-3 hover:text-white transition-colors duration-200"
                         />
-                    ))}
-                </div>
+                    </div>
+                </Tippy>
             </div>
-            <Footer />
-        </div>
+            <div className="relative flex items-center w-full">
+                <input
+                    className="bg-transparent w-full h-full focus:outline-none"
+                    type="text"
+                    placeholder={t('header.inputsearch')}
+                    value={searchTerm}
+                    onChange={handleChange}
+                />
+                {searchTerm && (
+                    <button onClick={handleClearSearch} className="absolute right-2 text-red-500">
+                        <FontAwesomeIcon icon={faTimes} />
+                    </button>
+                )}
+            </div>
+            <div className="absolute right-[60px] h-[24px] w-[1px] bg-gray-500"></div>
+            <div>
+                <Tippy content={t('header.browse')}>
+                    <div
+                        onClick={handleBrowseClick}
+                        className="px-5 text-[#b3b3b3] relative hover:text-white hover:scale-110 cursor-pointer"
+                    >
+                        <FontAwesomeIcon icon={faFolderOpen} />
+                    </div>
+                </Tippy>
+            </div>
+        </>
     );
 }
 

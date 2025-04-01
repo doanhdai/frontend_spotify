@@ -14,6 +14,9 @@ const routes = {
     likedSongs: '/likedSongs',
     detailSong: '/song',
     chat: '/chat',
+    category: '/category',
+    searchSongAlbumArt: '/searchSongAlbumArt',
+
 };
 
 export default routes;

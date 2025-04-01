@@ -1,7 +1,7 @@
 import axios from 'axios';
-import store from '../redux/store';
+import {store } from '../redux/store';
 import { logout, login } from '../redux/Reducer/authSlice';
-import { refreshToken } from './apiService';
+import { refreshToken } from '../service/apiService';
 
 const apiClient = axios.create({
     baseURL: import.meta.env.VITE_REACT_API,
