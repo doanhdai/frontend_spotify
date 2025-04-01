@@ -1,4 +1,4 @@
-import { useEffect, useRef, useContext, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import config from '@/configs';
 import { assets } from '@/assets/assets';
@@ -8,65 +8,83 @@ import { FaPlay } from 'react-icons/fa';
 import { IoMdMore, IoMdPause } from 'react-icons/io';
 import {
     faArrowUpFromBracket,
-    faArrowUpRightFromSquare,
     faBars,
     faCheck,
-    faCircleExclamation,
     faCirclePlus,
     faCircleXmark,
     faEllipsis,
     faFolder,
     faList,
-    faPlay,
 } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
-import { faSpotify } from '@fortawesome/free-brands-svg-icons';
-import { getFavoriteSongs } from '@/service/apiService';
-import { setCurrentPlaylist, playWithId, setPlayStatus } from '@/redux/Reducer/playerSlice'; 
-
+import { getFavoriteSongs, getAllPlaylist, removeLikeSong, addSongToPlaylist } from '@/service/apiService';
+import { setCurrentPlaylist, playWithId, setPlayStatus } from '@/redux/Reducer/playerSlice';
+import Footer from '@/layouts/components/Footer';
 
 function DisplayLikeSong() {
     const dispatch = useDispatch();
     const { track, playStatus } = useSelector((state) => state.player);
 
     const [songLikesData, setSongLikesData] = useState([]);
+    const [playlists, setPlaylists] = useState([]);
     const [target, setTarget] = useState(false);
     const [hovering, setHovering] = useState(false);
     const [shortType, setShortType] = useState(false);
     const [hoveredSongId, setHoveredSongId] = useState(null);
+    const [menuSongId, setMenuSongId] = useState(null);
     const displaySongLikeRef = useRef();
     const location = useLocation();
     const isSongLike = location.pathname.includes('likedSongs');
     const navigate = useNavigate();
-
-    // const bgColor = songLikesData ? songLikesData.bgColor : '';
 
     useEffect(() => {
         const fetchSongs = async () => {
             const songs = await getFavoriteSongs();
             if (songs) setSongLikesData(songs.data);
         };
+        const fetchPlaylists = async () => {
+            const playlistData = await getAllPlaylist();
+            if (playlistData) setPlaylists(playlistData.data);
+        };
         fetchSongs();
+        fetchPlaylists();
     }, []);
+    console.log(playlists);
 
     const handlePlayPlaylist = () => {
         if (songLikesData.length > 0) {
-            dispatch(setCurrentPlaylist(songLikesData)); // Đặt danh sách yêu thích làm currentPlaylist
-            dispatch(setPlayStatus(true)); // Bật trạng thái phát
+            dispatch(setCurrentPlaylist(songLikesData));
+            dispatch(setPlayStatus(true));
         }
     };
 
-    // Hàm phát một bài hát cụ thể từ danh sách
     const handlePlaySong = (songId) => {
-        dispatch(playWithId(songId)); // Phát bài hát theo ID
+        dispatch(playWithId(songId));
     };
 
-    // Hàm tạm dừng
     const handlePause = () => {
-        dispatch(setPlayStatus(false)); // Tạm dừng
+        dispatch(setPlayStatus(false));
     };
 
+    const handleRemoveLikeSong = async (songId) => {
+        try {
+            await removeLikeSong(songId);
+            setSongLikesData(songLikesData.filter((song) => song.id !== songId));
+        } catch (error) {
+            console.error('Failed to remove song from favorites:', error);
+        }
+    };
+
+    const handleAddToPlaylist = async (songId, playlistId) => {
+        try {
+            await addSongToPlaylist({ ma_playlist: playlistId, ma_bai_hat: songId });
+            console.log('Added song to playlist!');
+        } catch (error) {
+            console.error('Failed to add song to playlist:', error);
+        }
+    };
+    // const bgColor = songLikesData;
     const bgColor = '#21115f';
 
     useEffect(() => {
@@ -90,8 +108,9 @@ function DisplayLikeSong() {
                 target ? 'overflow-hidden' : 'overflow-y-auto'
             }`}
         >
+            {/* Header và các nút như cũ */}
             <div className="px-6 mt-4 mb-9 flex flex-col md:flex-row md:items-end gap-8">
-                <img className="w-48 rounded" src={assets.img13} alt="" />
+                <img className="w-48 rounded" src={assets.liked_songs} alt="" />
                 <div>
                     <p className="text-white mb-2">Playlist</p>
                     <h2 className="text-white text-5xl font-extrabold mb-4 md:text-6xl tracking-tight">
@@ -111,11 +130,6 @@ function DisplayLikeSong() {
                         className="flex justify-center items-center w-14 h-14 bg-[#1ed760] rounded-[50%] hover:bg-[#3be477] hover:scale-105"
                         onClick={playStatus ? handlePause : handlePlayPlaylist}
                     >
-                        {/* {playStatus && track?.id === songData.id ? (
-                            <IoMdPause onClick={handlePause} size={20} />
-                        ) : (
-                            <FaPlay onClick={handlePlay} size={20} />
-                        )} */}
                         {playStatus && songLikesData.some((song) => song.id === track?.id) ? (
                             <IoMdPause size={20} />
                         ) : (
@@ -127,7 +141,6 @@ function DisplayLikeSong() {
                             <FontAwesomeIcon icon={faCirclePlus} className="w-8 h-8" />
                         </button>
                     </Tippy>
-
                     <TippyHeadless
                         interactive
                         visible={hovering || target}
@@ -144,15 +157,6 @@ function DisplayLikeSong() {
                                             <FontAwesomeIcon icon={faCirclePlus} />
                                             <span>Thêm vào thư viện</span>
                                         </button>
-                                        {/* <button className="flex items-center justify-between gap-4 w-full text-[#b3b3b3] py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:text-white hover:bg-[#ffffff1a]"> */}
-                                        {/* <div className="flex items-center gap-4">
-                                                <FontAwesomeIcon icon={faCircleExclamation} />
-                                                <span>Báo cáo</span>
-                                            </div> */}
-                                        {/* <div>
-                                                <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-                                            </div> */}
-                                        {/* </button> */}
                                         <button className="flex items-center gap-4 w-full text-[#b3b3b3] py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:text-white hover:bg-[#ffffff1a]">
                                             <FontAwesomeIcon icon={faCircleXmark} />
                                             <span>Loại bỏ khỏi hồ sơ sở thích của bạn</span>
@@ -161,18 +165,6 @@ function DisplayLikeSong() {
                                             <FontAwesomeIcon icon={faFolder} />
                                             <span>Thêm vào thư mục</span>
                                         </button>
-                                        {/* <button className="flex items-center gap-4 w-full text-[#b3b3b3] py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:text-white hover:bg-[#ffffff1a]">
-                                            <FontAwesomeIcon icon={faArrowUpFromBracket} />
-                                            <span>Chia sẻ</span>
-                                        </button>
-                                        <button className="flex items-center gap-4 w-full text-[#b3b3b3] py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:text-white hover:bg-[#ffffff1a]">
-                                            <FontAwesomeIcon icon={faArrowUpFromBracket} />
-                                            <span>Giới thiệu về nội dung đề xuất</span>
-                                        </button>
-                                        <button className="flex items-center gap-4 w-full text-[#b3b3b3] py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:text-white hover:bg-[#ffffff1a]">
-                                            <FontAwesomeIcon icon={faSpotify} />
-                                            <span>Mở trong ứng dụng dành cho máy tính</span>
-                                        </button> */}
                                     </div>
                                 ) : (
                                     <span>Các tùy chọn khác cho {songLikesData.name}</span>
@@ -210,9 +202,7 @@ function DisplayLikeSong() {
                                     <li>
                                         <button
                                             className="w-full text-white text-left p-3 pr-2 hover:bg-[#3e3e3e]"
-                                            onClick={() => {
-                                                setShortType(true);
-                                            }}
+                                            onClick={() => setShortType(true)}
                                         >
                                             {shortType ? (
                                                 <>
@@ -231,9 +221,7 @@ function DisplayLikeSong() {
                                     <li>
                                         <button
                                             className="w-full text-white text-left p-3 pr-2 hover:bg-[#3e3e3e]"
-                                            onClick={() => {
-                                                setShortType(false);
-                                            }}
+                                            onClick={() => setShortType(false)}
                                         >
                                             {shortType ? (
                                                 <>
@@ -260,39 +248,45 @@ function DisplayLikeSong() {
                     </TippyHeadless>
                 </div>
             </div>
+
+            {/* Tiêu đề cột */}
             {shortType ? (
-                <div className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr] px-6 mt-10 mb-4 text-[#a7a7a7]">
+                <div className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr_0.2fr] px-6 mt-10 mb-4 text-[#a7a7a7]">
                     <p className="font-semibold">
                         <b className="mr-4">#</b>Tiêu đề
                     </p>
                     <p className="font-semibold">Nghệ sĩ</p>
                     <p className="font-semibold">Album</p>
                     <img className="m-auto w-4" src={assets.clock_icon} alt="" />
+                    <span></span> {/* Cột cho biểu tượng ba chấm */}
                 </div>
             ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr] px-6 mt-10 mb-4 text-[#a7a7a7]">
+                <div className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr_0.2fr] px-6 mt-10 mb-4 text-[#a7a7a7]">
                     <p className="font-semibold">
                         <b className="mr-4">#</b>Tiêu đề
                     </p>
                     <p className="font-semibold">Album</p>
                     <img className="m-auto w-4" src={assets.clock_icon} alt="" />
+                    <span></span> {/* Cột cho biểu tượng ba chấm */}
                 </div>
             )}
             <hr className="mt-[-8px] mb-4 mx-6" />
+
+            {/* Danh sách bài hát */}
             {songLikesData.map((item, index) =>
                 shortType ? (
                     <div
                         key={index}
                         onClick={() => navigate(config.routes.detailSong + `/${item.id}`)}
-                        onMouseEnter={() => setHoveredSongId(item.id)} 
+                        onMouseEnter={() => setHoveredSongId(item.id)}
                         onMouseLeave={() => setHoveredSongId(null)}
-                        className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
+                        className="grid grid-cols-2 sm:grid-cols-[1.5fr_1fr_1fr_0.3fr_0.2fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
                     >
                         <div className="flex items-center">
                             <div
                                 className="mr-4 w-5 h-5 flex items-center justify-center"
                                 onClick={(e) => {
-                                    e.stopPropagation(); 
+                                    e.stopPropagation();
                                     if (playStatus && track?.id === item.id) {
                                         handlePause();
                                     } else {
@@ -323,14 +317,83 @@ function DisplayLikeSong() {
                         <div className="text-center">
                             <p>3:13</p>
                         </div>
+                        <div className="text-center">
+                            {hoveredSongId === item.id && (
+                                <TippyHeadless
+                                    interactive
+                                    visible={menuSongId === item.id}
+                                    placement="bottom-end"
+                                    appendTo={() => document.body}
+                                    render={(attrs) => (
+                                        <div
+                                            className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
+                                            tabIndex="-1"
+                                            {...attrs}
+                                        >
+                                            <button
+                                                className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleRemoveLikeSong(item.id);
+                                                    setMenuSongId(null);
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faCircleXmark} />
+                                                <span>Xóa khỏi danh sách yêu thích</span>
+                                            </button>
+                                            <TippyHeadless
+                                                interactive
+                                                placement="left"
+                                                appendTo={() => document.body}
+                                                render={(subAttrs) => (
+                                                    <div
+                                                        className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl min-w-[200px]"
+                                                        tabIndex="-1"
+                                                        {...subAttrs}
+                                                    >
+                                                        {playlists.map((playlist) => (
+                                                            <button
+                                                                key={playlist.ma_playlist}
+                                                                className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleAddToPlaylist(item.id, playlist.ma_playlist);
+                                                                    setMenuSongId(null);
+                                                                }}
+                                                            >
+                                                                <span>{playlist.ten_playlist}</span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            >
+                                                <button className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]">
+                                                    <FontAwesomeIcon icon={faFolder} />
+                                                    <span>Thêm vào playlist</span>
+                                                </button>
+                                            </TippyHeadless>
+                                        </div>
+                                    )}
+                                >
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setMenuSongId(menuSongId === item.id ? null : item.id);
+                                        }}
+                                    >
+                                        <IoMdMore size={20} className="text-white" />
+                                    </button>
+                                </TippyHeadless>
+                            )}
+                        </div>
                     </div>
                 ) : (
                     <div
                         key={index}
                         onClick={() => navigate(config.routes.detailSong + `/${item.id}`)}
-                        onMouseEnter={() => setHoveredSongId(item.id)} 
+                        onMouseEnter={() => setHoveredSongId(item.id)}
                         onMouseLeave={() => setHoveredSongId(null)}
-                        className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
+                        className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr_0.2fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
                     >
                         <div className="flex items-center">
                             <div
@@ -366,10 +429,81 @@ function DisplayLikeSong() {
                         <div className="text-center">
                             <p>4:12</p>
                         </div>
+                        <div className="text-center">
+                            {hoveredSongId === item.id && (
+                                <TippyHeadless
+                                    interactive
+                                    visible={menuSongId === item.id}
+                                    placement="bottom-end"
+                                    appendTo={() => document.body}
+                                    render={(attrs) => (
+                                        <div
+                                            className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
+                                            tabIndex="-1"
+                                            {...attrs}
+                                        >
+                                            <button
+                                                className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleRemoveLikeSong(item.id);
+                                                    setMenuSongId(null);
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faCircleXmark} />
+                                                <span>Xóa khỏi danh sách yêu thích</span>
+                                            </button>
+                                            <TippyHeadless
+                                                interactive
+                                                placement="left"
+                                                appendTo={() => document.body}
+                                                render={(subAttrs) => (
+                                                    <div
+                                                        className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl min-w-[200px]"
+                                                        tabIndex="-1"
+                                                        {...subAttrs}
+                                                    >
+                                                        {playlists.map((playlist) => (
+                                                            <button
+                                                                key={playlist.ma_playlist}
+                                                                className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleAddToPlaylist(item.id, playlist.ma_playlist);
+                                                                    setMenuSongId(null);
+                                                                }}
+                                                            >
+                                                                <span>{playlist.ten_playlist}</span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            >
+                                                <button className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]">
+                                                    <FontAwesomeIcon icon={faFolder} />
+                                                    <span>Thêm vào playlist</span>
+                                                </button>
+                                            </TippyHeadless>
+                                        </div>
+                                    )}
+                                >
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setMenuSongId(menuSongId === item.id ? null : item.id);
+                                        }}
+                                    >
+                                        <IoMdMore size={20} className="text-white" />
+                                    </button>
+                                </TippyHeadless>
+                            )}
+                        </div>
                     </div>
                 ),
             )}
+            <Footer />
         </div>
+
     ) : null;
 }
 

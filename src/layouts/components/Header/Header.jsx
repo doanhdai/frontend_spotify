@@ -6,7 +6,13 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faCircleDown } from '@fortawesome/free-regular-svg-icons';
-import { faArrowUpRightFromSquare, faFolderOpen, faHouse, faMagnifyingGlass, fas } from '@fortawesome/free-solid-svg-icons';
+import {
+    faArrowUpRightFromSquare,
+    faFolderOpen,
+    faHouse,
+    faMagnifyingGlass,
+    fas,
+} from '@fortawesome/free-solid-svg-icons';
 import { assets } from '@/assets/assets';
 import config from '@/configs';
 import { useTranslation } from 'react-i18next';
@@ -57,7 +63,7 @@ function Header() {
                     <Link to={config.routes.home}>
                         <Tippy content="Trang chủ">
                             <button className="text-black bg-[#1f1f1f] w-12 h-12 rounded-full flex justify-center items-center hover:scale-105">
-                                <FontAwesomeIcon icon={faHouse} className="w-6 h-6 text-white" />
+                                <FontAwesomeIcon icon={faHouse} size="lg" className="text-white" />
                             </button>
                         </Tippy>
                     </Link>
@@ -71,7 +77,8 @@ function Header() {
                                 <div className="flex">
                                     <FontAwesomeIcon
                                         icon={faMagnifyingGlass}
-                                        className="w-6 h-6 px-3 -hover:text-white transition-colors duration-200"
+                                        size="lg"
+                                        className="px-3 -hover:text-white transition-colors duration-200"
                                         onClick={handleFocus}
                                     />
                                 </div>
@@ -87,7 +94,7 @@ function Header() {
                             <div className="absolute right-[60px] h-[24px] w-[1px] bg-gray-500"></div>
                             <Tippy content="Duyệt tìm">
                                 <div className="px-5 text-[#b3b3b3] relative hover:text-white hover:scale-110">
-                                    <FontAwesomeIcon icon={faFolderOpen} />
+                                    <FontAwesomeIcon icon={faFolderOpen} size="lg" />
                                 </div>
                             </Tippy>
                         </div>
@@ -100,13 +107,13 @@ function Header() {
                             <button className="bg-white text-black font-bold text-[14px] px-4 py-1.5 rounded-2xl hidden md:block hover:scale-105 hover:bg-[#f0f0f0]">
                                 {t('header.premium')}
                             </button>
-                            <button className="flex items-center bg-black text-white font-bold px-3 py-1.5 rounded-2xl text-[14px] cursor-pointer gap-2 hover:scale-105">
+                            {/* <button className="flex items-center bg-black text-white font-bold px-3 py-1.5 rounded-2xl text-[14px] cursor-pointer gap-2 hover:scale-105">
                                 <FontAwesomeIcon icon={faCircleDown} />
                                 {t('header.download')}
-                            </button>
+                            </button> */}
                             <Tippy content="Thông tin mới">
                                 <button className="text-[#b3b3b3] hover:text-white hover:scale-110 cursor-pointer">
-                                    <FontAwesomeIcon icon={faBell} className="h-4 w-4" />
+                                    <FontAwesomeIcon icon={faBell} size="sm" />
                                 </button>
                             </Tippy>
                             <TippyHeadless
@@ -123,24 +130,20 @@ function Header() {
                                             <div className="min-w-[196px] h-56">
                                                 <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
                                                     <span> {t('header.title')}</span>
-                                                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                                                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} size="sm" />
                                                 </button>
                                                 <Link to={config.routes.user + `/${localStorage.getItem('userId')}`}>
                                                     <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
                                                         <span>{t('header.profile')}</span>
                                                     </button>
                                                 </Link>
-                                                <Link to={config.routes.premium}>
-                                                    <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
-                                                        <span>{t('header.updatePremium')}</span>
-                                                        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-                                                    </button>
-                                                </Link>
-                                                <Link to={config.routes.settings}>
-                                                    <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] border-b-[1px] rounded-b-[1px] cursor-pointer hover:bg-[#ffffff1a]">
-                                                        <span>{t('header.setting')}</span>
-                                                    </button>
-                                                </Link>
+                                                <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]">
+                                                    <span>{t('header.updatePremium')}</span>
+                                                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} size="sm" />
+                                                </button>
+                                                <button className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] border-b-[1px] rounded-b-[1px] cursor-pointer hover:bg-[#ffffff1a]">
+                                                    <span>{t('header.setting')}</span>
+                                                </button>
                                                 <Link to={config.routes.home}>
                                                     <button
                                                         className="flex items-center justify-between w-full py-3 pl-3 pr-2 rounded-[4px] cursor-pointer hover:bg-[#ffffff1a]"

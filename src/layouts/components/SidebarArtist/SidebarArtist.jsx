@@ -13,6 +13,13 @@ const SidebarArtist = () => {
     return (
         <div className="w-[17.5%] h-[100%] rounded-xl bg-black p-4 text-white hidden lg:flex flex-col">
             <ul className="space-y-2">
+                <li className="">
+                    <Link to={config.routes.artist_dashboard} className="flex items-center justify-between w-full p-3 rounded-lg bg-[#1f1f1f] hover:bg-[#333]">
+                        <span className="flex items-center gap-2">
+                            <FontAwesomeIcon icon={faUsers} /> Tổng quan
+                        </span>
+                    </Link>
+                </li>
                 <li className="group">
                     <button className="flex items-center justify-between w-full p-3 rounded-lg bg-[#1f1f1f] hover:bg-[#333]">
                         <span className="flex items-center gap-2">
@@ -43,7 +50,7 @@ const SidebarArtist = () => {
                     <ul className="hidden group-hover:block pl-5 space-y-1 mt-2">
                         <li><Link to={config.routes.artist_listens} className="block p-2 hover:bg-[#2a2a2a] rounded">Lượt nghe</Link></li>
                         <li><Link to={config.routes.artist_turnover} className="block p-2 hover:bg-[#2a2a2a] rounded">Doanh thu</Link></li>
-                    </ul>    
+                    </ul>
                 </li>
             </ul>
         </div>

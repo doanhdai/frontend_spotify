@@ -1,4 +1,24 @@
+import { useEffect, useState } from "react";
+import { getAllPlaylist } from "@/service/apiService";
+
 const Playlist = () => {
+    const [playlists, setPlaylists] = useState([]);
+
+    const fetchAllPlaylists = async () => {
+        try {
+            const respone = await getAllPlaylist();
+            const data = respone.data;
+            setPlaylists(data);
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        fetchAllPlaylists();
+    }, [])
+
     return (
         <div className="p-2 w-full bg-gray-800">
             <h2 className="text-2xl font-bold mb-4">Danh sách playlist</h2>

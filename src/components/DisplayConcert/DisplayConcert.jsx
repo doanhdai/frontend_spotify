@@ -27,6 +27,43 @@ function DisplayConcert() {
     const location = useLocation();
     const isConcert = location.pathname.includes('concert');
     const bgColor = concertData ? concertData.bgColor : '';
+const concertsData = [
+    {
+        _id: '1',
+        name: 'Lễ Hội Âm Nhạc Mùa Hè',
+        date: '2025-06-15T19:00:00',
+        address: 'Nhà hát Hòa Bình, 240 Đường 3/2, Quận 10, TP.HCM',
+        bgColor: '#FF5733',
+    },
+    {
+        _id: '2',
+        name: 'Đêm Nhạc Trịnh Công Sơn',
+        date: '2025-07-20T20:30:00',
+        address: 'Nhà hát Lớn Hà Nội, Số 1 Tràng Tiền, Hà Nội',
+        bgColor: '#6A0572',
+    },
+    {
+        _id: '3',
+        name: 'Rap Việt Live Concert',
+        date: '2025-08-10T18:00:00',
+        address: 'Sân vận động Quốc gia Mỹ Đình, Hà Nội',
+        bgColor: '#1DB954',
+    },
+    {
+        _id: '4',
+        name: 'KPOP Festival 2025',
+        date: '2025-09-05T19:30:00',
+        address: 'Sân khấu Lan Anh, 291 Cách Mạng Tháng Tám, Quận 10, TP.HCM',
+        bgColor: '#FF0099',
+    },
+    {
+        _id: '5',
+        name: 'Lofi & Chill Night',
+        date: '2025-10-12T20:00:00',
+        address: 'Nhà Văn Hóa Thanh Niên, 4 Phạm Ngọc Thạch, Quận 1, TP.HCM',
+        bgColor: '#A29BFE',
+    },
+];
 
     useEffect(() => {
         if (concertData) {

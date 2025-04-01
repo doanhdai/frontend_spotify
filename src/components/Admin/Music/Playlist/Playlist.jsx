@@ -6,8 +6,8 @@ const Playlist = () => {
 
   const fetchAllPlaylists = async () => {
     try {
-      const respond = await getAllPlaylist();
-      const data = respond.data;
+      const respone = await getAllPlaylist();
+      const data = respone.data;
       setPlaylists(data);
       // console.log(data);
     } catch (error) {

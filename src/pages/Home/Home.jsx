@@ -7,7 +7,8 @@ import Item from '@/components/Item';
 import { assets } from '@/assets/assets';
 import Footer from '@/layouts/components/Footer';
 import { useSelector } from 'react-redux';
-import { getAllArtist, getAllSongs } from '@/service/apiService';
+import { getAlbum, getAllArtist, getAllSongs } from '@/service/apiService';
+import Album from '@/components/Album';
 
 function Home() {
     const scrollHomeRef = useRef();
@@ -17,6 +18,7 @@ function Home() {
     const [all, setAll] = useState(true);
     const [artists, setArtists] = useState([]);
     const [music, setMusic] = useState(false);
+    const [album, setAlbum] = useState([]);
     const [podcasts, setPodcasts] = useState(false);
     const [songs, setSongs] = useState([]);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -47,9 +49,21 @@ function Home() {
             console.error(error);
         }
     };
+
+    const fetchAlbum = async () => {
+        try {
+            const response = await getAlbum();
+            setAlbum(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.log('Lỗi khi tải dữ liệu album!');
+            console.error(error);
+        }
+    };
     useEffect(() => {
         fetchArtists();
         fetchAllSongs();
+        fetchAlbum();
     }, []);
 
     useEffect(() => {
@@ -191,16 +205,14 @@ function Home() {
                 {isLoggedIn ? (
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
-                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
-                                Dành cho {localStorage.getItem('name_user')}
-                            </h1>
+                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Bài hát thịnh hành</h1>
                             {songs.length > 7 ? (
                                 <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
                             ) : null}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
                             {songs.slice(0, 7).map((item, index) => (
-                                <PlayList
+                                <Item
                                     key={index}
                                     id={item.id}
                                     image={item.hinh_anh}
@@ -234,16 +246,20 @@ function Home() {
                     </div>
                 )}
 
-                {isLoggedIn ? (
+                {/* {isLoggedIn ? (
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
-                                Tuyển tập hàng đầu của bạn
+                                Tuyển tập nhạc hàng đầu của bạn
                             </h1>
-                            <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            {playlistsData.length > 7 ? (
+                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            ) : (
+                                ''
+                            )}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {playlistsData.slice(0, 5).map((item, index) => (
+                            {playlistsData.slice(0, 7).map((item, index) => (
                                 <PlayList
                                     key={index}
                                     id={item._id}
@@ -254,7 +270,7 @@ function Home() {
                             ))}
                         </div>
                     </div>
-                ) : null}
+                ) : null} */}
 
                 <div className="px-6 mb-4 mt-8">
                     <div className="flex items-center justify-between text-white mb-2">
@@ -290,17 +306,19 @@ function Home() {
                 {isLoggedIn ? (
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
-                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Đài phát Gợi ý</h1>
-                            <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Album phổ biến</h1>
+                            {album.length > 7 ? (
+                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
+                            ) : null}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {playlistsData.slice(0, 6).map((item, index) => (
-                                <PlayList
+                            {album.slice(0, 7).map((item, index) => (
+                                <Album
                                     key={index}
-                                    id={item._id}
-                                    image={assets.img6}
-                                    name={item.name}
-                                    desc={item.desc}
+                                    id={item.ma_album}
+                                    image={item.hinh_anh}
+                                    name={item.ten_album}
+                                    artist={item.ma_user?.name}
                                 />
                             ))}
                         </div>
@@ -309,8 +327,7 @@ function Home() {
                     <div className="px-6 mb-4 mt-8">
                         <div className="flex items-center justify-between text-white mb-2">
                             <h1 className=" font-bold text-2xl hover:underline cursor-pointer">Album phổ biến</h1>
-                            {/* <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p> */}
-                            {playlistsData.length > 7 ? (
+                            {playlistsData.length > 6 ? (
                                 <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
                             ) : null}
                         </div>

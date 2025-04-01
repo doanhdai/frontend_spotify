@@ -1,4 +1,25 @@
+import { useEffect, useState } from "react";
+import { getAllSongs } from "@/service/apiService";
+
+
 const Song = () => {
+    const [songs, setSongs] = useState([]);
+
+    const fetchAllSongs = async () => {
+        try {
+            const response = await getAllSongs(); // Gọi API đúng cách
+            const listOfSongs = response.data;
+            // console.log("Dữ liệu bài hát:", listOfSongs); // Console.log dữ liệu
+            setSongs(listOfSongs);
+        } catch (error) {
+            console.error("Lỗi khi lấy danh sách bài hát:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAllSongs();
+    }, []);
+
     return (
         <div className="p-2 w-full text-black bg-white">
             <h2 className="text-2xl font-bold mb-4 ml-3">Danh sách bài hát</h2>
@@ -7,35 +28,35 @@ const Song = () => {
                     <thead className="bg-gray-100">
                         <tr>
                             <th className="p-3 text-left">ID</th>
-                            <th className="p-3 text-left">Tên người dùng</th>
-                            <th className="p-3 text-left">Nghệ danh</th>
+                            <th className="p-3 text-left">Tên bài hát</th>
+                            <th className="p-3 text-left">Ngày phát hành</th>
+                            <th className="p-3 text-left">Thời lượng</th>
                             <th className="p-3 text-left">Ảnh đại diện</th>
                             <th className="p-3 text-left">Trạng thái</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td className="p-3 text-left">USR0001</td>
-                            <td className="p-3 text-left">ltgiai</td>
-                            <td className="p-3 text-left">tuangiai52@gmail.com</td>
-                            <td className="p-3 text-left">truigbeovnamep</td>
-                            <td className="p-3 text-left">Đang hoạt động</td>
-                        </tr>
-                        <tr>
-                            <td className="p-3 text-left">USR0001</td>
-                            <td className="p-3 text-left">ltgiai</td>
-                            <td className="p-3 text-left">tuangiai52@gmail.com</td>
-                            <td className="p-3 text-left">truigbeovnamep</td>
-                            <td className="p-3 text-left">Đang hoạt động</td>
-                        </tr>
-                        <tr>
-                            <td className="p-3 text-left">USR0001</td>
-                            <td className="p-3 text-left">ltgiai</td>
-                            <td className="p-3 text-left">tuangiai52@gmail.com</td>
-                            <td className="p-3 text-left">truigbeovnamep</td>
-                            <td className="p-3 text-left">Đang hoạt động</td>
-                        </tr>
+                        {songs.length > 0 ? (
+                            songs.map((song) => (
+                                <tr key={song.ma_bai_hat}>
+                                    <td className="p-3 text-left">{song.id}</td>
+                                    <td className="p-3 text-left">{song.ten_bai_hat}</td>
+                                    <td className="p-3 text-left">{song.ngay_phat_hanh}</td>
+                                    <td className="p-3 text-left">{song.thoi_luong}</td>
+                                    <td className="p-3 text-left">
+                                        <img src={song.hinh_anh} alt="Bài hát" className="w-12 h-12 rounded" />
+                                    </td>
+                                    <td className="p-3 text-left">{song.trang_thai === 1 ? "Đang phát hành" : "Vô hiệu hoá"}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="7" className="p-3 text-center text-gray-400">
+                                    Không có dữ liệu
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
