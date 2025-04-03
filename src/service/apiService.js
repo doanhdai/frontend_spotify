@@ -7,7 +7,9 @@ export const loginUser = async (data) => {
 };
 
 export const refreshToken = async (refreshToken) => {
-    const response = await axios.post(`${import.meta.env.VITE_REACT_API}/auth/token/refresh/`, { refresh: refreshToken });
+    const response = await axios.post(`${import.meta.env.VITE_REACT_API}/auth/token/refresh/`, {
+        refresh: refreshToken,
+    });
     return response.data;
 };
 
@@ -35,13 +37,13 @@ export const removeSongFromPlaylist = async (data) => apiClient.delete(`/songs/p
 export const addLikeSong = async (data) => apiClient.post(`/songs/favorites/`, data);
 export const removeLikeSong = async (idSong) => apiClient.delete(`/songs/favorites/${idSong}/`);
 
-export const getAlbum = async () => apiClient.get('/songs/album/all/')
-export const getAlbumById = async (idAlbum) => apiClient.get(`/songs/album/${idAlbum}/detail/`)
+export const getAlbum = async () => apiClient.get('/songs/album/all/');
+export const getAlbumById = async (idAlbum) => apiClient.get(`/songs/album/${idAlbum}/detail/`);
 
 // chat
-export const getChat = async (conversation_id) => apiClient.get(`/conversations/${conversation_id}/messages/`) // get all messages in a conversation
-export const getAllConversation = async () => apiClient.get('/conversations/') // get all conversations
+export const getChat = async (conversation_id) => apiClient.get(`/conversations/${conversation_id}/messages/`); // get all messages in a conversation
+export const getAllConversation = async () => apiClient.get('/conversations/'); // get all conversations
 
-export const createConversation = async (data) => apiClient.post('/conversations/', data) // create a new conversation
+export const createConversation = async (data) => apiClient.post('/conversations/', data); // create a new conversation
 
-
+export const getChatAI = async (message) => apiClient.post('/chat/', { message }); // get chat ai
