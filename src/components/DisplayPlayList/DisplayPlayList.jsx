@@ -392,7 +392,7 @@ function DisplayPlayList() {
                     ))}
                 </>
             ) : (
-                <div className="flex justify-center items-center">
+                <div className="flex justify-center items-center h-[200px]">
                     <p className="text-white text-sm font-semibold">Không có bài hát nào trong playlist</p>
                 </div>
             )}

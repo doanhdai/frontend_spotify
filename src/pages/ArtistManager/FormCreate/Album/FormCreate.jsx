@@ -1,4 +1,4 @@
-import DisplayFormCreate from '@/components/ArtistManager/FormCreate/index'
+import DisplayFormCreate from '@/components/ArtistManager/FormCreate/Album'
 
 const FormCreate = () => {
     return (

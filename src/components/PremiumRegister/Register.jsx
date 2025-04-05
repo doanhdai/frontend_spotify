@@ -50,20 +50,23 @@ const PremiumRegister = () => {
           </p>
         </div>
 
-        <div className="flex bg-white px-5 py-5">
+        <div className="flex bg-gray-900 px-10 py-5">
           {/* Hiển thị thông tin gói Premium */}
-          <div className="w-[50%] bg-gray-800 text-white p-5 shadow-lg max-w-md">
+          <div className="w-2/3 rounded-xl bg-gray-950 px-5 py-5 shadow-lg max-w-md">
             {selectedPlan ? (
               <>
-                <h2 className="text-2xl font-bold text-center mb-4">
-                  {selectedPlan.name}
+                <h2 className="text-xl text-center font-bold mb-4">
+                  {selectedPlan.title}
                 </h2>
-                <p className="text-center text-lg font-semibold text-green-400">
-                  {selectedPlan.price} / {selectedPlan.duration}
+                <p className="text-center text-xl font-semibold text-green-400">
+                  Giá gói chỉ {selectedPlan.price}
+                </p>
+                <p className="text-center text-xl font-semibold text-green-400">
+                  Thời hạn sử dụng trong vòng {selectedPlan.duration} với các tính năng
                 </p>
                 <ul className="mt-4 text-gray-300 space-y-2 text-sm">
                   {selectedPlan.features.map((feature, index) => (
-                    <li key={index} className="flex items-center space-x-2">
+                    <li key={index} className="flex justify-center items-center space-x-2">
                       <span className="text-green-400">✔</span> <span>{feature}</span>
                     </li>
                   ))}
@@ -75,14 +78,14 @@ const PremiumRegister = () => {
           </div>
 
           {/* Phần chọn phương thức thanh toán */}
-          <div className="w-[50%] text-black px-5">
-            <h2 className="text-xl font-bold mb-3">Phương thức thanh toán</h2>
+          <div className="w-1/3 text-white px-5">
+            <h2 className="text-xl text-left font-bold mb-3">Phương thức thanh toán</h2>
             <div className="space-y-3">
               {paymentMethods.map((method) => (
                 <div
                   key={method.id}
                   className={`p-3 border rounded-md cursor-pointer ${selectedPayment === method.name
-                      ? "border-green-500 bg-green-100"
+                      ? "border-green-500 bg-green-500"
                       : "border-gray-300"
                     }`}
                   onClick={() => handlePaymentSelect(method.name)}
@@ -96,7 +99,7 @@ const PremiumRegister = () => {
               {/* Nút xác nhận thanh toán */}
               <button
                 onClick={handlePayment}
-                className="w-full bg-red-500 text-white py-2 mt-5 rounded-md hover:bg-red-600 transition"
+                className="w-[20rem] bg-blue-500 text-white py-2 mt-5 rounded-md hover:bg-blue-600 transition"
               >
                 Xác nhận thanh toán
               </button>
@@ -107,7 +110,7 @@ const PremiumRegister = () => {
                   const navigate = useNavigate();
                   navigate(`/premium`);
                 }}
-                className="w-full bg-blue-500 text-white py-2 mt-5 rounded-md hover:bg-blue-600 transition"
+                className="w-[20rem] bg-gray-500 text-white py-2 mt-5 rounded-md hover:bg-black transition"
               >
                 Đăng ký gói khác
               </button>

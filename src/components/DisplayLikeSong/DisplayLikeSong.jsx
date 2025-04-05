@@ -4,7 +4,7 @@ import config from '@/configs';
 import { assets } from '@/assets/assets';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaPlay } from 'react-icons/fa';
+import { FaPlay } from 'react-icons/fa6';
 import { IoMdMore, IoMdPause } from 'react-icons/io';
 import {
     faArrowUpFromBracket,
@@ -503,7 +503,6 @@ function DisplayLikeSong() {
             )}
             <Footer />
         </div>
-
     ) : null;
 }
 

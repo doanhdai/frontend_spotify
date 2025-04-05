@@ -24,7 +24,7 @@ import Footer from '@/layouts/components/Footer';
 
 function DisplayAlbum() {
     const dispatch = useDispatch();
-    const { track, playStatus } = useSelector((state) => state.player);
+    const { track, playStatus, currentPlaylist } = useSelector((state) => state.player);
     const { id } = useParams();
 
     const [albumData, setAlbumData] = useState([]);
@@ -58,9 +58,12 @@ function DisplayAlbum() {
     }, [id]);
 
     const handlePlayAlbum = () => {
-        if (albumData.songs && albumData.songs.length > 0) {
-            dispatch(setCurrentPlaylist(albumData.songs));
-            dispatch(setPlayStatus(true));
+        if (songsAlbum && songsAlbum.length > 0) {
+            dispatch(setPlayStatus(false));
+            dispatch(setCurrentPlaylist(songsAlbum));
+            setTimeout(() => {
+                dispatch(setPlayStatus(true));
+            }, 0);
         }
     };
 
@@ -97,6 +100,14 @@ function DisplayAlbum() {
         }
     }, [albumData]);
 
+    const isCurrentPlaylist = () => {
+        if (!currentPlaylist || !songsAlbum) return false;
+        return (
+            currentPlaylist.length === songsAlbum.length &&
+            currentPlaylist.every((song, index) => song.id === songsAlbum[index].id)
+        );
+    };
+
     return isAlbum ? (
         <div
             ref={displayAlbumRef}
@@ -123,9 +134,9 @@ function DisplayAlbum() {
                 <div className="flex gap-8">
                     <button
                         className="flex justify-center items-center w-14 h-14 bg-[#1ed760] rounded-[50%] hover:bg-[#3be477] hover:scale-105"
-                        onClick={playStatus ? handlePause : handlePlayAlbum}
+                        onClick={playStatus && isCurrentPlaylist() ? handlePause : handlePlayAlbum}
                     >
-                        {playStatus && albumData.songs?.some((song) => song.id === track?.id) ? (
+                        {playStatus && isCurrentPlaylist() && songsAlbum?.some((song) => song.id === track?.id) ? (
                             <IoMdPause size={20} />
                         ) : (
                             <FaPlay size={20} />
@@ -135,119 +146,130 @@ function DisplayAlbum() {
             </div>
 
             {/* Tiêu đề cột */}
-            <div className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr_0.2fr] px-6 mt-10 mb-4 text-[#a7a7a7]">
-                <p className="font-semibold">
-                    <b className="mr-4">#</b>Tiêu đề
-                </p>
-                <p className="font-semibold">Nghệ sĩ</p>
-                <img className="m-auto w-4" src={assets.clock_icon} alt="" />
-                <span></span>
-            </div>
-            <hr className="mt-[-8px] mb-4 mx-6" />
+            {songsAlbum.length > 0 ? (
+                <>
+                    <div className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr_0.2fr] px-6 mt-10 mb-4 text-[#a7a7a7]">
+                        <p className="font-semibold">
+                            <b className="mr-4">#</b>Tiêu đề
+                        </p>
+                        <p className="font-semibold">Nghệ sĩ</p>
+                        <img className="m-auto w-4" src={assets.clock_icon} alt="" />
+                        <span></span>
+                    </div>
+                    <hr className="mt-[-8px] mb-4 mx-6" />
 
-            {/* Danh sách bài hát */}
-            {albumData.songs?.map((item, index) => (
-                <div
-                    key={index}
-                    onClick={() => navigate(config.routes.detailSong + `/${item.id}`)}
-                    onMouseEnter={() => setHoveredSongId(item.id)}
-                    onMouseLeave={() => setHoveredSongId(null)}
-                    className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr_0.2fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
-                >
-                    <div className="flex items-center">
+                    {/* Danh sách bài hát */}
+                    {songsAlbum.map((item, index) => (
                         <div
-                            className="mr-4 w-5 h-5 flex items-center justify-center"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                if (playStatus && track?.id === item.id) {
-                                    handlePause();
-                                } else {
-                                    handlePlaySong(item.id);
-                                }
-                            }}
+                            key={index}
+                            onClick={() => navigate(config.routes.detailSong + `/${item.id}`)}
+                            onMouseEnter={() => setHoveredSongId(item.id)}
+                            onMouseLeave={() => setHoveredSongId(null)}
+                            className="grid grid-cols-2 sm:grid-cols-[1.7fr_1fr_0.3fr_0.2fr] gap-2 p-2 px-6 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
                         >
-                            {hoveredSongId === item.id ? (
-                                playStatus && track?.id === item.id ? (
-                                    <IoMdPause size={16} className="text-white" />
-                                ) : (
-                                    <FaPlay size={14} className="text-white" />
-                                )
-                            ) : (
-                                <b>{index + 1}</b>
-                            )}
-                        </div>
-                        <img className="inline w-10 mr-5" src={item.hinh_anh} alt="" />
-                        <div>
-                            <p className="text-white font-semibold">{item.ten_bai_hat}</p>
-                            <p className="text-[14px] font-semibold">{item.ma_user?.name}</p>
-                        </div>
-                    </div>
-                    <div className="text-[15px] font-semibold">
-                        <p>{item.ma_user?.name}</p>
-                    </div>
-                    <div className="text-center">
-                        <p>4:12</p>
-                    </div>
-                    <div className="text-center">
-                        {hoveredSongId === item.id && (
-                            <TippyHeadless
-                                interactive
-                                visible={menuSongId === item.id}
-                                placement="bottom-end"
-                                appendTo={() => document.body}
-                                render={(attrs) => (
-                                    <div
-                                        className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
-                                        tabIndex="-1"
-                                        {...attrs}
-                                    >
-                                        <TippyHeadless
-                                            interactive
-                                            placement="left"
-                                            appendTo={() => document.body}
-                                            render={(subAttrs) => (
-                                                <div
-                                                    className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl min-w-[200px]"
-                                                    tabIndex="-1"
-                                                    {...subAttrs}
-                                                >
-                                                    {playlists.map((playlist) => (
-                                                        <button
-                                                            key={playlist.ma_playlist}
-                                                            className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleAddToPlaylist(item.id, playlist.ma_playlist);
-                                                                setMenuSongId(null);
-                                                            }}
-                                                        >
-                                                            <span>{playlist.ten_playlist}</span>
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        >
-                                            <button className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]">
-                                                <FontAwesomeIcon icon={faFolder} />
-                                                <span>Thêm vào playlist</span>
-                                            </button>
-                                        </TippyHeadless>
-                                    </div>
-                                )}
-                            >
-                                <button
+                            <div className="flex items-center">
+                                <div
+                                    className="mr-4 w-5 h-5 flex items-center justify-center"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        setMenuSongId(menuSongId === item.id ? null : item.id);
+                                        if (playStatus && isCurrentPlaylist() && track?.id === item.id) {
+                                            handlePause();
+                                        } else {
+                                            handlePlaySong(item.id);
+                                        }
                                     }}
                                 >
-                                    <IoMdMore size={20} className="text-white" />
-                                </button>
-                            </TippyHeadless>
-                        )}
-                    </div>
+                                    {hoveredSongId === item.id ? (
+                                        playStatus && isCurrentPlaylist() && track?.id === item.id ? (
+                                            <IoMdPause size={16} className="text-white" />
+                                        ) : (
+                                            <FaPlay size={14} className="text-white" />
+                                        )
+                                    ) : (
+                                        <b>{index + 1}</b>
+                                    )}
+                                </div>
+                                <img className="inline w-10 mr-5" src={item.hinh_anh} alt="" />
+                                <div>
+                                    <p className="text-white font-semibold">{item.ten_bai_hat}</p>
+                                    <p className="text-[14px] font-semibold">{item.ma_user?.name}</p>
+                                </div>
+                            </div>
+                            <div className="text-[15px] font-semibold">
+                                <p>{item.ma_user?.name}</p>
+                            </div>
+                            <div className="text-center">
+                                <p>4:12</p>
+                            </div>
+                            <div className="text-center">
+                                {hoveredSongId === item.id && (
+                                    <TippyHeadless
+                                        interactive
+                                        visible={menuSongId === item.id}
+                                        placement="bottom-end"
+                                        appendTo={() => document.body}
+                                        render={(attrs) => (
+                                            <div
+                                                className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl"
+                                                tabIndex="-1"
+                                                {...attrs}
+                                            >
+                                                <TippyHeadless
+                                                    interactive
+                                                    placement="left"
+                                                    appendTo={() => document.body}
+                                                    render={(subAttrs) => (
+                                                        <div
+                                                            className="bg-[#282828] text-white text-[14px] font-semibold px-1 py-2 rounded-md shadow-xl min-w-[200px]"
+                                                            tabIndex="-1"
+                                                            {...subAttrs}
+                                                        >
+                                                            {playlists.map((playlist) => (
+                                                                <button
+                                                                    key={playlist.ma_playlist}
+                                                                    className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleAddToPlaylist(
+                                                                            item.id,
+                                                                            playlist.ma_playlist,
+                                                                        );
+                                                                        setMenuSongId(null);
+                                                                    }}
+                                                                >
+                                                                    <span>{playlist.ten_playlist}</span>
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                >
+                                                    <button className="flex items-center gap-2 w-full text-left py-2 px-3 hover:bg-[#ffffff1a]">
+                                                        <FontAwesomeIcon icon={faFolder} />
+                                                        <span>Thêm vào playlist</span>
+                                                    </button>
+                                                </TippyHeadless>
+                                            </div>
+                                        )}
+                                    >
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setMenuSongId(menuSongId === item.id ? null : item.id);
+                                            }}
+                                        >
+                                            <IoMdMore size={20} className="text-white" />
+                                        </button>
+                                    </TippyHeadless>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </>
+            ) : (
+                <div className="flex justify-center items-center h-[200px]">
+                    <p className="text-white text-sm font-semibold">Không có bài hát nào trong album</p>
                 </div>
-            ))}
+            )}
             <Footer />
         </div>
     ) : null;

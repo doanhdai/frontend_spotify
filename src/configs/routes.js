@@ -31,11 +31,15 @@ const routes = {
     artist_song: '/artist/list_songs',
     artist_album: '/artist/list_albums',
     artist_playlist: '/artist/list_playlists',
-    artist_createform: '/artist/create',
+    artist_create_album: '/artist/create/album',
+    artist_create_song: '/artist/create/song',
     artist_listens: '/artist/listens',
     artist_turnover: '/artist/turn_over',
-    artist_turnover: '/artist/list_genres',
     
+    chat: '/chat',
+    category: '/category',
+    searchSongAlbumArt: '/searchSongAlbumArt',
+
 };
 
 export default routes;

@@ -27,6 +27,8 @@ import Dashboard from '@/pages/Admin/Dashboard'
 import DisplayConcert from '@/components/DisplayConcert';
 import DisplayLikeSong from '@/components/DisplayLikeSong';
 import DisplayDetaiSong from '@/components/DisplayDetailSong';
+import DisplayPremium from '@/pages/Premium';
+import DisplayPremiumRegister from '@/pages/PremiumRegister';
 
 /**
  * Admin routes
@@ -44,20 +46,26 @@ import DisplayAdminPremiumRegister from '@/pages/Admin/PremiumRegister';
  * Artist routes
  */
 import DisplayArtistDashboard from '@/pages/ArtistManager/Dashboard';
-import DisplayArtistFormCreate from '@/pages/ArtistManager/FormCreate';
+import DisplayArtistFormAlbum from '@/pages/ArtistManager/FormCreate/Album';
+import DisplayArtistFormSong from '@/pages/ArtistManager/FormCreate/Song'
 import DisplayArtistSong from '@/pages/ArtistManager/MusicList/Song';
 import DisplayArtistAlbum from '@/pages/ArtistManager/MusicList/Album';
 import DisplayArtistPlaylist from '@/pages/ArtistManager/MusicList/Playlist';
 import DisplayArtisListens from '@/pages/ArtistManager/Statistic/Listens';
 import DisplayArtistTurnOver from '@/pages/ArtistManager/Statistic/Turnover';
 
+import ChatPage from '@/pages/Chat';
+import Category from '@/pages/Search/Catelogy';
+import SeachSongAlbumArt from '@/pages/Search/SeachSongAlbumArt';
 
 const publicRoutes = [
     { path: config.routes.home, component: Home },
-    { path: config.routes.search, component: Search },
+    { path: config.routes.search, component: SeachSongAlbumArt },
+    { path: config.routes.chat, component: ChatPage },
+    { path: config.routes.category, component: Category },
     { path: config.routes.concerts, component: Concerts },
     { path: config.routes.album + '/:id', component: Album },
-    { path: config.routes.artist + '/:id', component: Artist},
+    { path: config.routes.artist + '/:id', component: Artist },
     { path: config.routes.genre + '/:id', component: Genre },
     { path: config.routes.signup, component: Signup, layout: NoLayout },
     { path: config.routes.login, component: Login, layout: NoLayout },
@@ -67,6 +75,9 @@ const publicRoutes = [
     { path: config.routes.concerts + '/:id', component: DisplayConcert },
     { path: config.routes.user + '/:id', component: Profile },
     { path: config.routes.detailSong + '/:id', component: DisplayDetaiSong},
+    // { path: config.routes.searchSongAlbumArt, component: SearchSongAlbumArt },
+    { path: config.routes.premium, component: DisplayPremium},    
+    { path: config.routes.premium_register + '/:id', component: DisplayPremiumRegister},    
 
     { path: config.routes.admin_dashboard, component: Dashboard, layout: AdminLayout},
     { path: config.routes.admin_user, component: DisplayAdminUser, layout: AdminLayout},
@@ -82,7 +93,8 @@ const publicRoutes = [
     { path: config.routes.artist_song, component: DisplayArtistSong, layout: ArtistLayout},
     { path: config.routes.artist_album, component: DisplayArtistAlbum, layout: ArtistLayout},
     { path: config.routes.artist_playlist, component: DisplayArtistPlaylist, layout: ArtistLayout},
-    { path: config.routes.artist_createform, component: DisplayArtistFormCreate, layout: ArtistLayout},
+    { path: config.routes.artist_create_album, component: DisplayArtistFormAlbum, layout: ArtistLayout},
+    { path: config.routes.artist_create_song, component: DisplayArtistFormSong, layout: ArtistLayout},
     { path: config.routes.artist_listens, component: DisplayArtisListens, layout: ArtistLayout},
     { path: config.routes.artist_turnover, component: DisplayArtistTurnOver, layout: ArtistLayout},
 ];
@@ -93,3 +105,4 @@ const privateRoutes = [
 
 
 export { publicRoutes, privateRoutes };
+

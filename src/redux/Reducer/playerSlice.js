@@ -81,16 +81,13 @@ const playerSlice = createSlice({
             state.volume = 0;
         },
         playWithId: (state, action) => {
-            const song = state.songsData.find((item) => item.id === action.payload);
-            if (song) {
-                state.track = song;
+            const songId = action.payload;
+            const songIndex = state.currentPlaylist.findIndex((song) => song.id === songId);
+            if (songIndex !== -1) {
+                state.track = state.currentPlaylist[songIndex];
+                state.currentIndex = songIndex;
                 state.playStatus = true;
-                // Nếu currentPlaylist chưa được thiết lập, đồng bộ nó với songsData
-                if (state.currentPlaylist.length === 0) {
-                    state.currentPlaylist = [...state.songsData];
-                }
-                const index = state.currentPlaylist.findIndex((item) => item.id === action.payload);
-                state.currentIndex = index !== -1 ? index : 0;
+                state.time = { currentTime: { second: 0, minute: 0 }, totalTime: { second: 0, minute: 0 } };
             }
         },
     },
