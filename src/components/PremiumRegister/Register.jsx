@@ -20,7 +20,7 @@ const PremiumRegister = () => {
       try {
         const data = await getPremiumDetail(id);
         setSelectedPlan(data);
-        console.log(data.data)
+        console.log(data)
       } catch (error) {
         console.error("Không thể lấy thông tin gói premium", error);
       }
