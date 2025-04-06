@@ -6,6 +6,7 @@ const initialState = {
     language: persistedLanguage,
     contentOfConfirmModal: {},
 };
+
 const appSlice = createSlice({
     name: 'app',
     initialState,

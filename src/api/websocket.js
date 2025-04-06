@@ -1,5 +1,6 @@
 import { store } from '@/redux/store';
 import { addMessage } from '@/redux/Reducer/chatSlice';
+
 class WebSocketService {
     constructor() {
         this.ws = null;
