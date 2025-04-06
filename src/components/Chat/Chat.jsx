@@ -5,9 +5,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import config from '@/configs';
 import { wsService } from '@/api/websocket';
-import { getAllConversation, getChat, getAllUser, createConversation } from '@/service/apiService';
+import { getAllConversation, getChat, getAllUser, createConversation, getChatAI } from '@/service/apiService';
 import { setConversations, setCurrentConversation, setMessages, addMessage } from '@/redux/Reducer/chatSlice';
 import { assets } from '@/assets/assets';
+import meta from '../../assets/images/albums/meta-ai.png';
+import MetaChat from './MetaChat/MetaChat';
+import axios from 'axios';
 
 function Chat() {
     const dispatch = useDispatch();
@@ -21,6 +24,21 @@ function Chat() {
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const navigate = useNavigate();
     const id_user = localStorage.getItem('id_user');
+
+    const [messagesAI, setMessagesAI] = useState([]);
+    const [input, setInput] = useState('');
+    const [loading, setLoading] = useState(false);
+    const metaAIConversation = {
+        id: 'meta_ai',
+        name: 'Meta AI',
+        participants: [
+            { id: 1, name: 'Meta AI', email: 'metaai@ai.com', avatar: null }, // You can set avatar if available
+        ],
+        created_at: '2025-04-03T06:30:27.868463Z',
+        updated_at: '2025-04-03T06:30:27.868463Z',
+        last_message: null,
+        unread_count: 0,
+    };
 
     useEffect(() => {
         wsService.connect();
@@ -106,12 +124,16 @@ function Chat() {
     }, [messages]);
 
     const handleConversationSelect = (conversation) => {
-        setSelectedConversation(conversation);
+        if (conversation.id === 'meta_ai') {
+            setSelectedConversation(metaAIConversation);
+        } else {
+            setSelectedConversation(conversation);
+        }
         dispatch(setCurrentConversation(conversation));
         fetchMessages(conversation.id);
     };
 
-    const handleSendMessage = (e) => {
+    const handleSendMessage = async (e) => {
         e.preventDefault();
         if (newMessage.trim() && selectedConversation) {
             const currentUserId = parseInt(id_user);
@@ -137,6 +159,37 @@ function Chat() {
                 // Sau đó cập nhật state local
                 dispatch(addMessage(newMessageObj));
                 setNewMessage('');
+            }
+        }
+
+        if (selectedConversation.id === 'meta_ai') {
+            if (!newMessage.trim() || loading) return; // Ngăn gửi khi đang chờ phản hồi
+
+            const userMessage = { role: 'user', content: newMessage };
+            setMessagesAI((prev) => [...prev, userMessage]);
+            setNewMessage('');
+            setLoading(true);
+
+            try {
+                const response = await getChatAI(newMessage);
+
+                console.log('Phản hồi từ API:', response.data);
+                const botMessage = {
+                    role: 'bot',
+                    content: response.data.bot_response || 'Lỗi phản hồi!',
+                };
+
+                setMessagesAI((prev) => {
+                    // Kiểm tra nếu botMessage đã tồn tại thì không thêm lại
+                    if (prev.some((msg) => msg.content === botMessage.content && msg.role === 'bot')) {
+                        return prev;
+                    }
+                    return [...prev, botMessage];
+                });
+            } catch (error) {
+                setMessagesAI((prev) => [...prev, { role: 'bot', content: 'Lỗi khi gửi tin nhắn!' }]);
+            } finally {
+                setLoading(false);
             }
         }
     };
@@ -206,6 +259,7 @@ function Chat() {
                             className="w-full bg-[#282828] text-white rounded-full pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#1ed760]"
                         />
                     </div>
+
                     {/* Search Results */}
                     {showSearchResults && searchResults.length > 0 && (
                         <div className="absolute z-10 w-96 mt-2 bg-[#282828] rounded-lg shadow-lg max-h-60 overflow-y-auto">
@@ -227,7 +281,19 @@ function Chat() {
                         </div>
                     )}
                 </div>
-
+                <div
+                    className="flex items-center p-4 cursor-pointer hover:bg-[#282828] py-2 "
+                    onClick={() => handleConversationSelect({ id: 'meta_ai', name: 'Meta AI' })}
+                >
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                        <img src={meta} className="w-full h-full object-cover rounded-full" />
+                    </div>
+                    <div className="flex-1 items-center">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-white text-base font-semibold">Meta AI</h3>
+                        </div>
+                    </div>
+                </div>
                 {/* Conversations List */}
                 <div className="flex-1 overflow-y-auto">
                     {filteredConversations.map((conversation) => {
@@ -264,7 +330,9 @@ function Chat() {
                                     </div>
                                     <p
                                         className={`text-sm truncate ${
-                                            lastMessage && !lastMessage.is_read ? 'text-white font-bold' : 'text-[#b3b3b3]'
+                                            lastMessage && !lastMessage.is_read
+                                                ? 'text-white font-bold'
+                                                : 'text-[#b3b3b3]'
                                         }`}
                                     >
                                         {lastMessage ? lastMessage.content : 'Chưa có tin nhắn'}
@@ -311,25 +379,46 @@ function Chat() {
 
                         {/* Messages */}
                         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                            {uniqueMessages.map((message, index) => (
-                                <div
-                                    key={`message-${message.id}-${index}`}
-                                    className={`flex ${
-                                        message.sender?.id === parseInt(id_user) ? 'justify-end' : 'justify-start'
-                                    }`}
-                                >
-                                    <div
-                                        className={`max-w-[70%] rounded-2xl px-4 py-2 ${
-                                            message.sender?.id === parseInt(id_user)
-                                                ? 'bg-[#1ed760] text-black'
-                                                : 'bg-[#404040] text-white'
-                                        }`}
-                                    >
-                                        <p className="text-sm">{message.content}</p>
-                                        <p className="text-xs mt-1 opacity-70">{formatTimestamp(message.timestamp)}</p>
-                                    </div>
-                                </div>
-                            ))}
+                            {selectedConversation.id === 'meta_ai'
+                                ? messagesAI.map((message, index) => (
+                                      <div
+                                          key={`message-${message.role}-${index}`}
+                                          className={`flex ${
+                                              message.role === 'user' ? 'justify-end' : 'justify-start'
+                                          }`}
+                                      >
+                                          <div
+                                              className={`max-w-[70%] rounded-2xl px-4 py-2 ${
+                                                  message.role === 'user'
+                                                      ? 'bg-[#1ed760] text-black'
+                                                      : 'bg-[#404040] text-white'
+                                              }`}
+                                          >
+                                              <p className="text-sm">{message.content}</p>
+                                          </div>
+                                      </div>
+                                  ))
+                                : uniqueMessages.map((message, index) => (
+                                      <div
+                                          key={`message-${message.id}-${index}`}
+                                          className={`flex ${
+                                              message.sender?.id === parseInt(id_user) ? 'justify-end' : 'justify-start'
+                                          }`}
+                                      >
+                                          <div
+                                              className={`max-w-[70%] rounded-2xl px-4 py-2 ${
+                                                  message.sender?.id === parseInt(id_user)
+                                                      ? 'bg-[#1ed760] text-black'
+                                                      : 'bg-[#404040] text-white'
+                                              }`}
+                                          >
+                                              <p className="text-sm">{message.content}</p>
+                                              <p className="text-xs mt-1 opacity-70">
+                                                  {formatTimestamp(message.timestamp)}
+                                              </p>
+                                          </div>
+                                      </div>
+                                  ))}
                             <div ref={messagesEndRef} />
                         </div>
 

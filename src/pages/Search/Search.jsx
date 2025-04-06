@@ -20,19 +20,19 @@ function Search() {
         setSearchTerm(query);
     }, [location.search]);
 
-    // useEffect(() => {
-    //     if (searchTerm.trim() === '') {
-    //         if (location.pathname !== '/') {
-    //             navigate('/category');
-    //         }
-    //     } else {
-    //         const delaySearch = setTimeout(() => {
-    //             navigate(`/search?keyword=${encodeURIComponent(searchTerm.trim())}`);
-    //         }, 50);
+    useEffect(() => {
+        if (searchTerm.trim() === '') {
+            if (location.pathname !== '/') {
+                return;
+            }
+        } else {
+            const delaySearch = setTimeout(() => {
+                navigate(`/search?keyword=${encodeURIComponent(searchTerm.trim())}`);
+            }, 50);
 
-    //         return () => clearTimeout(delaySearch);
-    //     }
-    // }, [searchTerm, navigate, location.pathname]);
+            return () => clearTimeout(delaySearch);
+        }
+    }, [searchTerm, navigate, location.pathname]);
 
     const handleChange = (e) => {
         setSearchTerm(e.target.value);

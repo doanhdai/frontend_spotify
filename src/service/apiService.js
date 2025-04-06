@@ -7,7 +7,9 @@ export const loginUser = async (data) => {
 };
 
 export const refreshToken = async (refreshToken) => {
-    const response = await axios.post(`${import.meta.env.VITE_REACT_API}/auth/token/refresh/`, { refresh: refreshToken });
+    const response = await axios.post(`${import.meta.env.VITE_REACT_API}/auth/token/refresh/`, {
+        refresh: refreshToken,
+    });
     return response.data;
 };
 
@@ -62,6 +64,9 @@ export const getAllPremium = async () => apiClient.get('/premium/list/')
 
 // GET LIST OF CHATS IN A CONVERSATION
 export const getChat = async (conversation_id) => apiClient.get(`/conversations/${conversation_id}/messages/`) 
+
+// GET CHAT AI
+export const getChatAI = async (message) => apiClient.post('/chat/', { message }); // get chat ai
 
 // GET LIST OF CONVERSATIONS
 export const getAllConversation = async () => apiClient.get('/conversations/')

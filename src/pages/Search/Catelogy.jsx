@@ -50,7 +50,7 @@ function Category() {
                         ))}
                     </div>
                 </div>
-                <Footer />
+              
             </div>
         </>
     );
