@@ -1,32 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import PremiumData from './config/PremiumData';
-import PremiumRegister from '../PremiumRegister';
+import { getAllPremium, getPremiumDetail } from "@/service/apiService";
 
 const PurchasedPremiumCard = ({ title, price, duration, descriptions, package_id }) => {
     const navigate = useNavigate();
 
     const handleBuyClick = () => {
-        navigate(`/premium/register/${package_id}`);
-        
+        navigate(`/premium/register/${package_id}/`);
+
     };
 
     return (
         <div className='mb-6 w-full max-w-sm bg-gray-800 text-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105'>
             <div className="relative bg-gradient-to-r from-green-400 to-blue-500 p-4 text-center font-bold text-black">
-                <span className="text-lg">{duration}</span>
+                <span className="text-lg">{title}</span>
             </div>
             <div className="p-6">
                 <h2 className="text-2xl font-bold text-center mb-4">{title}</h2>
                 <p className="text-center text-lg font-semibold text-green-400">{price} / {duration}</p>
-                <ul className="mt-4 text-gray-300 space-y-2 text-sm">
-                    {descriptions.map((desc, index) => (
-                        <li key={index} className="flex items-center space-x-2">
-                            <span className="text-green-400">✔</span> <span>{desc}</span>
-                        </li>
-                    ))}
-                </ul>
+                <p className="text-center text-lg font-semibold text-green-400">{descriptions}</p>
                 <div className="mt-6 text-center">
                     <button
                         onClick={handleBuyClick}
@@ -40,13 +32,22 @@ const PurchasedPremiumCard = ({ title, price, duration, descriptions, package_id
 };
 
 const PremiumSection = () => {
-    const [premiumData, setPremiumData] = useState(PremiumData);
+    const [premium, setPremium] = useState([]);
 
-    // useEffect(() => {
-    //     axios.get("http://127.0.0.1:8000/api/premium")
-    //         .then(res => setPremiumData(res.data))
-    //         .catch(console.error);
-    // }, []);
+    const fetchAllPremium = async () => {
+        try {
+            const respone = await getAllPremium();
+            const data = respone.data;
+            setPremium(data);
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        fetchAllPremium();
+    }, [])
 
     return (
         <div className="bg-black w-full h-100 px-2 py-2">
@@ -58,14 +59,14 @@ const PremiumSection = () => {
                 </div>
 
                 <div className="flex justify-around">
-                    {premiumData.map((item, index) => (
+                    {premium.map((item, index) => (
                         <PurchasedPremiumCard
                             key={index}
-                            package_id={item.id}
-                            title={item.title}
-                            price={item.price}
-                            duration={`${item.duration}`}
-                            descriptions={item.features ? item.features : []}
+                            package_id={item.ma_premium}
+                            title={item.ten_premium}
+                            price={item.gia_ban}
+                            duration={`${item.thoi_han}`}
+                            descriptions={item.mo_ta ? item.mo_ta : []}
                         />
                     ))}
                 </div>

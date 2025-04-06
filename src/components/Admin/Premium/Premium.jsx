@@ -42,7 +42,7 @@ const Premium = () => {
                   <td className="p-3 text-left">{premium.ma_premium}</td>
                   <td className="p-3 text-left">{premium.ten_premium}</td>
                   <td className="p-3 text-left">{premium.thoi_han}</td>
-                  <td className="p-3 text-left">{premium.mo_ta}</td>
+                  <td className="p-3 text-left">{premium.gia_ban}</td>
                   <td className="p-3 text-left">{premium.mo_ta}</td>
                   <td className="p-3 text-left">{premium.trang_thai === 1 ? "Đang phát hành" : "Vô hiệu hoá"}</td>
                 </tr>

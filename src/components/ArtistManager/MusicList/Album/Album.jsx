@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAlbum } from "@/service/apiService";
+// import { getArtist } from "@/service/apiService";
 
 const Album = () => {
     const [albums, setAlbums] = useState([]);

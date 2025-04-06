@@ -1,11 +1,19 @@
 import axios from "axios"; // thêm dòng này
 import { useState } from "react";
+import { postArtistSong } from "@/service/apiService";
 
 const FormCreateSong = () => {
     const [song, setSong] = useState({
         name: "",
-        cover: null,
-        file: null,
+        listens: 0,
+        duration: 0,
+        status: 0,
+        img: null,
+        audio: null,
+        album_id: null,
+        genres_id: null,
+        debut_date: new Date().toISOString(),
+        artist_id: localStorage.getItem("id_user"),
     });
 
     const [error, setError] = useState("");
@@ -27,34 +35,32 @@ const FormCreateSong = () => {
     };
 
     const handleSubmit = async () => {
-        if (!song.name) {
-            setError("Vui lòng nhập đầy đủ thông tin bài hát.");
+        if (song.name.length == 0) {
+            alert('Tên bài hát không được để trống !')
             return;
         }
 
         const formData = new FormData();
-        formData.append("name", song.name);
-        formData.append("cover", song.cover);
-        formData.append("file", song.file);
+        formData.append("ten_bai_hat", song.name);
+        formData.append("trang_thai", song.status);
+        formData.append("hinh_anh", song.img);
+        formData.append("audio", song.audio);
+        formData.append("luot_nghe", song.listens);
+        formData.append("ma_album_id", song.album_id);
+        formData.append("ma_user_id", song.artist_id);
+        formData.append("ma_the_loai_id", song.genres_id);
 
         try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_REACT_API}/songs/create`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
-            console.log("Bài hát đã được tạo:", response.data);
+            // const token = localStorage.getItem("access_token");
 
-            // Reset form
-            // setSong({ name: "", cover: null, file: null });
-            // setError("");
-        } catch (err) {
-            console.error("Lỗi khi tạo bài hát:", err);
-            setError("Có lỗi xảy ra khi gửi bài hát.");
+            // Gửi yêu cầu POST lên server
+            const response = await postArtistSong(formData)
+
+            alert('Đã lưu bài hát, chờ kiểm duyệt từ quản trị viên.')
+            console.log("Bài hát đã được lưu:", response.data);
+        
+        } catch (error) {
+            console.error("Lỗi khi lưu bài hát:", error);
         }
     };
 

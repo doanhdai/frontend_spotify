@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllSongs } from "@/service/apiService";
+import { getArtistSong } from "@/service/apiService";
 
 
 const Song = () => {
@@ -7,7 +7,7 @@ const Song = () => {
 
     const fetchAllSongs = async () => {
         try {
-            const response = await getAllSongs(); // Gọi API đúng cách
+            const response = await getArtistSong(localStorage.getItem('id_user')); // Gọi API đúng cách
             const listOfSongs = response.data;
             // console.log("Dữ liệu bài hát:", listOfSongs); // Console.log dữ liệu
             setSongs(listOfSongs);
@@ -30,7 +30,6 @@ const Song = () => {
                             <th className="p-3 text-left">ID</th>
                             <th className="p-3 text-left">Tên bài hát</th>
                             <th className="p-3 text-left">Ngày phát hành</th>
-                            <th className="p-3 text-left">Thời lượng</th>
                             <th className="p-3 text-left">Ảnh đại diện</th>
                             <th className="p-3 text-left">Trạng thái</th>
                         </tr>
@@ -43,11 +42,10 @@ const Song = () => {
                                     <td className="p-3 text-left">{song.id}</td>
                                     <td className="p-3 text-left">{song.ten_bai_hat}</td>
                                     <td className="p-3 text-left">{song.ngay_phat_hanh}</td>
-                                    <td className="p-3 text-left">{song.thoi_luong}</td>
                                     <td className="p-3 text-left">
                                         <img src={song.hinh_anh} alt="Bài hát" className="w-12 h-12 rounded" />
                                     </td>
-                                    <td className="p-3 text-left">{song.trang_thai === 1 ? "Đang phát hành" : "Vô hiệu hoá"}</td>
+                                    <td className="p-3 text-left">{song.trang_thai === 1 ? "Đã duyệt" : "Chờ duyệt"}</td>
                                 </tr>
                             ))
                         ) : (

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Trash, Plus } from "lucide-react";
-import { getAllSongs } from "@/service/apiService";
+import { getArtistSong, postArtistAlbum} from "@/service/apiService";
+import axios from "axios";
 
 const FormCreate = () => {
     const [songs, setSongs] = useState([]);
@@ -8,13 +9,16 @@ const FormCreate = () => {
     const [album, setAlbum] = useState({
         name: "",
         img: "",
-        songs: [],
+        songs: [], // Danh sách bài hát có thể rỗng
+        created_at: new Date().toISOString(), // Ngày tạo album
+        status: 0, // Trạng thái mặc định là 1
+        user_id: localStorage.getItem("id_user"), // Mã user từ localStorage
     });
 
     useEffect(() => {
         const fetchAllSongs = async () => {
             try {
-                const response = await getAllSongs();
+                const response = await getArtistSong(localStorage.getItem("id_user"));
                 setSongs(response.data);
             } catch (error) {
                 console.error("Lỗi khi lấy danh sách bài hát:", error);
@@ -29,9 +33,32 @@ const FormCreate = () => {
     };
 
     // Hàm submit album (được gọi khi click nút "Lưu Album")
-    const submitFormAlbum = () => {
-        console.log("Album cần lưu:");
-        // TODO: Gọi API để lưu album ở đây
+    const submitFormAlbum = async () => {
+        if(album.name.length == 0) {
+            alert('Tên album không được để trống !')
+            return;
+        }
+
+        // Tạo đối tượng FormData để gửi dữ liệu album và ảnh
+        const formData = new FormData();
+        formData.append("ten_album", album.name);
+        formData.append("hinh_anh", album.img);
+        // formData.append("songs", JSON.stringify(album.songs)); // Danh sách bài hát có thể rỗng
+        formData.append("ngay_tao", album.created_at);
+        formData.append("trang_thai", album.status);
+        formData.append("ma_user_id", album.user_id);
+
+        try {
+
+            // Gửi yêu cầu POST lên server
+            const response = await postArtistAlbum(formData)
+
+            alert('Đã lưu album, chờ kiểm duyệt từ quản trị viên.')
+            console.log("Album đã được lưu:", response.data);
+            
+        } catch (error) {
+            console.error("Lỗi khi lưu album:", error);
+        }
     };
 
     /**
@@ -98,7 +125,6 @@ const FormCreate = () => {
                 <button
                     className="mt-4 w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-500 cursor-pointer"
                     onClick={submitFormAlbum}
-                    disabled={selectedSongs.length === 0}
                 >
                     Lưu Album
                 </button>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import plans from "../Premium/config/PremiumData";
+import { getPremiumDetail } from "@/service/apiService";
 
 const paymentMethods = [
   { id: "credit_card", name: "Thẻ tín dụng / Debit" },
@@ -10,12 +10,25 @@ const paymentMethods = [
 
 const PremiumRegister = () => {
   const { id } = useParams();
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const navigate = useNavigate();
+
   const [selectedPayment, setSelectedPayment] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   useEffect(() => {
-    const plan = plans.find((item) => item.id === id);
-    setSelectedPlan(plan || null);
+    const fetchPremiumDetail = async () => {
+      try {
+        const data = await getPremiumDetail(id);
+        setSelectedPlan(data);
+        console.log(data.data)
+      } catch (error) {
+        console.error("Không thể lấy thông tin gói premium", error);
+      }
+    };
+
+    if (id) {
+      fetchPremiumDetail();
+    }
   }, [id]);
 
   const handlePaymentSelect = (method) => {
@@ -28,7 +41,7 @@ const PremiumRegister = () => {
       return;
     }
     alert(`Bạn đã chọn thanh toán bằng: ${selectedPayment}`);
-    // Tại đây, bạn có thể gọi API xử lý thanh toán
+    // TODO: Gọi API xử lý thanh toán ở đây nếu cần
   };
 
   return (
@@ -42,32 +55,31 @@ const PremiumRegister = () => {
             height: "250px",
           }}
         >
-          <h1 className="text-3xl ml-10 font-bold mb-3 text-white">
-            Thanh toán
-          </h1>
+          <h1 className="text-3xl ml-10 font-bold mb-3 text-white">Thanh toán</h1>
           <p className="text-lg ml-10 text-gray-300 mb-10">
             Bạn đang tiến hành thanh toán cho gói premium
           </p>
         </div>
 
         <div className="flex bg-gray-900 px-10 py-5">
-          {/* Hiển thị thông tin gói Premium */}
+          {/* Thông tin gói Premium */}
           <div className="w-2/3 rounded-xl bg-gray-950 px-5 py-5 shadow-lg max-w-md">
             {selectedPlan ? (
               <>
                 <h2 className="text-xl text-center font-bold mb-4">
-                  {selectedPlan.title}
+                  {selectedPlan.ten_premium}
                 </h2>
                 <p className="text-center text-xl font-semibold text-green-400">
-                  Giá gói chỉ {selectedPlan.price}
+                  Giá gói chỉ {selectedPlan.gia_ban} VND
                 </p>
                 <p className="text-center text-xl font-semibold text-green-400">
-                  Thời hạn sử dụng trong vòng {selectedPlan.duration} với các tính năng
+                  Thời hạn sử dụng: {selectedPlan.thoi_han} tháng
                 </p>
                 <ul className="mt-4 text-gray-300 space-y-2 text-sm">
-                  {selectedPlan.features.map((feature, index) => (
+                  {selectedPlan.mo_ta?.split(";").map((feature, index) => (
                     <li key={index} className="flex justify-center items-center space-x-2">
-                      <span className="text-green-400">✔</span> <span>{feature}</span>
+                      <span className="text-green-400">✔</span>
+                      <span>{feature.trim()}</span>
                     </li>
                   ))}
                 </ul>
@@ -77,7 +89,7 @@ const PremiumRegister = () => {
             )}
           </div>
 
-          {/* Phần chọn phương thức thanh toán */}
+          {/* Chọn phương thức thanh toán */}
           <div className="w-1/3 text-white px-5">
             <h2 className="text-xl text-left font-bold mb-3">Phương thức thanh toán</h2>
             <div className="space-y-3">
@@ -85,8 +97,8 @@ const PremiumRegister = () => {
                 <div
                   key={method.id}
                   className={`p-3 border rounded-md cursor-pointer ${selectedPayment === method.name
-                      ? "border-green-500 bg-green-500"
-                      : "border-gray-300"
+                    ? "border-green-500 bg-green-500"
+                    : "border-gray-300"
                     }`}
                   onClick={() => handlePaymentSelect(method.name)}
                 >
@@ -95,22 +107,17 @@ const PremiumRegister = () => {
               ))}
             </div>
 
-            <div className="flex justify-between">
-              {/* Nút xác nhận thanh toán */}
+            <div className="flex flex-col gap-3 items-center mt-5">
               <button
                 onClick={handlePayment}
-                className="w-[20rem] bg-blue-500 text-white py-2 mt-5 rounded-md hover:bg-blue-600 transition"
+                className="w-[20rem] bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
               >
                 Xác nhận thanh toán
               </button>
 
-              {/* Nút quay lại */}
               <button
-                onClick={() => {
-                  const navigate = useNavigate();
-                  navigate(`/premium`);
-                }}
-                className="w-[20rem] bg-gray-500 text-white py-2 mt-5 rounded-md hover:bg-black transition"
+                onClick={() => navigate(`/premium`)}
+                className="w-[20rem] bg-gray-500 text-white py-2 rounded-md hover:bg-black transition"
               >
                 Đăng ký gói khác
               </button>
