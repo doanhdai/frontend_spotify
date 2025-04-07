@@ -55,6 +55,7 @@ function Home() {
         try {
             const response = await getAlbum();
             setAlbum(response.data);
+            console.log(response.data);
         } catch (error) {
             console.log('Lỗi khi tải dữ liệu album!');
             console.error(error);
@@ -251,32 +252,6 @@ function Home() {
                     </div>
                 )}
 
-                {/* {isLoggedIn ? (
-                    <div className="px-6 mb-4 mt-8">
-                        <div className="flex items-center justify-between text-white mb-2">
-                            <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
-                                Tuyển tập nhạc hàng đầu của bạn
-                            </h1>
-                            {playlistsData.length > 7 ? (
-                                <p className="text-[14px] font-bold hover:underline cursor-pointer mr-7">Hiện tất cả</p>
-                            ) : (
-                                ''
-                            )}
-                        </div>
-                        <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {playlistsData.slice(0, 7).map((item, index) => (
-                                <PlayList
-                                    key={index}
-                                    id={item._id}
-                                    image={assets.img6}
-                                    name={item.name}
-                                    desc={item.desc}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                ) : null} */}
-
                 <div className="px-6 mb-4 mt-8">
                     <div className="flex items-center justify-between text-white mb-2">
                         <h1 className=" font-bold text-2xl hover:underline cursor-pointer">
@@ -322,7 +297,7 @@ function Home() {
                             ) : null}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {album.slice(0, 7).map((item, index) => (
+                            {album.map((item, index) => (
                                 <Album
                                     key={index}
                                     id={item.ma_album}

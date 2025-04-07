@@ -1,10 +1,14 @@
 import config from '@/configs';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Album = ( props ) => {
+    const navi = useNavigate()
     return (
-        <div className="flex flex-col  w-40 h-52 p-2 sizing rounded cursor-pointer hover:bg-[#ffffff26]">
+        <div
+            onClick={()=> navi(config.routes.album + `/${props.id}`)}
+            className="flex flex-col  w-40 h-52 p-2 sizing rounded cursor-pointer hover:bg-[#ffffff26]"
+        >
             <Link to={config.routes.album + `/${props.id}`}>
                 <img className="rounded w-36" src={props.image} alt="" />
             </Link>

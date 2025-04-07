@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux';
@@ -41,12 +41,14 @@ function Chat() {
     };
 
     useEffect(() => {
-        wsService.connect();
-        fetchConversations();
+        if (isLoggedIn) {
+            wsService.connect();
+            fetchConversations();
+        }
         return () => {
             wsService.disconnect();
         };
-    }, [isLoggedIn, navigate]);
+    }, [isLoggedIn]);
 
     const fetchConversations = async () => {
         try {
@@ -116,7 +118,7 @@ function Chat() {
     };
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        messagesEndRef.current?.scrollIntoView();
     };
 
     useEffect(() => {
@@ -131,7 +133,50 @@ function Chat() {
         }
         dispatch(setCurrentConversation(conversation));
         fetchMessages(conversation.id);
+        scrollToBottom();
     };
+
+    useEffect(() => {
+        const handleNewMessage = (event) => {
+            try {
+                const message = JSON.parse(event.data);
+                if (message && message.conversation_id) {
+                    // Update messages in current conversation
+                    if (selectedConversation?.id === message.conversation_id) {
+                        dispatch(addMessage(message));
+                    }
+
+                    // Update conversation list
+                    const updatedConversations = conversations.map((conv) => {
+                        if (conv.id === message.conversation_id) {
+                            return {
+                                ...conv,
+                                last_message: {
+                                    content: message.message,
+                                    timestamp: new Date().toISOString(),
+                                    is_read: false,
+                                },
+                            };
+                        }
+                        return conv;
+                    });
+                    dispatch(setConversations(updatedConversations));
+                }
+            } catch (error) {
+                console.error('Error handling new message:', error);
+            }
+        };
+
+        if (wsService.ws) {
+            wsService.ws.onmessage = handleNewMessage;
+        }
+
+        return () => {
+            if (wsService.ws) {
+                wsService.ws.onmessage = null;
+            }
+        };
+    }, [conversations, selectedConversation, dispatch]);
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
@@ -142,9 +187,9 @@ function Chat() {
             );
 
             if (receiver) {
-                // Tạo đối tượng tin nhắn mới với format chuẩn
+                // Create new message object
                 const newMessageObj = {
-                    id: Date.now(), // Tạo id tạm thời
+                    id: Date.now(),
                     content: newMessage,
                     timestamp: new Date().toISOString(),
                     is_read: false,
@@ -153,17 +198,29 @@ function Chat() {
                     },
                 };
 
-                // Gửi tin nhắn qua WebSocket trước
+                // Send message via WebSocket
                 wsService.sendMessage(newMessage, selectedConversation.id, receiver.id);
 
-                // Sau đó cập nhật state local
+                // Update local state immediately
                 dispatch(addMessage(newMessageObj));
+
+                // Update conversation list
+                const updatedConversation = {
+                    ...selectedConversation,
+                    last_message: newMessageObj,
+                };
+
+                const updatedConversations = conversations.map((conv) =>
+                    conv.id === selectedConversation.id ? updatedConversation : conv,
+                );
+                dispatch(setConversations(updatedConversations));
+
                 setNewMessage('');
             }
         }
 
         if (selectedConversation.id === 'meta_ai') {
-            if (!newMessage.trim() || loading) return; // Ngăn gửi khi đang chờ phản hồi
+            if (!newMessage.trim() || loading) return;
 
             const userMessage = { role: 'user', content: newMessage };
             setMessagesAI((prev) => [...prev, userMessage]);
@@ -195,47 +252,77 @@ function Chat() {
     };
 
     // Lọc và chuẩn hóa tin nhắn trước khi hiển thị
-    const normalizedMessages = messages.map((message) => {
-        if (message.message) {
-            return {
-                id: Date.now() + Math.random(),
-                content: message.message,
-                timestamp: new Date().toISOString(),
-                is_read: false,
-                sender: {
-                    id: message.sender_id,
-                },
-            };
-        }
-        return message;
-    });
+    const normalizedMessages = useMemo(() => {
+        return messages.map((message) => {
+            if (message.message) {
+                return {
+                    id: Date.now() + Math.random(),
+                    content: message.message,
+                    timestamp: new Date().toISOString(),
+                    is_read: false,
+                    sender: {
+                        id: message.sender_id,
+                    },
+                };
+            }
+            return message;
+        });
+    }, [messages]);
 
     // Loại bỏ tin nhắn trùng lặp dựa trên content và timestamp
-    const uniqueMessages = normalizedMessages.filter(
-        (message, index, self) =>
-            index === self.findIndex((m) => m.content === message.content && m.timestamp === message.timestamp),
-    );
-
-    // Lọc conversations dựa trên tên người dùng
-    const filteredConversations = conversations.filter((conv) => {
-        const otherParticipant = conv.participants.find(
-            (participant) => parseInt(participant.id) !== parseInt(id_user),
+    const uniqueMessages = useMemo(() => {
+        return normalizedMessages.filter(
+            (message, index, self) =>
+                index === self.findIndex((m) => m.content === message.content && m.timestamp === message.timestamp),
         );
-        return otherParticipant?.name.toLowerCase().includes(searchQuery.toLowerCase());
-    });
+    }, [normalizedMessages]);
 
-    const formatTimestamp = (timestamp) => {
-        if (!timestamp) return '';
-        try {
-            return new Date(timestamp).toLocaleTimeString('vi-VN', {
+    // Lọc conversations dựa trên tên người dùng và sắp xếp theo thời gian tin nhắn cuối cùng
+    const filteredConversations = useMemo(() => {
+        return conversations
+            .filter((conv) => {
+                const otherParticipant = conv.participants.find(
+                    (participant) => parseInt(participant.id) !== parseInt(id_user),
+                );
+                return otherParticipant?.name.toLowerCase().includes(searchQuery.toLowerCase());
+            })
+            .sort((a, b) => {
+                // Nếu không có last_message, đưa xuống cuối
+                if (!a.last_message && !b.last_message) return 0;
+                if (!a.last_message) return 1;
+                if (!b.last_message) return -1;
+
+                // So sánh thời gian của last_message
+                return new Date(b.last_message.timestamp) - new Date(a.last_message.timestamp);
+            });
+    }, [conversations, searchQuery, id_user]);
+
+    // console.log(filteredConversations);
+    const formatTimestamp = (dateString) => {
+        const postDate = new Date(dateString);
+        const now = new Date();
+        const diffInHours = Math.abs(now - postDate) / 36e5;
+
+        if (diffInHours < 24) {
+            // Nếu trong vòng 24 giờ, hiển thị giờ
+            const hours = Math.floor(diffInHours);
+            if (hours === 0) {
+                const minutes = Math.floor(diffInHours * 60);
+                return `${minutes} phút trước`;
+            }
+            return `${hours} giờ trước`;
+        } else {
+            // Nếu quá 24 giờ, hiển thị ngày
+            const options = {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
                 hour: '2-digit',
                 minute: '2-digit',
-            });
-        } catch (error) {
-            return '';
+            };
+            return postDate.toLocaleDateString('vi-VN', options);
         }
     };
-
     if (!isLoggedIn) {
         return null;
     }
@@ -305,7 +392,7 @@ function Chat() {
                             selectedConversation?.id === conversation.id
                                 ? uniqueMessages[uniqueMessages.length - 1]
                                 : conversation.last_message;
-
+                        console.log(conversation)
                         return (
                             <div
                                 key={`conversation-${conversation.id}`}
@@ -330,19 +417,17 @@ function Chat() {
                                     </div>
                                     <p
                                         className={`text-sm truncate ${
-                                            lastMessage && !lastMessage.is_read
-                                                ? 'text-white font-bold'
-                                                : 'text-[#b3b3b3]'
+                                            conversation.unread_count > 0 ? 'text-white font-bold' : 'text-[#b3b3b3]'
                                         }`}
                                     >
                                         {lastMessage ? lastMessage.content : 'Chưa có tin nhắn'}
                                     </p>
                                 </div>
-                                {conversation.unread_count > 0 && (
+                                {/* {conversation.unread_count > 0 && (
                                     <div className="ml-4 bg-[#1ed760] text-black w-6 h-6 rounded-full flex items-center justify-center text-sm">
                                         {conversation.unread_count}
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         );
                     })}
@@ -378,7 +463,7 @@ function Chat() {
                         </div>
 
                         {/* Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-1">
                             {selectedConversation.id === 'meta_ai'
                                 ? messagesAI.map((message, index) => (
                                       <div
@@ -413,9 +498,9 @@ function Chat() {
                                               }`}
                                           >
                                               <p className="text-sm">{message.content}</p>
-                                              <p className="text-xs mt-1 opacity-70">
+                                              {/* <p className="text-xs mt-1 opacity-70">
                                                   {formatTimestamp(message.timestamp)}
-                                              </p>
+                                              </p> */}
                                           </div>
                                       </div>
                                   ))}
