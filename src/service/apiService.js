@@ -13,37 +13,109 @@ export const refreshToken = async (refreshToken) => {
     return response.data;
 };
 
-export const getAllUser = async () => apiClient.get('/users/getAll/'); // get all users
 
-export const createNewPlaylist = async () => apiClient.post('/songs/playlists/create/');
-export const deletePlaylist = async (id) => apiClient.delete(`/songs/playlists/delete/${id}/`);
+/*******************************
+ *          GET API
+ *******************************/
 
+// GET LIST OF USERS
+export const getAllUser = async () => apiClient.get('/users/getAll/'); 
+
+// GET LIST OF ARTISTS
+export const getAll = async () => apiClient.get('/users/artist/getAll/');
 export const getAllArtist = async () => apiClient.get('/users/artist/getAll/');
+
+// GET LIST OF PLAYLISTS
 export const getAllPlaylist = async () => apiClient.get('/songs/playlists/get-all/');
+
+// GET LIST OF SONGS
 export const getAllSongs = async () => apiClient.get('/songs/all/');
+
+// GET SONG BY ID
 export const getSongById = async (id) => apiClient.get(`/songs/detail/${id}/`);
 
+// GET LIST OF SONGS BY PLAYLIST
 export const getSongPlaylist = async (id) => apiClient.get(`/songs/playlists/${id}/songs/`);
 
+// GET LIST OF FAVORITE SONGS
 export const getFavoriteSongs = async () => apiClient.get('songs/favorites/list/');
+
+// GET LIST OF SONGS BY ARTIST
 export const getArtistSong = async (idArtist) => apiClient.get(`/songs/artist/${idArtist}/`);
 
+// GET LIST OF ALBUMS BY ARTIST
+export const getArtistAlbum = async (idArtist) => apiClient.get(`/songs/artist/${idArtist}/`);
+
+// GET SONG BY NAME
 export const searchSongsByName = async (query) => apiClient.get(`/songs/search/?keyword=${query}`);
+
+// GET LIST OF ALBUM
+export const getAlbum = async () => apiClient.get('/songs/album/all/')
+
+// GET ALBUM DETAILS
+export const getAlbumById = async (idAlbum) => apiClient.get(`/songs/album/${idAlbum}/detail/`)
+
+// GET LIST OF GENRES
+export const getGenres = async () => apiClient.get('/songs/genres/list/')
 export const getCategory = async () => apiClient.get('/songs/genres/list/');
 
-export const addSongToPlaylist = async (data) => apiClient.post(`/songs/playlists/add-song/`, data);
-export const removeSongFromPlaylist = async (data) => apiClient.delete(`/songs/playlists/remove-song/`, { data });
+// GET LIST OF PREMIUM
+export const getAllPremium = async () => apiClient.get('/premium/list/')
 
+// GET LIST OF CHATS IN A CONVERSATION
+export const getChat = async (conversation_id) => apiClient.get(`/conversations/${conversation_id}/messages/`) 
+
+// GET CHAT AI
+export const getChatAI = async (message) => apiClient.post('/chat/', { message }); // get chat ai
+
+// GET LIST OF CONVERSATIONS
+export const getAllConversation = async () => apiClient.get('/conversations/')
+
+//GET PREMIUM DETAIL
+export const getPremiumDetail = async (idPremium) => apiClient.get(`/premium/register/${idPremium}/`)
+
+
+/*******************************
+ *          POST API
+ *******************************/
+
+// POST SONG FROM ARTIST
+export const postArtistSong = async (data) => apiClient.post('/songs/create/', data)
+
+// POST SONG TO PLAYLIST
+export const addSongToPlaylist = async (data) => apiClient.post(`/songs/playlists/add-song/`, data);
+
+// POST FAVORITE SONG
 export const addLikeSong = async (data) => apiClient.post(`/songs/favorites/`, data);
+
+// POST ALBUM FROM ARTIST
+export const postArtistAlbum = async (data) => apiClient.post('/songs/album/create/', data) 
+
+// POST PLAYLIST FROM ARTIST
+export const postArtistPlaylist = async () => apiClient.post('/playlist/') 
+
+// POST PLAYLIST
+export const createNewPlaylist = async () => apiClient.post('/songs/playlists/create/');
+
+// POST CONVERSATION
+export const createConversation = async (data) => apiClient.post('/conversations/', data) 
+
+
+/*******************************
+ *          DELETE API
+ *******************************/
+
+// DELETE PLAYLIST 
+export const deletePlaylist = async (id) => apiClient.delete(`/songs/playlists/delete/${id}/`);
+
+// DELETE FAVORITE SONG
 export const removeLikeSong = async (idSong) => apiClient.delete(`/songs/favorites/${idSong}/`);
 
-export const getAlbum = async () => apiClient.get('/songs/album/all/');
-export const getAlbumById = async (idAlbum) => apiClient.get(`/songs/album/${idAlbum}/detail/`);
+// DELETE SONG FROM PLAYLIST
+export const removeSongFromPlaylist = async (data) => apiClient.delete(`/songs/playlists/remove-song/`, { data });
 
-// chat
-export const getChat = async (conversation_id) => apiClient.get(`/conversations/${conversation_id}/messages/`); // get all messages in a conversation
-export const getAllConversation = async () => apiClient.get('/conversations/'); // get all conversations
+/*******************************
+ *          PUT API
+ *******************************/
 
-export const createConversation = async (data) => apiClient.post('/conversations/', data); // create a new conversation
-
-export const getChatAI = async (message) => apiClient.post('/chat/', { message }); // get chat ai
+export const putSongToAlbum = async (idAlbum) => apiClient.put(`/album/${idAlbum}/add-songs/`);
