@@ -16,6 +16,7 @@ const routes = {
     premium: '/premium',
     premium_register: '/premium/register',
     detailSong: '/song',
+    mvSong: '/video',
 
     admin_dashboard: '/admin/dashboard',
     admin_user: '/admin/account/list_users',

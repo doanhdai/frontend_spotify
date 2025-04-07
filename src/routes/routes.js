@@ -29,7 +29,7 @@ import DisplayLikeSong from '@/components/DisplayLikeSong';
 import DisplayDetaiSong from '@/components/DisplayDetailSong';
 import DisplayPremium from '@/pages/Premium';
 import DisplayPremiumRegister from '@/pages/PremiumRegister';
-
+import MvSong from '@/components/VideoPage';
 /**
  * Admin routes
  */
@@ -75,6 +75,7 @@ const publicRoutes = [
     { path: config.routes.concerts + '/:id', component: DisplayConcert },
     { path: config.routes.user + '/:id', component: Profile },
     { path: config.routes.detailSong + '/:id', component: DisplayDetaiSong},
+    { path: config.routes.mvSong + '/:id', component: MvSong},
     // { path: config.routes.searchSongAlbumArt, component: SearchSongAlbumArt },
     { path: config.routes.premium, component: DisplayPremium},    
     { path: config.routes.premium_register + '/:id', component: DisplayPremiumRegister},    

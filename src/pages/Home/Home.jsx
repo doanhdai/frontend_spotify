@@ -196,7 +196,7 @@ function Home() {
                                 alt=""
                             />
                             <div className="bg-[#33295c] px-4 py-4 w-full rounded-tr-[4px] rounded-br-[4px] -hover:bg-[#fff3] transition-colors duration-300">
-                                <h4 className="text-white font-semibold">Ngày e đẹp nhất </h4>
+                                <h4 className="text-white font-semibold">Ngày em đẹp nhất </h4>
                             </div>
                         </div>
                     </div>
@@ -215,7 +215,7 @@ function Home() {
                             ) : null}
                         </div>
                         <div className="flex overflow-auto space-x-2 ml-[-6px]">
-                            {songs.slice(0, 7).map((item, index) => (
+                            {songs.map((item, index) => (
                                 <Item
                                     key={index}
                                     id={item.id}
