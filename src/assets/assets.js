@@ -41,6 +41,7 @@ import img13 from './images/img13.jpg';
 import img14 from './images/img14.jpg';
 import img15 from './images/img15.jpg';
 import img16 from './images/img16.jpg';
+import avt from './images/avt.jpg';
 import NgayEmDepNhatRadio from './images/songs/NgayEmDepNhatRadio.jpg';
 import BadBye from './images/songs/BadBye.jpg';
 import liked_songs from './images/songs/liked_songs.png';
@@ -50,6 +51,7 @@ import ticket from './images/concerts/ticket.png';
 
 
 export const assets = {
+    avt,
     bell_icon,
     home_icon,
     like_icon,

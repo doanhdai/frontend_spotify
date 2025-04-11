@@ -2,28 +2,29 @@ import React, { useState, useEffect } from 'react';
 import ReactPlayer from 'react-player';
 import { useSelector, useDispatch } from 'react-redux';
 import { IoClose } from 'react-icons/io5';
-import { Link, useParams } from 'react-router-dom';
-import { getAllSongs } from '@/service/apiService'; 
-import { setCurrentPlaylist } from '@/redux/Reducer/playerSlice'; 
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { getAllSongs } from '@/service/apiService';
+import { setCurrentPlaylist } from '@/redux/Reducer/playerSlice';
 
 const VideoPage = () => {
     const dispatch = useDispatch();
-    const { trackId } = useParams(); // Lấy trackId từ URL
+    const navigate = useNavigate();
+    const { id } = useParams();
     const { currentPlaylist } = useSelector((state) => state.player);
     const [videoUrl, setVideoUrl] = useState('');
     const [selectedTrack, setSelectedTrack] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    console.log(currentPlaylist);
     useEffect(() => {
         const fetchSongs = async () => {
             try {
                 setLoading(true);
-                const response = await getAllSongs(); 
+                const response = await getAllSongs();
                 const songs = response.data;
 
                 const videoSongs = songs.filter((song) => song.video);
-                dispatch(setCurrentPlaylist(videoSongs)); 
+                dispatch(setCurrentPlaylist(videoSongs));
             } catch (err) {
                 setError('Không thể tải danh sách bài hát. Vui lòng thử lại sau.');
                 console.error('Error fetching songs:', err);
@@ -38,28 +39,29 @@ const VideoPage = () => {
     // Lọc danh sách bài hát có video từ currentPlaylist
     const videoTracks = currentPlaylist.filter((item) => item.video);
 
-    // Cập nhật videoUrl và selectedTrack dựa trên trackId
+    // Cập nhật videoUrl và selectedTrack dựa trên id
     useEffect(() => {
         if (currentPlaylist.length === 0) return;
 
-        // Tìm track tương ứng với trackId trong currentPlaylist
-        const track = currentPlaylist.find((item) => item.id === trackId);
+        // Tìm track tương ứng với id trong currentPlaylist
+        const track = currentPlaylist.find((item) => item.id.toString() === id);
+
         if (track && track.video) {
             setSelectedTrack(track);
             setVideoUrl(track.video);
-        } else {
+        } else if (videoTracks.length > 0) {
             // Nếu không tìm thấy track hoặc track không có video, chọn track đầu tiên có video
             const firstVideoTrack = videoTracks[0];
-            if (firstVideoTrack) {
-                setSelectedTrack(firstVideoTrack);
-                setVideoUrl(firstVideoTrack.video);
-            }
+            setSelectedTrack(firstVideoTrack);
+            setVideoUrl(firstVideoTrack.video);
+            navigate(`/video/${firstVideoTrack.id}`);
         }
-    }, [trackId, currentPlaylist, videoTracks]);
+    }, [id, currentPlaylist, videoTracks, navigate]);
 
     const handleTrackSelect = (track) => {
         setSelectedTrack(track);
         setVideoUrl(track.video);
+        navigate(`/video/${track.id}`);
     };
 
     if (loading) {
@@ -95,7 +97,8 @@ const VideoPage = () => {
                         width="100%"
                         height="100%"
                         controls
-                        playing
+                        playing={true}
+                        key={videoUrl}
                         config={{
                             youtube: {
                                 playerVars: {

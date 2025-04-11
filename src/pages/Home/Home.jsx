@@ -214,7 +214,7 @@ function Home() {
                                 </p>
                             ) : null}
                         </div>
-                        <div className="flex overflow-auto space-x-2 ml-[-6px]">
+                        <div className="grid grid-cols-7 gap-2">
                             {songs.map((item, index) => (
                                 <Item
                                     key={index}
@@ -296,7 +296,7 @@ function Home() {
                                 </p>
                             ) : null}
                         </div>
-                        <div className="flex overflow-auto space-x-2 ml-[-6px]">
+                        <div className="grid grid-cols-7 gap-2">
                             {album.map((item, index) => (
                                 <Album
                                     key={index}
