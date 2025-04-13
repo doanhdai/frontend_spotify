@@ -1,3 +1,4 @@
+import { data } from 'react-router-dom';
 import apiClient from '../api/axiosClient';
 import axios from 'axios';
 
@@ -98,7 +99,7 @@ export const postArtistPlaylist = async () => apiClient.post('/playlist/')
 export const createNewPlaylist = async () => apiClient.post('/songs/playlists/create/');
 
 // POST CONVERSATION
-export const createConversation = async (data) => apiClient.post('/conversations/', data) 
+export const createConversation = async (data) => apiClient.post('/conversations/create-chat/', data) 
 
 
 /*******************************
@@ -119,3 +120,15 @@ export const removeSongFromPlaylist = async (data) => apiClient.delete(`/songs/p
  *******************************/
 
 export const putSongToAlbum = async (idAlbum) => apiClient.put(`/album/${idAlbum}/add-songs/`);
+
+
+
+
+// PUT GROUP CHAT
+export const createGroupChat = async (data) => apiClient.post(`/conversations/create-group/`, data);
+
+export const remove_participant = async (data, id_participant) => apiClient.post(`/conversations/${id_participant}/remove-participants/`, data);
+
+export const add_participant = async (data, id_participant) => apiClient.post(`/conversations/${id_participant}/add-participants/`, data);
+
+export const leaveGroupChat = async (conversationId) => apiClient.post(`/conversations/${conversationId}/leave-group/`);

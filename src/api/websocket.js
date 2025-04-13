@@ -8,18 +8,20 @@ class WebSocketService {
         this.maxReconnectAttempts = 5;
         this.reconnectDelay = 3000;
         this.isConnecting = false;
+
+        window.addEventListener('beforeunload', () => this.disconnect());
     }
 
     getTokenFromStore() {
         const state = store.getState();
-        return state.auth.token; 
+        return state.auth.token;
     }
 
     connect() {
         if (this.isConnecting || this.ws?.readyState === WebSocket.OPEN) return;
-        
+
         this.isConnecting = true;
-        const authToken = this.getTokenFromStore(); 
+        const authToken = this.getTokenFromStore();
         if (!authToken) {
             console.error('No token available in Redux store for WebSocket connection');
             this.isConnecting = false;
@@ -38,15 +40,23 @@ class WebSocketService {
         this.ws.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
+                console.log('Received WebSocket message:', data);
+
                 if (data.type === 'message_read') {
-                    // Xử lý sự kiện tin nhắn đã đọc
                     store.dispatch(updateMessageReadStatus({
                         messageId: data.message_id,
                         isRead: true
                     }));
                 } else {
-                    // Xử lý tin nhắn mới
-                    store.dispatch(addMessage(data));
+                    // Chuẩn hóa dữ liệu tin nhắn
+                    const message = {
+                        id: Date.now(), // Tạo ID tạm nếu server không trả về
+                        content: data.message,
+                        sender: { id: parseInt(data.sender_id) },
+                        timestamp: data.timestamp,
+                        conversation_id: data.conversation_id || data.group_chat_id, // Hỗ trợ cả group_chat_id
+                    };
+                    store.dispatch(addMessage(message));
                 }
             } catch (error) {
                 console.error('Error parsing WebSocket message:', error);
@@ -75,30 +85,25 @@ class WebSocketService {
         }
     }
 
-    sendMessage(content, conversationId, receiverId) {
+    sendMessage(message) {
         if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
             console.log('WebSocket not connected, attempting to connect...');
             this.connect();
-            // Retry sending after a short delay
             setTimeout(() => {
                 if (this.ws?.readyState === WebSocket.OPEN) {
-                    this._sendMessage(content, conversationId, receiverId);
+                    this._sendMessage(message);
                 }
             }, 1000);
             return;
         }
-        this._sendMessage(content, conversationId, receiverId);
+        this._sendMessage(message);
     }
 
-    _sendMessage(content, conversationId, receiverId) {
-        const message = {
-            message: content,
-            conversation_id: conversationId,
-            receiver_id: receiverId
-        };
+    _sendMessage(message) {
+        console.log('Sending WebSocket message:', message);
         this.ws.send(JSON.stringify(message));
     }
-    // Thêm phương thức mới để đánh dấu tin nhắn đã đọc
+
     markMessageAsRead(messageId, conversationId) {
         if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
             console.log('WebSocket not connected, attempting to connect...');
@@ -121,11 +126,13 @@ class WebSocketService {
         };
         this.ws.send(JSON.stringify(message));
     }
+
     disconnect() {
         if (this.ws) {
             this.ws.close();
             this.ws = null;
             this.isConnecting = false;
+            console.log('WebSocket manually disconnected');
         }
     }
 }

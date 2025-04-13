@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     conversations: [],
+    group_chats: [],
     currentConversation: null,
     messages: [],
     loading: false,
@@ -30,11 +31,15 @@ const chatSlice = createSlice({
         setError: (state, action) => {
             state.error = action.payload;
         },
+        setGroupChats: (state, action) => {
+            state.group_chats = action.payload;
+        },
     },
 });
 
 export const {
     setConversations,
+    setGroupChats,
     setCurrentConversation,
     setMessages,
     addMessage,

@@ -7,6 +7,15 @@ export const formatDate = (dateString) => {
     return `${day}/${month}/${year}`;
 };
 
+export const formatHours = (datetimeStr) => {
+  const date = new Date(datetimeStr);
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
+
+
 export const GetSongDuration = ({ audioUrl, setDuration }) => {
     useEffect(() => {
         const audio = new Audio(audioUrl);
