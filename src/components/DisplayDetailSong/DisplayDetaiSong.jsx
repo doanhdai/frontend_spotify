@@ -132,7 +132,7 @@ const DisplayDetaiSong = () => {
             className="bg-[#121212] w-[79%] h-[97.4%] rounded-xl my-2 mr-2 overflow-hidden overflow-y-auto"
         >
             <div className="mt-10 flex flex-col md:flex-row md:items-end gap-8 px-6">
-                <img className="w-48 h-48 rounded" src={songData.hinh_anh} alt="" />
+                <img className="w-48 h-48 rounded object-cover" src={songData.hinh_anh} alt="" />
                 <div className="flex flex-col justify-center">
                     <p className="text-[#ffffff]">Bài hát</p>
                     <h2 className="text-4xl text-[#ffffff] font-bold mb-4 md:text-7xl">{songData.ten_bai_hat}</h2>
@@ -224,7 +224,7 @@ const DisplayDetaiSong = () => {
             </div>
             <div className="mt-10 flex flex-col gap-5 px-6">
                 <div className="flex items-center">
-                    <img className="rounded-full h-[60px] text-[#fff]" src={songData.hinh_anh} alt="" />
+                    <img className="rounded-full h-[60px] w-[60px] text-[#fff] object-cover" src={songData.hinh_anh} alt="" />
                     <div className="ml-5 flex flex-col">
                         <h6 className="text-white">Nghệ sĩ</h6>
                         <b className="uppercase text-[#ffffff]">{songData.ma_user?.name}</b>

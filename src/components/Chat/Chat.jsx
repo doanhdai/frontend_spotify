@@ -55,7 +55,7 @@ function Chat() {
         }),
         [],
     );
-
+    console.log(conversations);
     useEffect(() => {
         if (isLoggedIn) {
             wsService.connect();
@@ -69,7 +69,7 @@ function Chat() {
     const fetchConversations = async () => {
         try {
             const { data } = await getAllConversation();
-            console.log('Fetched conversations:', data);
+            console.log('Fetched conversations:', data.conversations);
 
             // Tách dữ liệu thành private và group từ data.conversations
             const privateChats = data.conversations.filter((conv) => conv.type_conversation === 'private');
@@ -303,31 +303,37 @@ function Chat() {
         return Array.from(new Map(normalized.map((msg) => [`${msg.content}-${msg.timestamp}`, msg])).values());
     }, [messages]);
 
-    const filteredConversations = useMemo(() => {
-        const combined = conversations
-            .map((conv) => ({
-                ...conv,
-                type: conv.type_conversation === 'group' ? 'group_chat' : 'conversation',
-            }))
-            .filter((conv) =>
-                conv.type_conversation === 'group'
-                    ? conv.name.toLowerCase().includes(searchQuery.toLowerCase())
-                    : conv.participants.some(
-                          (p) => p.id !== parseInt(id_user) && p.name.toLowerCase().includes(searchQuery.toLowerCase()),
-                      ),
+const filteredConversations = useMemo(() => {
+    console.log('searchQuery:', searchQuery); // Log giá trị searchQuery
+
+    const combined = conversations
+        .map((conv) => ({
+            ...conv,
+            type: conv.type_conversation === 'group' ? 'group_chat' : 'conversation',
+        }))
+        .filter((conv) => {
+            // Nếu searchQuery rỗng, giữ lại tất cả cuộc hội thoại
+            if (!searchQuery.trim()) return true;
+
+            // Lọc theo tên nhóm cho GroupChat
+            if (conv.type_conversation === 'group') {
+                return conv.name?.toLowerCase().includes(searchQuery.toLowerCase());
+            }
+
+            // Lọc theo tên người tham gia cho PrivateChat
+            return conv.participants.some(
+                (p) => p.id !== parseInt(id_user) && p.name?.toLowerCase().includes(searchQuery.toLowerCase()),
             );
-
-        console.log('Filtered conversations:', combined);
-
-        return combined.sort((a, b) => {
-            const aTime = a.last_message?.timestamp;
-            const bTime = b.last_message?.timestamp;
-            if (!aTime && !bTime) return 0;
-            if (!aTime) return 1;
-            if (!bTime) return -1;
-            return new Date(bTime) - new Date(aTime);
         });
-    }, [conversations, searchQuery, id_user]);
+
+    console.log('Filtered conversations:', combined);
+
+    return combined.sort((a, b) => {
+        const aTime = a.last_message?.timestamp ? new Date(a.last_message.timestamp).getTime() : 0;
+        const bTime = b.last_message?.timestamp ? new Date(b.last_message.timestamp).getTime() : 0;
+        return bTime - aTime; // Sắp xếp giảm dần (mới nhất lên đầu)
+    });
+}, [conversations, searchQuery, id_user]);
 
     const formatTimestamp = (dateString) => {
         const date = new Date(dateString);
